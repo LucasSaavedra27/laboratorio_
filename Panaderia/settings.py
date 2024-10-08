@@ -37,6 +37,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'apps.clientesMayoristas',
+    'apps.empleados',
+    'apps.informes',
+    'apps.inventario',
+    'apps.productos',
+    'apps.proveedores',
+    'apps.usuarios',
+    'apps.ventas',
 ]
 
 MIDDLEWARE = [
@@ -75,6 +83,13 @@ WSGI_APPLICATION = 'Panaderia.wsgi.application'
 
 DATABASES = {
     'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+
+"""DATABASES = {
+    'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'panaderia',
         'HOST': 'localhost',
@@ -82,7 +97,7 @@ DATABASES = {
         'USER': 'postgres',
         'PASSWORD': '*********',
     }
-}
+}"""
 
 
 # Password validation
