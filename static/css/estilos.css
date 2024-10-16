@@ -1,0 +1,404 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap");
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
+  font-family: Poppins, sans-serif;
+  background-color: #f2f2f2;
+}
+
+.container-fluid {
+  position: fixed;
+  background-color: #a63348;
+  padding: 1.5rem;
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 1000;
+}
+
+.logo {
+  font-size: large;
+  font-weight: 700;
+  padding-right: 5px;
+}
+
+.usuario {
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  justify-items: center;
+}
+
+.usuario a {
+  color: #f2f2f2;
+  text-decoration: none;
+}
+
+.logo .fa-solid {
+  padding-left: 20px;
+  cursor: pointer;
+}
+
+#btn-menu {
+  display: none;
+}
+
+.container-menu {
+  position: fixed;
+  background-color: #a63348;
+  /* top: calc(0% + 97.9861px); */
+  top: calc(0% + 127.9861px);
+  left: 0;
+  transition: all 500ms ease;
+  z-index: 999;
+  transform: translateX(-100%);
+}
+#btn-menu:checked ~ .container-menu {
+  transform: translateX(0%);
+}
+
+.cont-menu {
+  max-width: 250px;
+  height: 100vh;
+  position: relative;
+  transition: all 500ms ease;
+}
+
+.cont-menu nav {
+  transform: translateY(15%);
+}
+
+.cont-menu nav a {
+  display: block;
+  text-decoration: none;
+  padding: 20px;
+  color: #f2f2f2;
+  border-left: 5px solid transparent;
+  background-color: transparent;
+}
+
+.cont-menu nav a:hover {
+  background-color: rgb(115, 32, 54, 0.4);
+  border-left: 5px solid #f2f2f2;
+}
+
+.cont-menu nav a:hover i {
+  color: #f2f2f2;
+}
+
+.cont-menu label {
+  /*equis*/
+  color: #f2f2f2;
+}
+
+.cont-menu label:hover {
+  color: #732036;
+}
+
+.container-fluid .logo label i {
+  color: #f2f2f2;
+}
+
+.container-fluid .logo label i:hover {
+  color: #732036;
+}
+
+.container-fluid .usuario {
+  color: #f2f2f2;
+}
+
+.cont-menu nav a i {
+  padding-right: 1rem;
+  color: #242331;
+}
+
+.cont-menu label {
+  position: absolute;
+  right: 15px;
+  top: 20px;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.container-footer {
+  margin-top: auto;
+  background-color: #a63348;
+  color: #f2f2f2;
+}
+
+.container-footer .footer .nav .nav-item .nav-link {
+  color: #f2f2f2;
+}
+
+.container-footer .footer .nav .nav-item .nav-link:hover {
+  color: #732036;
+}
+
+#carouselExampleCaptions {
+  top: 97.9861px;
+}
+
+.container-xxl {
+  margin-top: 3rem;
+  margin-bottom: 3rem;
+}
+
+.team-title {
+  background-color: rgba(166, 51, 72, 0.2);
+}
+
+.display-6 {
+  font-style: italic;
+}
+
+#rowTeam {
+  padding-bottom: 3rem;
+}
+
+.carousel-caption {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.fact-item i {
+  color: #a63348;
+}
+
+#container-login {
+  margin-top: 260px;
+}
+
+.card .card-body .row .btn {
+  background-color: #a63348;
+  border: #242331;
+}
+
+.card .card-body .row .btn:hover {
+  background-color: #732036;
+}
+
+#container-login .row a {
+  color: #732036;
+}
+
+#container-login .row a:hover {
+  color: #da2244;
+}
+
+#container-register {
+  margin-top: 150px;
+}
+
+#container-register .row a {
+  color: #732036;
+}
+
+#container-register .row a:hover {
+  color: #da2244;
+}
+
+#bodyNotFound {
+  background-color: #f2f2f2;
+  align-items: center;
+}
+
+#bodyNotFound h1 {
+  margin: 5px;
+  font-size: 200px;
+  padding: 10px;
+  color: #a63348;
+  text-align: center;
+}
+
+#bodyNotFound h2 {
+  position: absolute;
+  margin-top: 240px;
+  text-align: center;
+}
+
+#bodyNotFound .fa-solid {
+  position: absolute;
+  margin-top: 400px;
+  font-size: 400px;
+  color: #a63348;
+}
+
+#bodyNotFound .btn {
+  position: absolute;
+  margin-top: 320px;
+  text-decoration: none;
+  padding: 5px;
+  background-color: #732036;
+  border-radius: 0.5rem;
+  color: #f2f2f2;
+  width: 150px;
+  text-align: center;
+}
+
+#bodyNotFound .btn:hover {
+  background-color: #a63348;
+}
+
+#bodyNotFound h3 {
+  position: absolute;
+  margin-top: 850px;
+  text-align: center;
+}
+
+.stats {
+  padding-top: 145px;
+  padding-left: 30px;
+  padding-right: 30px;
+  color: #732036;
+}
+
+.stats h1 {
+  font-size: 30px;
+}
+
+#container-tabla {
+  padding-top: 150px;
+}
+
+table {
+  text-align: center;
+}
+th, td {
+  vertical-align: middle; /* Centra el contenido verticalmente */
+}
+
+.bg-table {
+  --bs-table-bg: #a63348;
+}
+
+.bg-primario {
+  background-color: #a63348;
+}
+
+.bg-secundario {
+  background-color: #c0a2a9;
+}
+
+#form-emp .btn {
+  color: #ffffff;
+}
+
+#form-emp .btn:hover {
+  border-color: #732036;
+  background-color: transparent;
+  color: #242331;
+}
+
+table .btn #btnEdit:hover {
+  color: #0051ff;
+}
+
+table .btn #btnDel:hover {
+  color: red;
+}
+
+form #form-busqueda {
+  width: 250px;
+}
+
+.expPdf {
+  text-decoration: none;
+  color: #da2244;
+}
+
+.busqueda {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.btn-modal .fa-solid {
+  color: #a63348;
+}
+
+.btn-modal .fa-solid:hover {
+  color: #ce5050;
+}
+
+.btn-modal #btnEdit {
+  color: #242331;
+}
+
+.modal-footer #btn-del {
+  color: #f2f2f2;
+}
+
+.modal-footer #btn-del:hover {
+  background-color: #732036;
+}
+
+.modal-footer #btn-cancel {
+  color: #f2f2f2;
+}
+
+.modal-footer #btn-cancel:hover {
+  background-color: #a07d85;
+}
+
+.modal-dialog .fa-solid {
+  color: rgb(255, 193, 7);
+}
+
+.labelTxt {
+  margin: 0;
+  color: #a63348;
+}
+
+#card {
+  width: 18rem;
+  border: none;
+}
+
+.card-img-top {
+  height: 260px;
+  object-fit: cover;
+}
+
+#card:hover,
+.fact-item:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+#containerCardProdRecom {
+  padding-top: 1rem;
+}
+
+#rowCard,
+.contenedorParrafo2 {
+  padding-top: 2rem;
+}
+
+.parrafoRecom {
+  background-color: #a63348;
+  color: white;
+  text-align: center;
+  padding: 1rem;
+}
+.contenedorParrafo a,
+.contenedorParrafo2 a,
+.contenedorParrafo3 a {
+  text-decoration: none;
+}
+
+.contenedorParrafo a h1:hover,
+.contenedorParrafo2 a h1:hover,
+.contenedorParrafo3 a h1:hover {
+  color: #732036;
+}
+
+#seccionCardProducto,
+#seccionCardSobreNos,
+#seccionCardEmpleado {
+  scroll-margin-top: 100px;
+}
+
+.team-item {
+  padding-top: 3rem;
+}
