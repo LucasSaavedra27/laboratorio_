@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'apps.inicio',
     'apps.pedidos',
     'apps.productos',
     'apps.usuarios',
@@ -82,9 +83,10 @@ WSGI_APPLICATION = 'Panaderia.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),  
     }
 }
+
 
 """DATABASES = {
     'default': {
@@ -141,3 +143,7 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+LOGIN_REDIRECT_URL = 'inicio:index'
+LOGOUT_REDIRECT_URL = 'inicio:index'

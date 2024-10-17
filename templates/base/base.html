@@ -11,62 +11,102 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
     integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
     crossorigin="anonymous"></script>
-  <title>Panadería El Maná</title>
+  <title>{% block titulo %}Panadería El Maná{% endblock %}</title>
   <link rel="stylesheet" href="{% static 'css/estilos.css' %}" />
 </head>
 
 <body>
-
-    <header>
+  <header>
         <div class="container-fluid shadow">
           <div class="logo">
-            <a href="#">
+            <a href="{% url 'inicio:index' %}">
               <img class="logopng" src="{% static 'img/isologo.png' %}" alt="Logo Panadería El Maná" width="140px" height="80px" /></a>
-            <label for="btn-menu"><i class="fa-solid fa-bars"></i></label>
+            {% if user.is_authenticated %}
+              <label for="btn-menu"><i class="fa-solid fa-bars"></i></label>
+            {% endif %}
           </div>
-          <div class="usuario">
-            <a href="#">
-              <i class="fa-regular fa-user"></i>
-              <p>User</p>
-            </a>
+          {% if user.is_authenticated %}
+          <div class="d-flex flex-column align-items-center justify-content-center">
+            <div class="usuario d-flex flex-column align-items-center justify-content-center">
+                <a href="#">
+                  <i class="fa-regular fa-user"></i>
+                  <p>{{user.username}}</p>
+                </a>
+            </div>
+              <a href="{% url 'logout' %} " id="cerrarSesion">Cerrar Sesión</a> 
           </div>
+            
+          {% else %}
+            <div class="usuario">
+              <a href="{% url 'login' %}">
+                <i class="fa-regular fa-user"></i>
+                <p>Iniciar Sesión</p>
+              </a>
+            </div>
+          {% endif %}
         </div>
-      </header>
+  </header>
+    
+  {% if user.is_authenticated %}
+    <input type="checkbox" id="btn-menu" />
+    <div class="container-menu shadow">
+      <div class="cont-menu">
+        <nav>
+          <a href="/html/estadisticas.html"><i class="fa-solid fa-chart-simple"></i>Estadísticas</a>
+          <a href="{% url 'productos:productos' %}"><i class="fa-solid fa-bread-slice"></i>Productos</a>
+          <a href="/html/gestion_clientes.html"><i class="fa-solid fa-person-circle-check"></i>Clientes</a>
+          <a href="/html/gestion_compras.html"><i class="fa-solid fa-cart-shopping"></i>Compras</a>
+          <a href="/html/gestion_ventas.html"><i class="fa-solid fa-cash-register"></i>Ventas</a>
+          <a href="/html/gestion_proveedores.html"><i class="fa-solid fa-people-carry-box"></i>Proveedores</a>
+          <a href="/html/empleados.html"><i class="fa-solid fa-users"></i>Empleados</a>
+        </nav>
+        <label for="btn-menu" class="equis"><i class="fa-solid fa-xmark"></i></label>
+      </div>
+    </div>          
+  {% else %}
+    <p>Por favor inicie sesión para entrar en las opciones de empleado </p>
+  {% endif %}
+  
+  
 
-    <footer>
-       <div class="container-footer">
-        <footer class="footer py-3 my-4">
-          <ul class="nav justify-content-center border-bottom pb-3 mb-3">
-            <li class="nav-item">
-              <a href="/html/index.html" class="nav-link px-2">Inicio</a>
-            </li>
-            <li class="nav-item">
-              <a href="/html/estadisticas.html" class="nav-link px-2">Estadísticas</a>
-            </li>
-            <li class="nav-item">
-              <a href="/html/productos.html" class="nav-link px-2">Productos</a>
-            </li>
-            <li class="nav-item">
-              <a href="/html/gestion_clientes.html" class="nav-link px-2">Clientes</a>
-            </li>
-            <li class="nav-item">
-              <a href="/html/gestion_compras.html" class="nav-link px-2">Compras</a>
-            </li>
-            <li class="nav-item">
-              <a href="/html/gestion_ventas.html" class="nav-link px-2">Ventas</a>
-            </li>
-            <li class="nav-item">
-              <a href="/html/gestion_proveedores.html" class="nav-link px-2">Proveedores</a>
-            </li>
-            <li class="nav-item">
-              <a href="/html/empleados.html" class="nav-link px-2">Empleados</a>
-            </li>
-          </ul>
-          <p class="text-center">© 2024 Panadería El Maná</p>
-        </footer>
-      </div> 
+  
+
+  {% block contenido %}
+  {% endblock %}
+
+  <div class="container-footer">
+    <footer class="footer py-3 my-4">
+      <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+        <li class="nav-item">
+          <a href="/html/index.html" class="nav-link px-2">Inicio</a>
+        </li>
+        <li class="nav-item">
+          <a href="/html/estadisticas.html" class="nav-link px-2">Estadísticas</a>
+        </li>
+        <li class="nav-item">
+          <a href="/html/productos.html" class="nav-link px-2">Productos</a>
+        </li>
+        <li class="nav-item">
+          <a href="/html/gestion_clientes.html" class="nav-link px-2">Clientes</a>
+        </li>
+        <li class="nav-item">
+          <a href="/html/gestion_compras.html" class="nav-link px-2">Compras</a>
+        </li>
+        <li class="nav-item">
+          <a href="/html/gestion_ventas.html" class="nav-link px-2">Ventas</a>
+        </li>
+        <li class="nav-item">
+          <a href="/html/gestion_proveedores.html" class="nav-link px-2">Proveedores</a>
+        </li>
+        <li class="nav-item">
+          <a href="/html/empleados.html" class="nav-link px-2">Empleados</a>
+        </li>
+      </ul>
+      <p class="text-center">© 2024 Panadería El Maná</p>
     </footer>
-      
+  </div> 
+  {% block js %}
+  {% endblock %}
 </body>
 
 </html>

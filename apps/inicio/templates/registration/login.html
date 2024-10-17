@@ -1,0 +1,68 @@
+{%extends 'base/base.html'%}
+{% load static %}
+
+{% block contenido %}
+<div class="container" id="container-login">
+    <div class="row justify-content-center">
+      <div
+        class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center p-4"
+      >
+        <div class="card mb-3">
+          <div class="card-body">
+            <div class="pt-4 pb-2">
+              <h5 class="card-title text-center pb-0 fs-4">
+                Inicio de sesión
+              </h5>
+              <p class="text-center small">
+                Ingresa tu usuario y contraseña
+              </p>
+            </div>
+
+            <form class="row g-3" action="" method="post">
+              {% csrf_token %}
+              <div class="col-12">
+                <label for="usuarioLogin" class="form-label"
+                  >Nombre de usuario</label
+                >
+                <div class="input-group">
+                  <input
+                    type="text"
+                    name="username"
+                    class="form-control"
+                    id="usuarioLogin"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div class="col-12">
+                <label for="usuarioPass" class="form-label"
+                  >Contraseña</label
+                >
+                <input
+                  type="password"
+                  name="password"
+                  class="form-control"
+                  id="usuarioPass"
+                  required
+                />
+              </div>
+              <div class="col-12">
+                <button class="btn btn-primary w-100" type="submit">
+                  Iniciar Sesión
+                </button>
+              </div>
+              <div class="col-12">
+                <p class="small mb-0 text-center">
+                  ¿No tienes una cuenta?
+                  <a href="crear-cuenta.html">Crear cuenta</a>
+                </p>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

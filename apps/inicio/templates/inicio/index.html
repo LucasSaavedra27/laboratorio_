@@ -1,0 +1,228 @@
+{%extends 'base/base.html'%}
+{% load static %}
+
+{% block titulo %}Panadería El Maná{% endblock %}
+
+{% block contenido %}
+    <div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-inner">
+      <div class="carousel-item active" data-bs-interval="4000">
+        <img src="{% static 'img/frente1.png' %}" class="d-block w-100" alt="Panes" />
+        <div class="carousel-caption d-none d-md-block">
+          <h5>Panadería El Maná</h5>
+          <p>
+            Cada día horneamos con pasión y tradición, trayendo a tu mesa lo
+            mejor de la panadería y pastelería artesanal.
+          </p>
+        </div>
+      </div>
+      <div class="carousel-item" data-bs-interval="4000">
+        <img src="{% static 'img/frente2.png' %}" class="d-block w-100" alt="Panes" />
+        <div class="carousel-caption d-none d-md-block">
+          <h5>Panadería El Maná</h5>
+          <p>
+            Cada día horneamos con pasión y tradición, trayendo a tu mesa lo
+            mejor de la panadería y pastelería artesanal.
+          </p>
+        </div>
+      </div>
+      <div class="carousel-item" data-bs-interval="4000">
+        <img src="{% static 'img/frente3.png' %}" class="d-block w-100" alt="Panes" />
+        <div class="carousel-caption d-none d-md-block">
+          <h5>Panadería El Maná</h5>
+          <p>
+            Cada día horneamos con pasión y tradición, trayendo a tu mesa lo
+            mejor de la panadería y pastelería artesanal.
+          </p>
+        </div>
+      </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+    </div>
+
+
+    <div class="contenedorParrafo"><a href="#seccionCardProducto">
+        <h1 class="parrafoRecom">¡Productos recomendados!</h1>
+        </a></div>
+
+    <section id="seccionCardProducto">
+
+        <div class="container text-center" id="containerCardProdRecom">
+        <div class="row d-flex justify-content-center align-items-center text-center" id="rowCard">
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 mb-4">
+            <div class="card bg-light" id="card" data-tilt data-tilt-glare data-tilt-max-glare="0.5">
+                <img src="{% static 'img/1.png' %}" class="card-img-top" alt="bakery">
+                <div class="card-body">
+                <h5 class="card-title">BEKERY</h5>
+                </div>
+            </div>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 mb-4">
+            <div class="card bg-light" id="card" data-tilt data-tilt-glare data-tilt-max-glare="0.5">
+                <img src="{% static 'img/2.png' %}" class="card-img-top" alt="bakery">
+                <div class="card-body">
+                <h5 class="card-title">TORTAS</h5>
+                </div>
+            </div>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 mb-4">
+            <div class="card bg-light" id="card" data-tilt data-tilt-glare data-tilt-max-glare="0.5" s>
+                <img src="{% static 'img/3.png' %}" class="card-img-top imgPast" alt="bakery">
+                <div class="card-body">
+                <h5 class="card-title">TARTA DE MANZANA</h5>
+                </div>
+            </div>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 mb-4">
+            <div class="card bg-light" id="card" data-tilt data-tilt-glare data-tilt-max-glare="0.5">
+                <img src="{% static 'img/4.png' %}" class="card-img-top" alt="bakery">
+                <div class="card-body">
+                <h5 class="card-title">PASTAFROLA</h5>
+                </div>
+            </div>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 mb-4">
+            <div class="card bg-light" id="card" data-tilt data-tilt-glare data-tilt-max-glare="0.5">
+                <img src="{% static 'img/5.png' %}" class="card-img-top" alt="bakery">
+                <div class="card-body">
+                <h5 class="card-title">PAN NEGRO</h5>
+                </div>
+            </div>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 mb-4">
+            <div class="card bg-light" id="card" data-tilt data-tilt-glare data-tilt-max-glare="0.5">
+                <img src="{% static 'img/6.png' %}" class="card-img-top" alt="bakery">
+                <div class="card-body">
+                <h5 class="card-title">CAÑONCITOS</h5>
+                </div>
+            </div>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 mb-4">
+            <div class="card bg-light" id="card" data-tilt data-tilt-glare data-tilt-max-glare="0.5">
+                <img src="{% static 'img/7.png' %}" class="card-img-top" alt="bakery">
+                <div class="card-body">
+                <h5 class="card-title">FACTURAS</h5>
+                </div>
+            </div>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 mb-4">
+            <div class="card bg-light" id="card" data-tilt data-tilt-glare data-tilt-max-glare="0.5">
+                <img src="{% static 'img/8.png' %}" class="card-img-top" alt="bakery">
+                <div class="card-body">
+                <h5 class="card-title">DONNUTS</h5>
+                </div>
+            </div>
+            </div>
+        </div>
+        </div>
+    </section>
+
+    <div class="contenedorParrafo2"><a href="#seccionCardSobreNos">
+        <h1 class="parrafoRecom">¡Conoce más sobre nosotros!</h1>
+        </a></div>
+
+    <section id="seccionCardSobreNos">
+        <div class="container-xxl">
+        <div class="container">
+            <div class="row g-4">
+            <div class="col-lg-3 col-md-6 wow fadeIn">
+                <div class="fact-item bg-light rounded text-center h-100 p-5 " data-tilt data-tilt-reverse>
+                <i class="fa fa-certificate fa-4x mb-4"></i>
+                <p class="mb-2">Años de Experiencia</p>
+                <h1 class="display-5 mb-0" data-toggle="counter-up">22</h1>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 wow fadeIn">
+                <div class="fact-item bg-light rounded text-center h-100 p-5 " data-tilt data-tilt-reverse>
+                <i class="fa fa-users fa-4x mb-4"></i>
+                <p class="mb-2">Personal a cargo</p>
+                <h1 class="display-5 mb-0" data-toggle="counter-up">14</h1>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 wow fadeIn">
+                <div class="fact-item bg-light rounded text-center h-100 p-5 " data-tilt data-tilt-reverse>
+                <i class="fa fa-bread-slice fa-4x mb-4"></i>
+                <p class="mb-2">Cantidad de recetas</p>
+                <h1 class="display-5 mb-0" data-toggle="counter-up">127</h1>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 wow fadeIn">
+                <div class="fact-item bg-light rounded text-center h-100 p-5" data-tilt data-tilt-reverse>
+                <i class="fa fa-cart-plus fa-4x mb-4"></i>
+                <p class="mb-2">Pedidos semanales</p>
+                <h1 class="display-5 mb-0" data-toggle="counter-up">+10.000</h1>
+                </div>
+            </div>
+            </div>
+        </div>
+        </div>
+
+    </section>
+
+
+    <div class="contenedorParrafo3"><a href="#seccionCardEmpleado">
+        <h1 class="parrafoRecom">Nuestro equipo y sus habilidades</h1>
+        </a></div>
+
+    <section id="seccionCardEmpleado">
+        <div class="container">
+        <div class="row g-4" id="rowTeam">
+            <div class="col-lg-3 col-md-6 wow fadeInUp">
+            <div class="team-item text-center rounded overflow-hidden">
+                <img class="img-fluid" src="{% static 'img/team-1.jpg' %}" alt="empleado" />
+                <div class="team-text">
+                <div class="team-title">
+                    <h5>Full Name</h5>
+                    <span>Designation</span>
+                </div>
+                </div>
+            </div>
+            </div>
+            <div class="col-lg-3 col-md-6 wow fadeInUp">
+            <div class="team-item text-center rounded overflow-hidden">
+                <img class="img-fluid" src="{% static 'img/team-1.jpg' %}" alt="empleado" />
+                <div class="team-text">
+                <div class="team-title">
+                    <h5>Full Name</h5>
+                    <span>Designation</span>
+                </div>
+                </div>
+            </div>
+            </div>
+            <div class="col-lg-3 col-md-6 wow fadeInUp">
+            <div class="team-item text-center rounded overflow-hidden">
+                <img class="img-fluid" src="{% static 'img/team-1.jpg' %}" alt="empleado" />
+                <div class="team-text">
+                <div class="team-title">
+                    <h5>Full Name</h5>
+                    <span>Designation</span>
+                </div>
+                </div>
+            </div>
+            </div>
+            <div class="col-lg-3 col-md-6 wow fadeInUp">
+            <div class="team-item text-center rounded overflow-hidden">
+                <img class="img-fluid" src="{% static 'img/team-1.jpg' %}" alt="empleado" />
+                <div class="team-text">
+                <div class="team-title">
+                    <h5>Full Name</h5>
+                    <span>Designation</span>
+                </div>
+                </div>
+            </div>
+            </div>
+        </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'js/vanilla-tilt.js' %}"></script>
+{% endblock %}

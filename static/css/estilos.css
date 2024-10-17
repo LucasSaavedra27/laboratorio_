@@ -168,7 +168,7 @@ body {
 }
 
 #container-login {
-  margin-top: 260px;
+  margin-top: 180px;
 }
 
 .card .card-body .row .btn {
@@ -401,4 +401,17 @@ form #form-busqueda {
 
 .team-item {
   padding-top: 3rem;
+}
+
+#cerrarSesion{
+  text-decoration: none;
+  color:#ffffff;
+  background-color:#732036;
+  border-radius: 12px;
+  padding: 6px;
+}
+
+#cerrarSesion:hover{
+  color: #bb5772;
+  text-decoration:underline;
 }
