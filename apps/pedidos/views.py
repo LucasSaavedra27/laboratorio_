@@ -8,17 +8,22 @@ from django.conf import settings
 from datetime import datetime
 from django.http import HttpResponse
 
-# @login_required
+@login_required
 def proveedores(request):
     proveedores = Proveedor.objects.all()
     form = FormularioProveedor()
+    mostrar_boton = True # Por defecto, mostramos el botón
     
     if request.method == 'POST':  # Si el formulario fue enviado
         form = FormularioProveedor(request.POST)
         if form.is_valid():
             form.save()  # Guarda el nuevo proveedor en la base de datos
             return redirect('/proveedores') # Redirige a la misma página para actualizar la lista de proveedores
-    return render(request, 'proveedor/proveedores.html', {'proveedores': proveedores, 'form': form})
+        
+    if request.path == '/proveedores/buscar/':
+        mostrar_boton = False
+        
+    return render(request, 'proveedor/proveedores.html', {'proveedores': proveedores, 'form': form,'mostrar_boton': mostrar_boton})
 
 def editarProveedor(request,proveedor_id): #Pasar el proveedor a la plantilla edicionProveedor
     proveedor = Proveedor.objects.get(id=proveedor_id)
@@ -102,7 +107,7 @@ class PDF(FPDF):
         tcol_set(self, 'red')
         tfont_size(self,30)
         tfont(self,'B')
-        self.cell(w = 0, h = 20, txt = 'Reporte de productos', border = 0, ln=1,
+        self.cell(w = 0, h = 20, txt = 'Reporte de proveedores', border = 0, ln=1,
                 align = 'C', fill = 0)
 
         tfont_size(self,10)
@@ -138,11 +143,11 @@ def generarPDF(request):
     pdf.set_font("Arial", "B", 12)
 
     # Dibujar las celdas de los títulos con fondo verde
-    pdf.cell(50, 10, "Nombre", 1, 0, 'C', fill=True)
+    pdf.cell(40, 10, "Nombre", 1, 0, 'C', fill=True)
     pdf.cell(40, 10, "Apellido", 1, 0, 'C', fill=True)
-    pdf.cell(50, 10, "DNI", 1, 0, 'C', fill=True)
-    pdf.cell(50, 10, "Estado", 1, 1, 'C', fill=True)
-    pdf.cell(50, 10, "Empresa", 1, 1, 'C', fill=True)
+    pdf.cell(40, 10, "DNI", 1, 0, 'C', fill=True)
+    pdf.cell(30, 10, "Estado", 1, 0, 'C', fill=True)
+    pdf.cell(40, 10, "Empresa", 1, 1, 'C', fill=True)
 
     tcol_set(pdf, 'black')
     # Cambiar el estilo de fuente para el contenido
@@ -164,16 +169,16 @@ def generarPDF(request):
                 bcol_set(pdf, 'white')  # Fila blanca
             
             # Dibujar las celdas con el color de fondo establecido
-            pdf.cell(50, 10, proveedor.nombre, 1, 0, 'C', fill=True)
+            pdf.cell(40, 10, proveedor.nombre, 1, 0, 'C', fill=True)
             pdf.cell(40, 10, proveedor.apellido, 1, 0, 'C', fill=True)
-            pdf.cell(50, 10, proveedor.dni, 1, 0, 'C', fill=True)
-            pdf.cell(50, 10, proveedor.estado, 1, 1, 'C', fill=True)
-            pdf.cell(50, 10, proveedor.empresa, 1, 1, 'C', fill=True)# Salto de línea entre filas
+            pdf.cell(40, 10, proveedor.dni, 1, 0, 'C', fill=True)
+            pdf.cell(30, 10, proveedor.estado, 1, 0, 'C', fill=True)
+            pdf.cell(40, 10, proveedor.empresa, 1, 1, 'C', fill=True)# Salto de línea entre filas
     else:
         pdf.cell(0, 10, "No hay proveedores disponibles.", 0, 1, 'C')
 
     # Preparar la respuesta
     response = HttpResponse(pdf.output(dest='S').encode('latin1'), content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="reporteProductos.pdf"'
+    response['Content-Disposition'] = 'attachment; filename="reporteProveedores.pdf"'
     return response
 

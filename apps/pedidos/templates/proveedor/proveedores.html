@@ -22,7 +22,8 @@
                 </button>
                 <a href="/proveedores"><i class="fa-solid fa-rotate-left" title="Recargar página"></i></a>
             </form>
-        
+            
+            {% if mostrar_boton %}
             <div class="btn-modal">
                 <button
                     type="button"
@@ -38,6 +39,7 @@
                     </i>
                 </button>
             </div>
+            {% endif %}
             <a class="expPdf" href="{% url 'pedidos:generarPDF' %}"
             ><i class="fa-solid fa-file-pdf px-2" style="font-size: 25px"></i
             >Exportar PDF</a>
