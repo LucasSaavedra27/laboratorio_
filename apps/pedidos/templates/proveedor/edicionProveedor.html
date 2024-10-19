@@ -1,0 +1,87 @@
+{%extends 'base/base.html'%}
+{% load static %}
+
+{% block contenido %}
+
+<div class="contenedor-formProd d-flex justify-content-center">
+    <div class="card-formProd">
+        <form class="row g-3" id="form-prod" action="{% url 'pedidos:edicionProveedor' %}" method="post" >{% csrf_token %}
+            <div class="col-12">
+                <input type="hidden" name="id" value="{{ proveedor.id }}">
+                <label for="nombre" class="form-label">Nombre</label>
+                <div class="input-group">
+                    <input type="text" name="nombre" class="form-control" id="nombreProveedorRegister" value="{{proveedor.nombre}}" placeholder="Nombre Completo" required/>
+                </div>
+            </div>
+            <label for="nombre" class="labelTxt" id="nombreProveedorLabel"></label>
+
+            <div class="col-12">
+                <label for="apellido" class="form-label">Apellido</label>
+                <div class="input-group">
+                    <input type="text" name="apellido" class="form-control" id="apellidoProveedorRegister" value="{{proveedor.apellido}}" required/>
+                </div>
+            </div>
+            <label for="apellido" class="labelTxt" id="apellidoRegisterLabel"></label>
+
+            <div class="col-12">
+                <label for="dni" class="form-label">Dni</label>
+                <div class="input-group">
+                    <input type="text" name="dni" class="form-control" id="dniProveedorRegister" value="{{proveedor.dni}}" required/>
+                </div>
+            </div>
+            <label for="dni" class="labelTxt" id="dniRegisterLabel"></label>
+
+            <div class="col-12">
+                <label for="direccion" class="form-label">Dirección</label>
+                <div class="input-group">
+                    <input type="text" name="direccion" class="form-control" id="direccionProveedorRegister" value="{{proveedor.direccion}}" required/>
+                </div>
+            </div>
+            <label for="direccion" class="labelTxt" id="direccionRegisterLabel"></label>
+
+            <div class="col-12">
+                <label for="telefono" class="form-label">Teléfono</label>
+                <div class="input-group">
+                    <input type="text" name="telefono" class="form-control" id="telefonoRegister" value="{{proveedor.telefono}}" required/>
+                </div>
+            </div>
+            <label for="telefono" class="labelTxt" id="telefonoProveedorLabel"></label>
+
+            <div class="col-12">
+                <label for="mail" class="form-label">Email</label>
+                <div class="input-group">
+                    <input type="email" name="mail" class="form-control" id="mailProveedorRegister" value="{{proveedor.mail}}" required/>
+                </div>
+            </div>
+            <label for="mail" class="labelTxt" id="mailRegisterLabel"></label>
+
+            <div class="col-12">
+            <label for="estado" class="form-label">Estado</label>
+            <select name="estado" id="estadoRegister" required class="form-control">
+                {%if proveedor.estado == 'activo'%}
+                    <option value="{{proveedor.estado}}">{{proveedor.estado}}</option>
+                    <option value="inactivo">Inactivo</option>
+                {%else%}
+                    <option value="{{proveedor.estado}}">{{proveedor.estado}}</option>
+                    <option value="activo">Activo</option>
+                {% endif %}
+            </select>
+            </div>
+            <label for="estado" class="labelTxt" id="estadoRegisterLabel"></label>
+
+            <div class="col-12">
+                <label for="empresa" class="form-label">Empresa</label>
+                <div class="input-group">
+                    <input type="text" name="empresa" class="form-control" id="empresaRegister" value="{{proveedor.empresa}}" placeholder="Nombre de Empresa a la que pertenece" required/>
+                </div>
+            </div>
+            <label for="empresa" class="labelTxt" id="empresaRegisterLabel"></label>
+            
+            <div class="col-12">
+                <button class="btn bg-primario w-100 mt-4" type="submit">Registrar</button>
+                <button class="btn bg-secundario w-100 mt-1" type="reset">Restablecer valores</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

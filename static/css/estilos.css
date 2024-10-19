@@ -415,3 +415,18 @@ form #form-busqueda {
   color: #bb5772;
   text-decoration:underline;
 }
+
+.contenedor-formProd{
+  padding-top: 100px;
+}
+
+.card-formProd{
+  display: flex;
+  width: 400px;
+  justify-content: center;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 30px;
+  padding: 30px;
+  margin: 30px;
+}
