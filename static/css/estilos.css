@@ -314,11 +314,27 @@ form #form-busqueda {
   align-items: center;
 }
 
-.btn-modal .fa-solid {
+.fa-pen-to-square {
+  color: #162772;
+}
+
+.fa-pen-to-square:hover {
+  color: #1135d3;
+}
+
+.fa-trash-can {
   color: #a63348;
 }
 
-.btn-modal .fa-solid:hover {
+.fa-trash-can:hover {
+  color: #ce5050;
+}
+
+.btn-modal .fa-solid{
+  color: #a63348;
+}
+
+.btn-modal .fa-solid:hover{
   color: #ce5050;
 }
 
@@ -417,7 +433,7 @@ form #form-busqueda {
 }
 
 .contenedor-formProd{
-  padding-top: 100px;
+  padding-top: 160px;
 }
 
 .card-formProd{
@@ -430,3 +446,4 @@ form #form-busqueda {
   padding: 30px;
   margin: 30px;
 }
+

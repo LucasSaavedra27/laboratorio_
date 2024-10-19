@@ -1,0 +1,92 @@
+{%extends 'base/base.html'%}
+{% load static %}
+
+{% block contenido %}
+
+<div class="contenedor-formProd d-flex justify-content-center">
+    <div class="card-formProd">
+        <form class="row g-3" id="form-prod" action="{% url 'productos:edicionProducto' %}" method="post" >{% csrf_token %}
+            <div class="col-12">
+            <input type="hidden" name="id" value="{{ producto.id }}">
+            <label for="nombre" class="form-label"
+                >Nombre del producto</label
+            >
+            <div class="input-group">
+                <input type="text" name="nombre" class="form-control" id="nombreProdRegister" value="{{producto.nombre}}" placeholder="Ingrese nombre del producto" required/>
+            </div>
+            </div>
+            <label for="nombre" class="labelTxt" id="nombreProdLabel"></label>
+
+            <div class="col-12">
+            <label for="precioDeVenta" class="form-label">Precio de venta</label>
+            <div class="input-group">
+                <input type="number" name="precioDeVenta" class="form-control" id="precioVentaRegister" value="{{producto.precioDeVenta}}" required/>
+            </div>
+            </div>
+            <label for="precioDeVenta" class="labelTxt" id="precioVentaLabel"></label>
+
+            <div class="col-12">
+                <label for="precioDeCosto" class="form-label"
+                >Precio de costo</label>
+                <div class="input-group">
+                <input type="number" name="precioDeCosto" class="form-control" id="precioCostoRegister" value="{{producto.precioDeCosto}}" required/>
+                </div>
+            </div>
+            <label for="precioDeCosto" class="labelTxt" id="precioCostoLabel"></label>
+
+            <div class="col-12">
+                <label for="fechaDeElaboracion" class="form-label"
+                >Fecha de Elaboración</label>
+                <div class="input-group">
+                <input type="date" name="fechaDeElaboracion" class="form-control" id="fechaElabRegister" value="{{producto.fechaDeElaboracion|date:'Y-m-d'}}" required/>
+                </div>
+            </div>
+            <label for="fechaDeElaboracion" class="labelTxt" id="fechaElabLabel"></label>
+
+            <div class="col-12">
+                <label for="fechaDeVencimiento" class="form-label"
+                >Fecha de Vencimiento</label>
+                <div class="input-group">
+                <input type="date" name="fechaDeVencimiento" class="form-control" id="fechaVencRegister" value="{{producto.fechaDeVencimiento|date:'Y-m-d'}}" required/>
+                </div>
+            </div>
+            <label for="fechaDeVencimiento" class="labelTxt" id="fechaVencLabel"></label>
+
+            <div class="col-12">
+            <label for="categoria" class="form-label">Unidad de medida</label>
+            <select name="categoria" id="categoriaRegister" required class="form-control">
+                {%if producto.categoria == 'panaderia'%}
+                    <option value="{{producto.categoria}}">{{producto.categoria}}</option>
+                    <option value="pasteleria">Pastelería</option>
+                {%else%}
+                    <option value="{{producto.categoria}}">{{producto.categoria}}</option>
+                    <option value="panaderia">Panadería</option>
+                {% endif %}
+            </select>
+            </div>
+            <label for="categoria" class="labelTxt" id="categoriaLabel"></label>
+
+            <div class="col-12">
+                <label for="cantidadDisponible" class="form-label">Cantidad disponible para la venta</label>
+                <div class="input-group">
+                <input type="number" name="cantidadDisponible" class="form-control" id="cantidadDisponibleRegister" value="{{producto.cantidadDisponible}}" required/>
+                </div>
+            </div>
+            <label for="cantidadDisponible" class="labelTxt" id="cantidadDisponibleLabel"></label>
+
+            <div class="col-12">
+                <label for="cantidadMinRequerida" class="form-label">Cantidad disponible para la venta</label>
+                <div class="input-group">
+                <input type="number" name="cantidadMinRequerida" class="form-control" id="cantidadMinRequeridaRegister" value="{{producto.cantidadMinRequerida}}" required/>
+                </div>
+            </div>
+            <label for="cantidadMinRequerida" class="labelTxt" id="cantidadMinRequeridaLabel"></label>
+            
+            <div class="col-12">
+                <button class="btn bg-primario w-100 mt-4" type="submit">Registrar</button>
+                <button class="btn bg-secundario w-100 mt-1" type="reset">Restablecer valores</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

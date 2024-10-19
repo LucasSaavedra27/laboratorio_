@@ -6,21 +6,23 @@
     <div class="col-12">
       <h2 class="text-center pb-3">Registro de Productos</h2>
       <div class="busqueda d-flex">
-        <form class="d-flex" role="search">
+        <form class="d-flex align-items-center justify-content-center" role="search" method="POST" action="{% url 'productos:buscarProducto' %}">
+          {% csrf_token %}
           <input
-            class="form-control mb-3"
-            type="search"
-            placeholder="Ingrese DNI"
-            aria-label="buscar"
-            id="form-busqueda"
+              class="form-control mb-3"
+              type="search"
+              placeholder="Buscar por nombre del producto"
+              aria-label="buscar"
+              name="busqueda" 
+              value="{{ busqueda|default:'' }}" 
           />
+          
           <button class="btn" type="submit">
-            <i
-              class="fa-solid fa-magnifying-glass"
-              style="font-size: 16px"
-            ></i>
+              <i class="fa-solid fa-magnifying-glass" style="font-size: 16px"></i>
           </button>
-        </form>
+          <a href="/productos"><i class="fa-solid fa-rotate-left"></i></a>
+      </form>
+        
         <div class="btn-modal">
           <button
             type="button"
@@ -36,7 +38,7 @@
             </i>
           </button>
         </div>
-        <a class="expPdf" href="#"
+        <a class="expPdf" href="{% url 'productos:generarPDF' %}"
           ><i class="fa-solid fa-file-pdf px-2" style="font-size: 25px"></i
           >Exportar PDF</a
         >
@@ -74,13 +76,10 @@
                   <td>{{ producto.cantidadDisponible }}</td>
                 {% endif %}
                 <td>{{ producto.cantidadMinRequerida }}</td>
-                <td>
-                    <button class="btn btn-modal">
-                        <i class="fa-solid fa-pen-to-square" title="Editar" data-bs-toggle="modal" data-bs-target="#exampleModal"></i>
-                    </button>
-                    <button class="btn btn-modal">
-                        <i class="fa-solid fa-trash-can" title="Eliminar" data-bs-toggle="modal" data-bs-target="#deleteModal"></i>
-                    </button>
+                <td>               
+                    <a href="editarProducto/{{producto.id}}"><i class="fa-solid fa-pen-to-square" title="Editar" data-bs-toggle="modal" data-bs-target="#exampleModal"></i></a>                 
+                    <a href="eliminarProducto/{{producto.id}}"><i class="fa-solid fa-trash-can" title="Eliminar" data-bs-toggle="modal" data-bs-target="#deleteModal"></i></a>   
+                                   
                 </td>
             </tr>
             {% empty %}
@@ -94,203 +93,23 @@
     </div>
   </div>
 
-  <div
-    class="modal fade"
-    id="exampleModal"
-    tabindex="-1"
-    aria-labelledby="regModalLabel"
-    aria-hidden="true"
-  >
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header bg-primario">
-          <h1 class="modal-title fs-5" id="regModalLabel">
-            Registro de Productos
-          </h1>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          ></button>
-        </div>
-        <div class="modal-body">
-          <div class="container">
-            <div class="row">
-              <div class="col-12">
-                <form class="row g-3" id="form-prod">
-                  <div class="col-12">
-                    <label for="descripcionProdRegister" class="form-label"
-                      >Descripción del producto</label
-                    >
-                    <div class="input-group">
-                      <input
-                        type="text"
-                        name="descripcionProdRegister"
-                        class="form-control"
-                        id="descripcionProdRegister"
-                        placeholder="Ingrese Descripción del producto"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <label
-                    for="descripcionProdRegister"
-                    class="labelTxt"
-                    id="descripcionProdLabel"
-                  ></label>
-
-                  <div class="col-12">
-                    <label for="precioCostoRegister" class="form-label"
-                      >Precio de costo</label
-                    >
-                    <div class="input-group">
-                      <input
-                        type="number"
-                        name="precioCostoRegister"
-                        class="form-control"
-                        id="precioCostoRegister"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <label
-                    for="precioCostoRegister"
-                    class="labelTxt"
-                    id="precioCostoLabel"
-                  ></label>
-
-                  <div class="col-12">
-                    <label for="precioVentaRegister" class="form-label"
-                      >Precio de venta</label
-                    >
-                    <div class="input-group">
-                      <input
-                        type="number"
-                        name="precioVentaRegister"
-                        class="form-control"
-                        id="precioVentaRegister"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <label
-                    for="precioVentaRegister"
-                    class="labelTxt"
-                    id="precioVentaLabel"
-                  ></label>
-
-                  <div class="col-12">
-                    <label for="cantidadDisponibleRegister" class="form-label"
-                      >Cantidad disponible para la venta</label
-                    >
-                    <div class="input-group">
-                      <input
-                        type="number"
-                        name="cantidadDisponibleRegister"
-                        class="form-control"
-                        id="cantidadDisponibleRegister"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <label
-                    for="cantidadDisponibleRegister"
-                    class="labelTxt"
-                    id="cantidadDisponibleLabel"
-                  ></label>
-
-                  <div class="col-12">
-                    <label for="unidadMedidaProdRegister" class="form-label"
-                      >Unidad de medida</label
-                    >
-                    <select
-                      name="unidadMedidaProdRegister"
-                      id="unidadMedidaProdRegister"
-                      required
-                      class="form-control"
-                    >
-                      <option value="" selected disabled>Seleccione</option>
-                      <option value="Kilogramos">Kilogramo (Kg)</option>
-                      <option value="Gramos">Gramo (g)</option>
-                      <option value="Litro">Litro (L)</option>
-                      <option value="Unidad">Unidad (U)</option>
-                      <option value="Centímetro Cúbico">Centímetro Cúbico (Cm3)</option>
-
-                      <option value="Otro">Otro</option>
-                    </select>
-                  </div>
-                  <label
-                    for="unidadMedidaProdRegister"
-                    class="labelTxt"
-                    id="unidadMedidaProdLabel"
-                  ></label>
-
-                  <div class="col-12">
-                    <label for="categoriaRegister" class="form-label"
-                      >Categoría</label
-                    >
-                    <select
-                      name="categoriaRegister"
-                      id="categoriaRegister"
-                      required
-                      class="form-control"
-                    >
-                      <option value="" selected disabled>Seleccione</option>
-                      <option value="Panadería">Panadería</option>
-                      <option value="Pastelería">Pastelería</option>
-                      <option value="Otro">Otro</option>
-                    </select>
-                  </div>
-
-                  <label
-                    for="categoriaRegister"
-                    class="labelTxt"
-                    id="categoriaRegisterLabel"
-                  ></label>
-
-                  <div class="col-12">
-                    <label for="tipoProdRegister" class="form-label"
-                      >Tipo</label
-                    >
-                    <select
-                      name="tipoProdRegister"
-                      id="tipoProdRegister"
-                      required
-                      class="form-control"
-                    >
-                      <option value="" selected disabled>Seleccione</option>
-                      <option value="Producto elaborado">Producto elaborado</option>
-                      <option value="Materia prima">Materia prima</option>
-                      <option value="Otro">Otro</option>
-                    </select>
-                  </div>
-
-                  <label
-                    for="tipoProdRegister"
-                    class="labelTxt"
-                    id="tipoProdRegisterLabel"
-                  ></label>
-
-                  <div class="col-12">
-                    <button
-                      class="btn bg-primario w-100 mt-4"
-                      type="submit"
-                    >
-                      Registrar
-                    </button>
-                    <button class="btn bg-secundario w-100 mt-1" type="reset">
-                      Limpiar
-                    </button>
-                  </div>
-                </form>
-              </div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Agregar Producto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-          </div>
+            <div class="modal-body">
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-primary w-100 mt-3">Guardar Producto</button>
+                </form>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
+</div>
 
   <div
     class="modal fade"
