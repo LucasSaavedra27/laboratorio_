@@ -20,7 +20,7 @@
             <div class="col-12">
             <label for="precioDeVenta" class="form-label">Precio de venta</label>
             <div class="input-group">
-                <input type="number" name="precioDeVenta" class="form-control" id="precioVentaRegister" value="{{producto.precioDeVenta}}" required/>
+                <input type="text" name="precioDeVenta" class="form-control" id="precioVentaRegister" value="{{ producto.precioDeVenta|floatformat:2 }}" required/>
             </div>
             </div>
             <label for="precioDeVenta" class="labelTxt" id="precioVentaLabel"></label>
@@ -29,7 +29,7 @@
                 <label for="precioDeCosto" class="form-label"
                 >Precio de costo</label>
                 <div class="input-group">
-                <input type="number" name="precioDeCosto" class="form-control" id="precioCostoRegister" value="{{producto.precioDeCosto}}" required/>
+                <input type="text" name="precioDeCosto" class="form-control" id="precioCostoRegister" value="{{producto.precioDeCosto|floatformat:2 }}" required/>
                 </div>
             </div>
             <label for="precioDeCosto" class="labelTxt" id="precioCostoLabel"></label>
@@ -90,3 +90,16 @@
     </div>
 </div>
 {% endblock %}
+
+{% block js %}
+    <script>
+        document.getElementById('precioVentaRegister').addEventListener('input', function (event) {
+            this.value = this.value.replace(/[^0-9.]/g, '');
+        });
+        
+        document.getElementById('precioCostoRegister').addEventListener('input', function (event) {
+            this.value = this.value.replace(/[^0-9.]/g, '');
+        });
+    </script>
+    
+{% endblock %}    

@@ -447,3 +447,29 @@ form #form-busqueda {
   margin: 30px;
 }
 
+.contenedor-agregarProd{
+  padding-top: 160px;
+}
+
+.card-agregarProd{
+  padding: 30px;
+  width: 30%;
+  border-radius: 30px;
+  background-color: #ffffff;
+  margin-bottom: 30px;
+
+}
+
+.btn-addProd,.btn-cancelProd {
+  background-color: #a63348;
+  color: #f2f2f2;
+}
+
+.btn-addProd:hover,.btn-cancelProd:hover{
+  background-color: #732036;
+  color: #000000;
+}
+
+.fa-square-plus{
+  color: #a63348;
+}

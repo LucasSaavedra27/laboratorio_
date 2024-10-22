@@ -12,16 +12,16 @@ from django.conf import settings
 @login_required
 def productos(request):
     productos = Producto.objects.all()  # Obtén todos los productos de la base de datos
-    form = FormularioProducto()  # Inicializa el formulario vacío
+    return render(request, 'productos/productos.html', {'productos': productos})
 
-    if request.method == 'POST':  # Si el formulario fue enviado
+def agregarProducto(request):
+    form = FormularioProducto() 
+    if request.method == 'POST':
         form = FormularioProducto(request.POST)
         if form.is_valid():
-            form.save()  # Guarda el nuevo producto en la base de datos
-            return redirect('/productos')  # Redirige a la misma página para actualizar la lista de productos
-
-    # Renderiza el template con la lista de productos y el formulario
-    return render(request, 'productos/productos.html', {'productos': productos, 'form': form})
+            form.save()  # 
+            return redirect('/productos')  
+    return render(request, 'productos/agregarProducto.html', {'form': form})
 
 def editarProducto(request,producto_id):
     producto = Producto.objects.get(id=producto_id)
