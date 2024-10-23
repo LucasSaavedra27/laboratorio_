@@ -43,20 +43,6 @@ class Venta(models.Model):
         else:
             return f"Venta a mayorista {self.clienteMayorista.nombre} - {self.fechaDeVenta}"
 
-class FacturaAfip(models.Model):
-    numeroComprobante = models.AutoField(primary_key=True)
-    fechaEmision = models.DateField(blank=False, null=False)
-    venta = models.OneToOneField(Venta, on_delete=models.CASCADE,related_name='facturaVenta')
-    totalFactura = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    PORCENTAJE_IVA = Decimal('10.5')
-
-    def save(self, *args, **kwargs):
-        self.totalFactura = self.venta.total + ((self.venta.total * self.PORCENTAJE_IVA)/100)
-        super().save(*args, **kwargs)
-    
-    def __str__(self):
-        return f"{self.numeroComprobante} {self.fechaEmision}"
-
 class DetalleVenta(models.Model):
     producto = models.ForeignKey(Producto,on_delete=models.CASCADE,related_name='detalleProducto')
     venta = models.ForeignKey(Venta,on_delete=models.CASCADE,related_name='detalleVenta')
