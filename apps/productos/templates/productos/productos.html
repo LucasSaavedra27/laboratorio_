@@ -32,6 +32,7 @@
                         <th scope="col">Fecha de Elab.</th>
                         <th scope="col">Fecha de Venc.</th>
                         <th scope="col">Categoría</th>
+                        <th scope="col">Unidad de medida</th>
                         <th scope="col">Cantidad Disponible</th>
                         <th scope="col">Cantidad mínima Req</th>
                         <th scope="col">Opciones</th>
@@ -47,6 +48,7 @@
                         <td>{{ producto.fechaDeElaboracion }}</td>
                         <td>{{ producto.fechaDeVencimiento }}</td>
                         <td>{{ producto.categoria }}</td>
+                        <td>{{ producto.unidadDeMedida }}</td>
                         {% if producto.cantidadDisponible <= producto.cantidadMinRequerida %}
                         <td style="background-color: #d81111;">{{ producto.cantidadDisponible }}</td>
                         {% else %}

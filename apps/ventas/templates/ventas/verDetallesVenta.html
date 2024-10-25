@@ -13,6 +13,7 @@
                         <th scope="col">Producto</th>
                         <th scope="col">Precio del producto</th>
                         <th scope="col">cantidad</th>
+                        <th scope="col">Unidad de medida</th>
                         <th scope="col">Total</th>
                     </tr>
                 </thead>
@@ -23,6 +24,7 @@
                         <td>{{ detalleVenta.producto.nombre }}</td>
                         <td>${{ detalleVenta.producto.precioDeVenta }}</td>
                         <td>{{ detalleVenta.cantidad }}</td>
+                        <td>{{ detalleVenta.producto.unidadDeMedida }}</td>
                         <td>${{ detalleVenta.subTotal }}</td>
                     </tr>
                     {% empty %}
@@ -33,13 +35,17 @@
                 </tbody>
                 <tfoot class="bg-table">
                     <tr>
-                        <td colspan="4" class="text-end"><strong>Total:</strong></td>
+                        <td colspan="5" class="text-end"><strong>Total:</strong></td>
                         <td><strong>${{ venta.total }}</strong></td>
                     </tr>
                 </tfoot>
             </table>
         </div>
     </div>
+    <div class="d-flex justify-content-center align-items-center">
+        <a href="{%url 'ventas:ventas' %}" class="btn-volver"><i class="fa-solid fa-arrow-left">Volver</i></a>
+    </div>
+    
 {% endblock %}
 
 

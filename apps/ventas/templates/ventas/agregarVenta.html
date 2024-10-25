@@ -17,11 +17,14 @@
                     {% for form in detalleVentaFormset %}
                         <div class="detalle-form">
                             {{ form.as_p }}
+                            <h5 class="subtotal" id="detalleVenta-{{ forloop.counter0 }}-subtotal">Subtotal: $0.00</h5> <!-- Subtotal para cada detalle -->
                         </div>
                     {% endfor %}
                 </div>
-
-                <button type="button" class="btn btn-secondary mt-3" id="btn-addProd">Agregar producto</button>
+                <div class="">
+                    <button type="button" class="btn btn-secondary mt-3" id="btn-addProd">Agregar producto</button>
+                    <h4 class="total">Total: $</h4>
+                </div>
                 <button type="submit" class="btn btn-addVenta w-100 mt-3">Guardar Venta</button>
                 <a href="{% url 'ventas:ventas' %}" class="btn btn-cancelProd w-100 mt-2">Cancelar</a>
             </form>

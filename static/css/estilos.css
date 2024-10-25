@@ -477,3 +477,10 @@ form #form-busqueda {
 .errorlist, .fa-eye:hover{
   color: #ff002f;
 }
+
+.btn-volver{
+  background-color: #a63348;
+  border-radius: 30px;
+  padding: 10px;
+  color: #ffffff;
+}

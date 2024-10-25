@@ -10,7 +10,6 @@ class FormularioVenta(forms.ModelForm):
             'formaDePago', 
             'tipoDeComprobante', 
             'clienteMayorista', 
-            'empleado', 
             
         ]
         labels = {
@@ -18,14 +17,12 @@ class FormularioVenta(forms.ModelForm):
             'formaDePago': 'Forma de pago',
             'tipoDeComprobante': 'Tipo de comprobante',
             'clienteMayorista': 'Cliente mayorista',
-            'empleado': 'Empleado que realizó la venta',
         }  
         widgets = {
             'fechaDeVenta': forms.TextInput(attrs={'type': 'date','class': 'form-control'}),
             'formaDePago': forms.Select(attrs={'class': 'form-control'}),
             'tipoDeComprobante': forms.Select(attrs={'class': 'form-control'}),
             'clienteMayorista': forms.Select(attrs={'type': 'date','class': 'form-control'}),
-            'empleado': forms.Select(attrs={'class': 'form-control'}), 
         }
         
 class DetalleVentaForm(forms.ModelForm):
@@ -38,9 +35,9 @@ class DetalleVentaForm(forms.ModelForm):
         }
         widgets = {
             'producto': forms.Select(attrs={'class': 'form-control'}),
-            'cantidad': forms.NumberInput(attrs={'class': 'form-control'}),
+            'cantidad': forms.NumberInput(attrs={'class': 'form-control','step': '0.01'}),
         }
-        
+    
     def clean_cantidad(self):
         cantidad = self.cleaned_data.get('cantidad')
         producto = self.cleaned_data.get('producto')
@@ -52,9 +49,11 @@ class DetalleVentaForm(forms.ModelForm):
 
 DetalleVentaFormSet = inlineformset_factory(
     Venta, 
-    DetalleVenta,  # Vennta y DetalleVenta son los modelos relacionados
+    DetalleVenta,  # Venta y DetalleVenta son los modelos relacionados
     form=DetalleVentaForm,
     extra=1,  # comienza mostrando 1 formulario
     can_delete=True  # permite borrar el formulario
 )
+
+
 

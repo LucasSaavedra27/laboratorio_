@@ -8,52 +8,52 @@
         <form class="row g-3" id="form-prod" action="{% url 'productos:edicionProducto' %}" method="post" >{% csrf_token %}
             <div class="col-12">
             <input type="hidden" name="id" value="{{ producto.id }}">
-            <label for="nombre" class="form-label"
+            <label for="nombreProdRegister" class="form-label"
                 >Nombre del producto</label
             >
             <div class="input-group">
                 <input type="text" name="nombre" class="form-control" id="nombreProdRegister" value="{{producto.nombre}}" placeholder="Ingrese nombre del producto" required/>
             </div>
             </div>
-            <label for="nombre" class="labelTxt" id="nombreProdLabel"></label>
+            <label for="nombreProdRegister" class="labelTxt" id="nombreProdLabel"></label>
 
             <div class="col-12">
-            <label for="precioDeVenta" class="form-label">Precio de venta</label>
+            <label for="precioVentaRegister" class="form-label">Precio de venta</label>
             <div class="input-group">
                 <input type="text" name="precioDeVenta" class="form-control" id="precioVentaRegister" value="{{ producto.precioDeVenta|floatformat:2 }}" required/>
             </div>
             </div>
-            <label for="precioDeVenta" class="labelTxt" id="precioVentaLabel"></label>
+            <label for="precioVentaRegister" class="labelTxt" id="precioVentaLabel"></label>
 
             <div class="col-12">
-                <label for="precioDeCosto" class="form-label"
+                <label for="precioCostoRegister" class="form-label"
                 >Precio de costo</label>
                 <div class="input-group">
                 <input type="text" name="precioDeCosto" class="form-control" id="precioCostoRegister" value="{{producto.precioDeCosto|floatformat:2 }}" required/>
                 </div>
             </div>
-            <label for="precioDeCosto" class="labelTxt" id="precioCostoLabel"></label>
+            <label for="precioCostoRegister" class="labelTxt" id="precioCostoLabel"></label>
 
             <div class="col-12">
-                <label for="fechaDeElaboracion" class="form-label"
+                <label for="fechaElabRegister" class="form-label"
                 >Fecha de Elaboración</label>
                 <div class="input-group">
                 <input type="date" name="fechaDeElaboracion" class="form-control" id="fechaElabRegister" value="{{producto.fechaDeElaboracion|date:'Y-m-d'}}" required/>
                 </div>
             </div>
-            <label for="fechaDeElaboracion" class="labelTxt" id="fechaElabLabel"></label>
+            <label for="fechaElabRegister" class="labelTxt" id="fechaElabLabel"></label>
 
             <div class="col-12">
-                <label for="fechaDeVencimiento" class="form-label"
+                <label for="fechaVencRegister" class="form-label"
                 >Fecha de Vencimiento</label>
                 <div class="input-group">
                 <input type="date" name="fechaDeVencimiento" class="form-control" id="fechaVencRegister" value="{{producto.fechaDeVencimiento|date:'Y-m-d'}}" required/>
                 </div>
             </div>
-            <label for="fechaDeVencimiento" class="labelTxt" id="fechaVencLabel"></label>
+            <label for="fechaVencRegister" class="labelTxt" id="fechaVencLabel"></label>
 
             <div class="col-12">
-            <label for="categoria" class="form-label">Unidad de medida</label>
+            <label for="categoriaRegister" class="form-label">Categoría</label>
             <select name="categoria" id="categoriaRegister" required class="form-control">
                 {%if producto.categoria == 'panaderia'%}
                     <option value="{{producto.categoria}}">{{producto.categoria}}</option>
@@ -64,23 +64,40 @@
                 {% endif %}
             </select>
             </div>
-            <label for="categoria" class="labelTxt" id="categoriaLabel"></label>
+            <label for="categoriaRegister" class="labelTxt" id="categoriaLabel"></label>
 
             <div class="col-12">
-                <label for="cantidadDisponible" class="form-label">Cantidad disponible para la venta</label>
+                <label for="unidadDeMedidaRegister" class="form-label">Unidad de medida</label>
+                <select name="unidadDeMedida" id="unidadDeMedidaRegister" required class="form-control">
+                    <option selected disabled>{{producto.unidadDeMedida}}</option>
+                    <option value="kg">Kilogramos</option>
+                    <option value="g">Gramos</option>
+                    <option value="l">Litros</option>
+                    <option value="ml">Mililitros</option>
+                    <option value="u">Unidad</option>
+                    <option value="paq">Paquete</option>
+                    <option value="caja">Caja</option>
+                    <option value="taza">Taza</option>
+                    <option value="otro">Otro</option> 
+                </select>
+                </div>
+                <label for="unidadDeMedidaRegister" class="labelTxt" id="categoriaLabel"></label>
+
+            <div class="col-12">
+                <label for="cantidadDisponibleRegister" class="form-label">Cantidad disponible para la venta</label>
                 <div class="input-group">
                 <input type="number" name="cantidadDisponible" class="form-control" id="cantidadDisponibleRegister" value="{{producto.cantidadDisponible}}" required/>
                 </div>
             </div>
-            <label for="cantidadDisponible" class="labelTxt" id="cantidadDisponibleLabel"></label>
+            <label for="cantidadDisponibleRegister" class="labelTxt" id="cantidadDisponibleLabel"></label>
 
             <div class="col-12">
-                <label for="cantidadMinRequerida" class="form-label">Cantidad disponible para la venta</label>
+                <label for="cantidadMinRequeridaRegister" class="form-label">Cantidad disponible para la venta</label>
                 <div class="input-group">
                 <input type="number" name="cantidadMinRequerida" class="form-control" id="cantidadMinRequeridaRegister" value="{{producto.cantidadMinRequerida}}" required/>
                 </div>
             </div>
-            <label for="cantidadMinRequerida" class="labelTxt" id="cantidadMinRequeridaLabel"></label>
+            <label for="cantidadMinRequeridaRegister" class="labelTxt" id="cantidadMinRequeridaLabel"></label>
             
             <div class="col-12">
                 <button class="btn bg-primario w-100 mt-4" type="submit">Registrar</button>

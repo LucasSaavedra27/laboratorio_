@@ -46,7 +46,7 @@ class Venta(models.Model):
 class DetalleVenta(models.Model):
     producto = models.ForeignKey(Producto,on_delete=models.CASCADE,related_name='detalleProducto')
     venta = models.ForeignKey(Venta,on_delete=models.CASCADE,related_name='detalleVenta')
-    cantidad = models.PositiveIntegerField(blank=False, null=False)
+    cantidad = models.DecimalField(max_digits=10, decimal_places=2,blank=False, null=False)
     subTotal = models.DecimalField(max_digits=10, decimal_places=2,default=0)
     
     def save(self, *args, **kwargs):

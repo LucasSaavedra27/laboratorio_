@@ -29,7 +29,7 @@ def editarProducto(request,producto_id):
 
 def edicionProducto(request):
     if request.method == 'POST':  
-        producto_id = request.POST.get('id')  # Asegúrate de obtener el ID
+        producto_id = request.POST.get('id')
         producto = Producto.objects.get(id=producto_id)
         producto.nombre = request.POST['nombre']
         producto.precioDeVenta = request.POST['precioDeVenta']
@@ -37,6 +37,7 @@ def edicionProducto(request):
         producto.fechaDeElaboracion = request.POST['fechaDeElaboracion']
         producto.fechaDeVencimiento = request.POST['fechaDeVencimiento']
         producto.categoria = request.POST['categoria']
+        producto.unidadDeMedida = request.POST['unidadDeMedida']
         producto.cantidadDisponible = request.POST['cantidadDisponible']
         producto.cantidadMinRequerida = request.POST['cantidadMinRequerida']
         producto.save()  # Guarda los cambios en la base de datos
