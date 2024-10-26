@@ -64,11 +64,18 @@ def buscarProveedor(request):
 #---------------------------------------PEDIDOS--------------------------------------------------------
 def pedidos(request):
     pedidos = Pedido.objects.all()
+    form = FormularioPedido()
     mostrar_boton = True
+    
+    if request.method == 'POST':  # Si el formulario fue enviado
+        form = FormularioPedido(request.POST)
+        if form.is_valid():
+            form.save()  # Guarda el nuevo proveedor en la base de datos
+            return redirect('/pedidos') # Redirige a la misma página para actualizar la lista de proveedores
     
     if request.path == '/proveedores/buscar/':
         mostrar_boton = False
-    return render(request,'pedido/pedidos.html',{'pedidos':pedidos,'mostrar_boton': mostrar_boton})
+    return render(request,'pedido/pedidos.html',{'pedidos':pedidos, 'form': form,'mostrar_boton': mostrar_boton})
 
 def agregarPedido(request):
     if request.method == 'POST':

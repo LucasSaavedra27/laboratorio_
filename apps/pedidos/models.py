@@ -42,6 +42,11 @@ class DetallePedido(models.Model):
     observaciones = models.TextField()
     subTotal = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     
+    def save(self, *args, **kwargs):
+        # Calcular el subtotal basado en la cantidad y el precio del insumo
+        self.subTotal = self.cantidadPedida * self.insumos.precioInsumo  # Asegúrate de que Insumo tenga un campo `precio`
+        super().save(*args, **kwargs)
+    
     def __str__(self):
         return f"Detalle {self.id} - Insumo: {self.insumos} - Cantidad: {self.cantidadPedida}" 
     

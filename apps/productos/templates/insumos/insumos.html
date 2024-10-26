@@ -1,0 +1,158 @@
+{%extends 'base/base.html'%}
+{% load static %}
+
+{% block contenido %}
+<div class="container" id="container-tabla">
+    <div class="col-12">
+        <h2 class="text-center pb-3">Registro de Insumos</h2>
+        <div class="busqueda d-flex">
+            <form class="d-flex align-items-center justify-content-center" role="search" method="POST" action="{% url 'pedidos:buscarProveedor' %}">
+                {% csrf_token %}
+                <input
+                    class="form-control mb-3"
+                    type="search"
+                    placeholder="Buscar por dni"
+                    aria-label="buscar"
+                    name="busqueda" 
+                    value="{{ busqueda|default:'' }}" 
+                />
+                
+                <button class="btn" type="submit">
+                    <i class="fa-solid fa-magnifying-glass" style="font-size: 16px" title="Buscar"></i>
+                </button>
+                <a href="/insumos"><i class="fa-solid fa-rotate-left" title="Recargar página"></i></a>
+            </form>
+            
+            {% if mostrar_boton %}
+            <div class="btn-modal">
+                <button
+                    type="button"
+                    class="btn"
+                    data-bs-toggle="modal"
+                    data-bs-target="#exampleModal"
+                >
+                    <i
+                        class="fa-solid fa-square-plus"
+                        title="Agregar Insumo"
+                        style="font-size: 30px"
+                    >
+                    </i>
+                </button>
+            </div>
+            {% endif %}
+            <a class="expPdf" href="{% url 'pedidos:generarPDF' %}"
+            ><i class="fa-solid fa-file-pdf px-2" style="font-size: 25px"></i
+            >Exportar PDF</a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table">
+                <thead class="bg-table">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Unidad Medida</th>
+                        <th scope="col">Cantidad Disponible</th>
+                        <th scope="col">Cantidad Min Requerida</th>
+                        <th scope="col">Precio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for proveedor in proveedores %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>{{ proveedor.nombre }}</td>
+                        <td>{{ proveedor.apellido }}</td>
+                        <td>{{ proveedor.dni }}</td>
+                        <td>{{ proveedor.direccion }}</td>
+                        <td>{{ proveedor.telefono }}</td>
+                        <td>{{ proveedor.mail }}</td>
+                        {% if proveedor.estado == 'inactivo' %}
+                        <td style="background-color: #d81111;">{{ proveedor.estado }}</td>
+                        {% else %}
+                        <td>{{ proveedor.estado }}</td>
+                        {% endif %}
+                        <td>{{ proveedor.empresa }}</td>
+                        <td>               
+                            <a href="editar/{{proveedor.id}}"><i class="fa-solid fa-pen-to-square" title="Editar"></i></a>                 
+                            <a href="eliminar/{{proveedor.id}}"><i class="fa-solid fa-trash-can" title="Eliminar"></i></a>   
+                                        
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="10">No hay insumos disponibles.</td>
+                    </tr>
+                    {% endfor %}
+                    {% if mensaje %}
+                        <tr>
+                            <td colspan="10">
+                                <div class="alert alert-warning" role="alert">
+                                    {{ mensaje }}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Registrar Insumo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn w-100 mt-3 btn-addProv">Agregar</button>
+                    <button type="button" class="btn btncancelProv w-100 mt-2" data-bs-dismiss="modal" aria-label="Close">Cancelar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div
+    class="modal fade"
+    id="deleteModal"
+    tabindex="-1"
+    aria-labelledby="eliminarModal"
+    aria-hidden="true"
+>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="eliminarModal">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    ATENCIÓN
+                </h1>
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                ></button>
+            </div>
+            <div class="modal-body">¿Estás seguro de eliminar el registro?</div>
+            <div class="modal-footer">
+                <button
+                    type="button"
+                    class="btn bg-secundario"
+                    data-bs-dismiss="modal"
+                    id="btn-cancel"
+                >Cerrar
+                </button>
+                <button type="button" class="btn bg-primario" id="btn-del">
+                Eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

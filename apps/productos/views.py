@@ -3,8 +3,8 @@ import os
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from apps.productos.models import Producto
-from apps.productos.forms import FormularioProducto
+from apps.productos.models import Producto, Insumo
+from apps.productos.forms import FormularioProducto, FormularioInsumo
 from fpdf import FPDF
 from django.conf import settings
 
@@ -60,7 +60,23 @@ def buscarProducto(request):
 
     return render(request, 'productos/productos.html', {'productos': productos, 'busqueda': busqueda})
 
+#-------------------------------------INSUMOS----------------------------------------------------------
+def insumos(request):
+    insumos = Insumo.objects.all()  # Obtén todos los insumos de la base de datos
+    form = FormularioInsumo()
+    mostrar_boton = True
+    
+    if request.method == 'POST':  # Si el formulario fue enviado
+        form = FormularioInsumo(request.POST)
+        if form.is_valid():
+            form.save()  # Guarda el nuevo proveedor en la base de datos
+            return redirect('/productos/insumos') # Redirige a la misma página para actualizar la lista de proveedores
+    
+    if request.path == '/proveedores/buscar/':
+        mostrar_boton = False
+    return render(request, 'insumos/insumos.html', {'insumos': insumos, 'form': form,'mostrar_boton': mostrar_boton})
 
+#------------------------------------------------------------------------------------------------------
 def diccionario_colores(color): 
     colores = {
         'black' : (0,0,0), 
