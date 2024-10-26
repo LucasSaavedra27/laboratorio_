@@ -1,0 +1,68 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block contenido %}
+<div class="container" id="container-tabla">
+    <div class="col-12">
+        <h2 class="text-center pb-3">Registro de ventas</h2>
+        <div class="busqueda d-flex">
+            <form class="d-flex align-items-center justify-content-center" role="search" method="POST" action="#">
+                {% csrf_token %}
+                <input class="form-control mb-3" type="search" placeholder="Buscar por fecha de venta" aria-label="buscar" name="busqueda" value="{{ busqueda|default:'' }}" />
+                <button class="btn" type="submit">
+                    <i class="fa-solid fa-magnifying-glass" style="font-size: 16px"></i>
+                </button>
+                <a href="{%url 'ventas:ventas' %}"><i class="fa-solid fa-rotate-left"></i></a>
+            </form>
+   
+          <a href="{%url 'ventas:agregarVenta' %}"><i class="fa-solid fa-square-plus" title="Agregar venta" style="font-size: 30px"></i></a>
+
+          <a class="expPdf" href="#"><i class="fa-solid fa-file-pdf px-2" style="font-size: 25px"></i>Exportar PDF</a>
+
+        </div>
+    
+        <div class="table-responsive">
+            <table class="table">
+                <thead class="bg-table">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Fecha de venta</th>
+                        <th scope="col">Forma de pago</th>
+                        <th scope="col">Tipo de comprobante</th>
+                        <th scope="col">Cliente mayorista</th>
+                        <th scope="col">Total</th>
+                        <th scope="col">Empleado</th>
+                        <th scope="col">Detalle</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for venta in ventas %} 
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>{{ venta.fechaDeVenta }}</td>
+                        <td>{{ venta.formaDePago }}</td>
+                        <td>Factura {{ venta.tipoDeComprobante }}</td>
+                        {% if venta.clienteMayorista is None %}
+                            <td>Consumidor final</td>
+                        {% else %}
+                            <td>{{ venta.clienteMayorista.cuil }}</td>
+                        {%endif%}
+                        <td>${{ venta.total }}</td>
+                        <td>{{ venta.empleado.nombre }} {{ venta.empleado.apellido }}</td>
+                        <td>
+                            <a href="{% url 'ventas:verDetallesVenta' venta.id %}"><i class="fa-solid fa-eye" title="Ver detalles"></i></a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="10">No hay ventas disponibles.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+

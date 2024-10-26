@@ -447,3 +447,40 @@ form #form-busqueda {
   margin: 30px;
 }
 
+.contenedor-agregarProd,.contenedor-agregarVenta{
+  padding-top: 160px;
+}
+
+.card-agregarProd,.card-agregarVenta{
+  padding: 30px;
+  width: 30%;
+  border-radius: 30px;
+  background-color: #ffffff;
+  margin-bottom: 30px;
+
+}
+
+.btn-addProd,.btn-cancelProd,.btn-addVenta,.btn-cancelProd {
+  background-color: #a63348;
+  color: #f2f2f2;
+}
+
+.btn-addProd:hover,.btn-cancelProd:hover,.btn-addVenta:hover,.btn-cancelProd:hover{
+  background-color: #732036;
+  color: #000000;
+}
+
+.fa-square-plus,.fa-eye{
+  color: #a63348;
+}
+
+.errorlist, .fa-eye:hover{
+  color: #ff002f;
+}
+
+.btn-volver{
+  background-color: #a63348;
+  border-radius: 30px;
+  padding: 10px;
+  color: #ffffff;
+}

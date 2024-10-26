@@ -10,4 +10,5 @@ urlpatterns = [
     path('edicionProducto/',views.edicionProducto,name='edicionProducto'),
     path('buscarProducto/', views.buscarProducto, name='buscarProducto'),
     path('generarPDF/', views.generarPDF, name='generarPDF'),
+    path('agregarProducto/',views.agregarProducto, name='agregarProducto'),
 ]

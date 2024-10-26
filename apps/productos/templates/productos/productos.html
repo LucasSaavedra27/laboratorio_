@@ -1,152 +1,75 @@
-{%extends 'base/base.html'%}
+{% extends 'base/base.html' %}
 {% load static %}
 
 {% block contenido %}
 <div class="container" id="container-tabla">
     <div class="col-12">
-      <h2 class="text-center pb-3">Registro de Productos</h2>
-      <div class="busqueda d-flex">
-        <form class="d-flex align-items-center justify-content-center" role="search" method="POST" action="{% url 'productos:buscarProducto' %}">
-          {% csrf_token %}
-          <input
-              class="form-control mb-3"
-              type="search"
-              placeholder="Buscar por nombre del producto"
-              aria-label="buscar"
-              name="busqueda" 
-              value="{{ busqueda|default:'' }}" 
-          />
-          
-          <button class="btn" type="submit">
-              <i class="fa-solid fa-magnifying-glass" style="font-size: 16px"></i>
-          </button>
-          <a href="/productos"><i class="fa-solid fa-rotate-left"></i></a>
-      </form>
-        
-        <div class="btn-modal">
-          <button
-            type="button"
-            class="btn"
-            data-bs-toggle="modal"
-            data-bs-target="#exampleModal"
-          >
-            <i
-              class="fa-solid fa-square-plus"
-              title="Agregar producto"
-              style="font-size: 30px"
-            >
-            </i>
-          </button>
+        <h2 class="text-center pb-3">Registro de Productos</h2>
+        <div class="busqueda d-flex">
+            <form class="d-flex align-items-center justify-content-center" role="search" method="POST" action="{% url 'productos:buscarProducto' %}">
+                {% csrf_token %}
+                <input class="form-control mb-3" type="search" placeholder="Buscar por nombre del producto" aria-label="buscar" name="busqueda" value="{{ busqueda|default:'' }}" />
+                <button class="btn" type="submit">
+                    <i class="fa-solid fa-magnifying-glass" style="font-size: 16px"></i>
+                </button>
+                <a href="{% url 'productos:productos' %}"><i class="fa-solid fa-rotate-left"></i></a>
+            </form>
+   
+          <a href="{% url 'productos:agregarProducto' %}"><i class="fa-solid fa-square-plus" title="Agregar producto" style="font-size: 30px"></i></a>
+
+          <a class="expPdf" href="{% url 'productos:generarPDF' %}"><i class="fa-solid fa-file-pdf px-2" style="font-size: 25px"></i>Exportar PDF</a>
+
         </div>
-        <a class="expPdf" href="{% url 'productos:generarPDF' %}"
-          ><i class="fa-solid fa-file-pdf px-2" style="font-size: 25px"></i
-          >Exportar PDF</a
-        >
-      </div>
 
-      <div class="table-responsive">
-        <table class="table">
-          <thead class="bg-table">
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Nombre</th>
-              <th scope="col">$ venta</th>
-              <th scope="col">$ costo</th>
-              <th scope="col">Fecha de Elab.</th>
-              <th scope="col">Fecha de Venc.</th>
-              <th scope="col">Categoría</th>
-              <th scope="col">cantidad Disponible</th>
-              <th scope="col">cantidad mínima Req</th>
-              <th scope="col">Opciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for producto in productos %}
-            <tr>
-                <th scope="row">{{ forloop.counter }}</th>
-                <td>{{ producto.nombre }}</td>
-                <td>${{ producto.precioDeVenta }}</td>
-                <td>${{ producto.precioDeCosto }}</td>
-                <td>{{ producto.fechaDeElaboracion }}</td>
-                <td>{{ producto.fechaDeVencimiento }}</td>
-                <td>{{ producto.categoria }}</td>
-                {% if producto.cantidadDisponible <= producto.cantidadMinRequerida %}
-                  <td style="background-color: #d81111;">{{ producto.cantidadDisponible }}</td>
-                {% else %}
-                  <td>{{ producto.cantidadDisponible }}</td>
-                {% endif %}
-                <td>{{ producto.cantidadMinRequerida }}</td>
-                <td>               
-                    <a href="editarProducto/{{producto.id}}"><i class="fa-solid fa-pen-to-square" title="Editar" data-bs-toggle="modal" data-bs-target="#exampleModal"></i></a>                 
-                    <a href="eliminarProducto/{{producto.id}}"><i class="fa-solid fa-trash-can" title="Eliminar" data-bs-toggle="modal" data-bs-target="#deleteModal"></i></a>   
-                                   
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="10">No hay productos disponibles.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Agregar Producto</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form method="POST" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <button type="submit" class="btn btn-primary w-100 mt-3">Guardar Producto</button>
-                </form>
-            </div>
+        <div class="table-responsive">
+            <table class="table">
+                <thead class="bg-table">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">$ venta</th>
+                        <th scope="col">$ costo</th>
+                        <th scope="col">Fecha de Elab.</th>
+                        <th scope="col">Fecha de Venc.</th>
+                        <th scope="col">Categoría</th>
+                        <th scope="col">Unidad de medida</th>
+                        <th scope="col">Cantidad Disponible</th>
+                        <th scope="col">Cantidad mínima Req</th>
+                        <th scope="col">Opciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for producto in productos %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>{{ producto.nombre }}</td>
+                        <td>${{ producto.precioDeVenta }}</td>
+                        <td>${{ producto.precioDeCosto }}</td>
+                        <td>{{ producto.fechaDeElaboracion }}</td>
+                        <td>{{ producto.fechaDeVencimiento }}</td>
+                        <td>{{ producto.categoria }}</td>
+                        <td>{{ producto.unidadDeMedida }}</td>
+                        {% if producto.cantidadDisponible <= producto.cantidadMinRequerida %}
+                        <td style="background-color: #d81111;">{{ producto.cantidadDisponible }}</td>
+                        {% else %}
+                        <td>{{ producto.cantidadDisponible }}</td>
+                        {% endif %}
+                        <td>{{ producto.cantidadMinRequerida }}</td>
+                        <td>
+                            <a href="{% url 'productos:editarProducto' producto.id %}"><i class="fa-solid fa-pen-to-square" title="Editar" data-bs-toggle="modal" data-bs-target="#exampleModal"></i></a>
+                            <a href="{% url 'productos:eliminarProducto' producto.id %}"><i class="fa-solid fa-trash-can" title="Eliminar" data-bs-toggle="modal" data-bs-target="#deleteModal"></i></a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="10">No hay productos disponibles.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
 
-  <div
-    class="modal fade"
-    id="deleteModal"
-    tabindex="-1"
-    aria-labelledby="eliminarModal"
-    aria-hidden="true"
-  >
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="eliminarModal">
-            <i class="fa-solid fa-circle-exclamation"></i>
-            ATENCIÓN
-          </h1>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          ></button>
-        </div>
-        <div class="modal-body">¿Estás seguro de eliminar el registro?</div>
-        <div class="modal-footer">
-          <button
-            type="button"
-            class="btn bg-secundario"
-            data-bs-dismiss="modal"
-            id="btn-cancel"
-          >
-            Cerrar
-          </button>
-          <button type="button" class="btn bg-primario" id="btn-del">
-            Eliminar
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
 {% endblock %}
+

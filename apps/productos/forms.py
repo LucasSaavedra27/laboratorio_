@@ -1,3 +1,4 @@
+from decimal import Decimal,InvalidOperation
 from django import forms
 from .models import Producto
 
@@ -31,8 +32,8 @@ class FormularioProducto(forms.ModelForm):
         widgets = {
             
             'nombre': forms.TextInput(attrs={'class': 'form-control'}),
-            'precioDeVenta': forms.NumberInput(attrs={'class': 'form-control'}),
-            'precioDeCosto': forms.NumberInput(attrs={'class': 'form-control'}),
+            'precioDeVenta': forms.TextInput(attrs={'class': 'form-control'}),
+            'precioDeCosto': forms.TextInput(attrs={'class': 'form-control'}),
             'fechaDeElaboracion': forms.DateInput(attrs={'type': 'date','class': 'form-control'}),
             'fechaDeVencimiento': forms.DateInput(attrs={'type': 'date','class': 'form-control'}),
             'categoria': forms.Select(attrs={'class': 'form-control'}), 
@@ -66,4 +67,5 @@ class FormularioProducto(forms.ModelForm):
                 'required': 'Por favor ingresa la cantidad mínima requerida.',
             },
         }
+        
 

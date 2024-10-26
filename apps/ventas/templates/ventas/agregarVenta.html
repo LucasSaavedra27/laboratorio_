@@ -1,0 +1,71 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block contenido %}
+    <div class="contenedor-agregarVenta d-flex justify-content-center align-items-center">
+        <div class="card-agregarVenta">
+            <h3 class="text-center" style="color: #a63348;">Agregar una venta</h3>
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ ventaForm.as_p }}
+
+                <h3>Detalles de Venta</h3>
+                {{ detalleVentaFormset.management_form }}
+                
+                <!-- Contenedor para los detalles de venta -->
+                <div id="detalleVentaContainer">
+                    {% for form in detalleVentaFormset %}
+                        <div class="detalle-form">
+                            {{ form.as_p }}
+                            <h5 class="subtotal" id="detalleVenta-{{ forloop.counter0 }}-subtotal">Subtotal: $0.00</h5> <!-- Subtotal para cada detalle -->
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="">
+                    <button type="button" class="btn btn-secondary mt-3" id="btn-addProd">Agregar producto</button>
+                    <h4 class="total">Total: $</h4>
+                </div>
+                <button type="submit" class="btn btn-addVenta w-100 mt-3">Guardar Venta</button>
+                <a href="{% url 'ventas:ventas' %}" class="btn btn-cancelProd w-100 mt-2">Cancelar</a>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('btn-addProd').addEventListener('click', function() {
+            const formsetContainer = document.getElementById('detalleVentaContainer');// se obtiene el contenedor de los formularios de detall de venta
+            const totalForms = document.getElementById('id_detalleVenta-TOTAL_FORMS'); 
+
+            // Verificamos que el campo TOTAL_FORMS existe
+            if (totalForms) {
+                const contadorForm = parseInt(totalForms.value);
+                
+                const nuevoForm = formsetContainer.children[contadorForm - 1].cloneNode(true);// se clona el último formulario
+
+                const inputs = nuevoForm.getElementsByTagName('input');//se obtienen los inputs del formulario para limpiarlos
+                for (let input of inputs) { // Limpia los valores del nuevo formulario
+                    input.value = '';
+                }
+                
+                nuevoForm.querySelectorAll('input, select').forEach((element) => { // vamos a Actualizar los nombres y IDs de los campos del nuevo formulario (lo vemos en el html)
+                    element.name = element.name.replace(/-\d+-/, `-${contadorForm}-`);
+                    element.id = element.id.replace(/-\d+-/, `-${contadorForm}-`);
+                });
+
+                // Incrementa el contador de formularios
+                totalForms.value = contadorForm + 1;
+
+                // Agrega el nuevo formulario al contenedor
+                formsetContainer.appendChild(nuevoForm);
+            } else {
+                console.error('El elemento TOTAL_FORMS no se encuentra en el DOM.');
+            }
+        });
+    });
+</script>
+{% endblock %}
+
