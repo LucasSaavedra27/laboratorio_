@@ -27,16 +27,23 @@ class Pedido(models.Model):
     estadoPedido = models.CharField(max_length=10,choices=ESTADO_PEDIDO,blank=False,null=False)
     precioTotalDelPedido = models.DecimalField(max_digits=10, decimal_places=2,blank=False,null=False)
     
+    def save(self, *args, **kwargs):
+        # Calcular total del pedido sumando los subtotales de los detalles
+        self.precioTotalDelPedido = sum(detalle.subTotal for detalle in self.detalles.all())
+        super().save(*args, **kwargs)
+    
     def __str__(self):
         return f"{self.fechaPedido} {self.estadoPedido}"
     
 class DetallePedido(models.Model):
+    pedido = models.ForeignKey(Pedido,null=True, on_delete=models.CASCADE, related_name='detalles')
     insumos = models.ForeignKey(Insumo,on_delete=models.CASCADE,related_name='insumos')
     cantidadPedida = models.PositiveIntegerField(blank=False,null=False)
     observaciones = models.TextField()
+    subTotal = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     
     def __str__(self):
-        return 
+        return f"Detalle {self.id} - Insumo: {self.insumos} - Cantidad: {self.cantidadPedida}" 
     
 class RecepcionPedido(models.Model):
     empleado = models.ForeignKey(Empleado,on_delete=models.CASCADE,related_name='empleado')
@@ -46,7 +53,7 @@ class RecepcionPedido(models.Model):
         return f"{self.empleado.nombre} {self.empleado.apellido} {self.fechaDeRecepcion}"
     
 class DetalleRecepcionPedido(models.Model):
-    detallePedido = models.ForeignKey(DetallePedido,on_delete=models.CASCADE,related_name='detallePedido')
+    detallePedido = models.ForeignKey(DetallePedido,on_delete=models.CASCADE,related_name='detalleRecepcionPedido')
     
     ESTADO = [
         ('completo','Completo'),

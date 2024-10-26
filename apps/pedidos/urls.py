@@ -12,4 +12,6 @@ urlpatterns = [
     path('proveedores/buscar/editar/<proveedor_id>',views.editarProveedor,name='editarProveedorBuscado'),
     path('proveedores/buscar/eliminar/<proveedor_id>',views.eliminarProveedor,name='editarProveedorBuscado'),
     path('proveedores/generarPDF/', views.generarPDF, name='generarPDF'),
+    
+    path('pedidos/',views.pedidos,name='pedidos'),
 ]

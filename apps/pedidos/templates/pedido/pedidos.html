@@ -4,7 +4,7 @@
 {% block contenido %}
 <div class="container" id="container-tabla">
     <div class="col-12">
-        <h2 class="text-center pb-3">Registro de Proveedores</h2>
+        <h2 class="text-center pb-3">Registro de Pedidos</h2>
         <div class="busqueda d-flex">
             <form class="d-flex align-items-center justify-content-center" role="search" method="POST" action="{% url 'pedidos:buscarProveedor' %}">
                 {% csrf_token %}
@@ -20,7 +20,7 @@
                 <button class="btn" type="submit">
                     <i class="fa-solid fa-magnifying-glass" style="font-size: 16px" title="Buscar"></i>
                 </button>
-                <a href="/proveedores"><i class="fa-solid fa-rotate-left" title="Recargar página"></i></a>
+                <a href="/pedidos"><i class="fa-solid fa-rotate-left" title="Recargar página"></i></a>
             </form>
             
             {% if mostrar_boton %}
@@ -33,7 +33,7 @@
                 >
                     <i
                         class="fa-solid fa-square-plus"
-                        title="Agregar Proveedor"
+                        title="Agregar Pedido"
                         style="font-size: 30px"
                     >
                     </i>
@@ -50,42 +50,35 @@
                 <thead class="bg-table">
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Nombre</th>
-                        <th scope="col">Apellido</th>
-                        <th scope="col">Dni</th>
-                        <th scope="col">Domicilio</th>
-                        <th scope="col">Teléfono</th>
-                        <th scope="col">Email</th>
+                        <th scope="col">Dni Proveedor</th>
+                        <th scope="col">Fecha Pedido</th>
                         <th scope="col">Estado</th>
-                        <th scope="col">Empresa</th>
-                        <th scope="col">Opciones</th>
+                        <th scope="col">Total</th>
+                        <th scope="col">Detalle</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for proveedor in proveedores %}
+                    {% for pedido in pedidos %}
                     <tr>
                         <th scope="row">{{ forloop.counter }}</th>
-                        <td>{{ proveedor.nombre }}</td>
-                        <td>{{ proveedor.apellido }}</td>
-                        <td>{{ proveedor.dni }}</td>
-                        <td>{{ proveedor.direccion }}</td>
-                        <td>{{ proveedor.telefono }}</td>
-                        <td>{{ proveedor.mail }}</td>
-                        {% if proveedor.estado == 'inactivo' %}
-                        <td style="background-color: #d81111;">{{ proveedor.estado }}</td>
+                        <td>{{ pedido.proveedor.dni }}</td>
+                        <td>{{ pedido.fechaPedido }}</td>
+                        {% if proveedor.estadoPedido == 'recibido' %}
+                        <td style="background-color: #10c610;">{{ proveedor.estado }}</td>
                         {% else %}
                         <td>{{ proveedor.estado }}</td>
                         {% endif %}
-                        <td>{{ proveedor.empresa }}</td>
+                        <td>{{ pedido.precioTotalDelPedido }}</td>
+                        <td>{{ pedido.detallePedido }}</td>
                         <td>               
-                            <a href="editar/{{proveedor.id}}"><i class="fa-solid fa-pen-to-square" title="Editar"></i></a>                 
-                            <a href="eliminar/{{proveedor.id}}"><i class="fa-solid fa-trash-can" title="Eliminar"></i></a>   
+                            <a href="editar/{{pedido.id}}"><i class="fa-solid fa-pen-to-square" title="Editar"></i></a>                 
+                            <a href="eliminar/{{pedido.id}}"><i class="fa-solid fa-trash-can" title="Eliminar"></i></a>   
                                         
                         </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="10">No hay proveedores disponibles.</td>
+                        <td colspan="10">No hay pedidos disponibles.</td>
                     </tr>
                     {% endfor %}
                     {% if mensaje %}
@@ -107,7 +100,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Informacion Proveedor</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Registro Pedido</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">

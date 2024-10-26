@@ -1,13 +1,14 @@
 import os
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from apps.pedidos.models import Proveedor
-from apps.pedidos.forms import FormularioProveedor
+from apps.pedidos.models import Proveedor, Pedido
+from apps.pedidos.forms import FormularioProveedor, FormularioPedido, DetallePedidoFormSet
 from fpdf import FPDF
 from django.conf import settings
 from datetime import datetime
 from django.http import HttpResponse
 
+#-------------------------------------PROVEEDORES----------------------------------------------------------
 @login_required
 def proveedores(request):
     proveedores = Proveedor.objects.all()
@@ -59,6 +60,44 @@ def buscarProveedor(request):
         proveedor = proveedor.filter(dni__icontains=busqueda)  # Filtra los productos por nombre
 
     return render(request, 'proveedor/proveedores.html', {'proveedores': proveedor, 'busqueda': busqueda})
+
+#---------------------------------------PEDIDOS--------------------------------------------------------
+def pedidos(request):
+    pedidos = Pedido.objects.all()
+    mostrar_boton = True
+    
+    if request.path == '/proveedores/buscar/':
+        mostrar_boton = False
+    return render(request,'pedido/pedidos.html',{'pedidos':pedidos,'mostrar_boton': mostrar_boton})
+
+def agregarPedido(request):
+    if request.method == 'POST':
+        pedidoForm = FormularioPedido(request.POST)
+        detallePedidoFormset = DetallePedidoFormSet(request.POST)
+        
+        if pedidoForm.is_valid() and detallePedidoFormset.is_valid():
+            pedido = pedidoForm.save()  # guardarcel pedido    
+            totalPedido = 0
+            
+            for detalle in detallePedidoFormset: 
+                detalle = detalle.save(commit=False) # No guardar todavía los detalles
+                detalle.pedido = pedido # Asociamos el detalle al pedido
+                
+                # Calculamos el subtotal usando la cantidad pedida y el precio del insumo
+                detalle.subTotal = detalle.cantidadPedida * detalle.insumos.precioInsumo  # Asegúrate de que Insumo tenga un campo `precio`
+                totalPedido += detalle.subTotal
+                detalle.save()
+            
+            pedido.precioTotalDelPedido = totalPedido
+            pedido.save()
+            return redirect('/pedidos')
+    else:
+        pedidoForm = FormularioPedido()
+        detallePedidoFormset = DetallePedidoFormSet()
+
+    return render(request, 'pedido/agregarPedido.html', {'pedidoForm': pedidoForm,'detallePedidoFormset': detallePedidoFormset,})
+
+#-----------------------------------------------------------------------------------------------
 
 def diccionario_colores(color): 
     colores = {

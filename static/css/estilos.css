@@ -460,12 +460,12 @@ form #form-busqueda {
 
 }
 
-.btn-addProd,.btn-cancelProd,.btn-addVenta,.btn-cancelProd {
+.btn-addProd,.btn-cancelProd,.btn-addVenta,.btn-cancelProd,.btn-addProv,.btncancelProv{
   background-color: #a63348;
   color: #f2f2f2;
 }
 
-.btn-addProd:hover,.btn-cancelProd:hover,.btn-addVenta:hover,.btn-cancelProd:hover{
+.btn-addProd:hover,.btn-cancelProd:hover,.btn-addVenta:hover,.btn-cancelProd:hover,.btn-addProv:hover,.btncancelProv:hover{
   background-color: #732036;
   color: #000000;
 }

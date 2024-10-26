@@ -47,6 +47,7 @@ class Insumo(models.Model):
     unidadDeMedida = models.CharField(max_length=10,choices=UNIDADES_MEDIDA,blank=False,null=False)
     cantidadDisponible = models.PositiveIntegerField(blank=False,null=False)
     cantidadMinRequerida = models.PositiveIntegerField(blank=False,null=False)
+    precioInsumo = models.DecimalField(max_digits=10, decimal_places=2, blank=False, null=True, default=0.0)
     
     def __str__(self):
         return self.nombre
