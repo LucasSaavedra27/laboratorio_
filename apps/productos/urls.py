@@ -13,4 +13,11 @@ urlpatterns = [
     path('agregarProducto/',views.agregarProducto, name='agregarProducto'),
     
     path('insumos/',views.insumos,name='insumos'),
+    path('insumos/editar/<insumo_id>',views.editarInsumo,name='editarInsumo'), #mandar plantilla del insum a editar
+    path('insumos/edicion/',views.edicionInsumo,name='edicionInsumo'),
+    path('insumos/eliminar/<insumo_id>',views.eliminarInsumo,name='eliminarInsumo'),
+    path('insumos/buscar/', views.buscarInsumo, name='buscarInsumo'),
+    path('insumos/buscar/editar/<insumo_id>',views.editarInsumo,name='editarInsumoBuscado'),
+    path('insumos/buscar/eliminar/<insumo_id>',views.eliminarInsumo,name='eliminarInsumoBuscado'),
+    path('insumos/generarPDF/', views.generarPDFInsumoFaltante, name='generarPDFInsumoFaltante'),
 ]

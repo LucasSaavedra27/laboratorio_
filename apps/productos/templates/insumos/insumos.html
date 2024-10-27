@@ -6,12 +6,12 @@
     <div class="col-12">
         <h2 class="text-center pb-3">Registro de Insumos</h2>
         <div class="busqueda d-flex">
-            <form class="d-flex align-items-center justify-content-center" role="search" method="POST" action="{% url 'pedidos:buscarProveedor' %}">
+            <form class="d-flex align-items-center justify-content-center" role="search" method="POST" action="{% url 'productos:buscarInsumo' %}">
                 {% csrf_token %}
                 <input
                     class="form-control mb-3"
                     type="search"
-                    placeholder="Buscar por dni"
+                    placeholder="Buscar por nombre"
                     aria-label="buscar"
                     name="busqueda" 
                     value="{{ busqueda|default:'' }}" 
@@ -20,7 +20,7 @@
                 <button class="btn" type="submit">
                     <i class="fa-solid fa-magnifying-glass" style="font-size: 16px" title="Buscar"></i>
                 </button>
-                <a href="/insumos"><i class="fa-solid fa-rotate-left" title="Recargar página"></i></a>
+                <a href="/productos/insumos"><i class="fa-solid fa-rotate-left" title="Recargar página"></i></a>
             </form>
             
             {% if mostrar_boton %}
@@ -40,7 +40,7 @@
                 </button>
             </div>
             {% endif %}
-            <a class="expPdf" href="{% url 'pedidos:generarPDF' %}"
+            <a class="expPdf" href="{% url 'productos:generarPDFInsumoFaltante' %}"
             ><i class="fa-solid fa-file-pdf px-2" style="font-size: 25px"></i
             >Exportar PDF</a>
         </div>
@@ -55,27 +55,33 @@
                         <th scope="col">Cantidad Disponible</th>
                         <th scope="col">Cantidad Min Requerida</th>
                         <th scope="col">Precio</th>
+                        <th scope="col">Opciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for proveedor in proveedores %}
+                    {% for insumo in insumos %}
                     <tr>
                         <th scope="row">{{ forloop.counter }}</th>
-                        <td>{{ proveedor.nombre }}</td>
-                        <td>{{ proveedor.apellido }}</td>
-                        <td>{{ proveedor.dni }}</td>
-                        <td>{{ proveedor.direccion }}</td>
-                        <td>{{ proveedor.telefono }}</td>
-                        <td>{{ proveedor.mail }}</td>
-                        {% if proveedor.estado == 'inactivo' %}
-                        <td style="background-color: #d81111;">{{ proveedor.estado }}</td>
+                        <td>{{ insumo.nombre }}</td>
+                        {% if insumo.unidadDeMedida == 'kg' %}<td>Kilogramos</td>{% endif %}
+                        {% if insumo.unidadDeMedida == 'g' %}<td>Gramos</td>{% endif %}
+                        {% if insumo.unidadDeMedida == 'l' %}<td>Litros</td>{% endif %}
+                        {% if insumo.unidadDeMedida == 'ml' %}<td>Mililitros</td>{% endif %}
+                        {% if insumo.unidadDeMedida == 'u' %}<td>Unidades</td>{% endif %}
+                        {% if insumo.unidadDeMedida == 'paq' %}<td>Paquete</td>{% endif %}
+                        {% if insumo.unidadDeMedida == 'caja' %}<td>Caja</td>{% endif %}
+                        {% if insumo.unidadDeMedida == 'taza' %}<td>Taza</td>{% endif %}
+                        {% if insumo.unidadDeMedida == 'otro' %}<td>Otro</td>{% endif %}
+                        {% if insumo.cantidadDisponible < insumo.cantidadMinRequerida %}
+                        <td style="background-color: #d81111;">{{ insumo.cantidadDisponible }}</td>
                         {% else %}
-                        <td>{{ proveedor.estado }}</td>
+                        <td>{{ insumo.cantidadDisponible }}</td>
                         {% endif %}
-                        <td>{{ proveedor.empresa }}</td>
+                        <td>{{ insumo.cantidadMinRequerida }}</td>
+                        <td>{{ insumo.precioInsumo }}</td>
                         <td>               
-                            <a href="editar/{{proveedor.id}}"><i class="fa-solid fa-pen-to-square" title="Editar"></i></a>                 
-                            <a href="eliminar/{{proveedor.id}}"><i class="fa-solid fa-trash-can" title="Eliminar"></i></a>   
+                            <a href="editar/{{insumo.id}}"><i class="fa-solid fa-pen-to-square" title="Editar"></i></a>                 
+                            <a href="eliminar/{{insumo.id}}"><i class="fa-solid fa-trash-can" title="Eliminar"></i></a>   
                                         
                         </td>
                     </tr>

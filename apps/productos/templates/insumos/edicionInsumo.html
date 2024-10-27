@@ -1,0 +1,66 @@
+{%extends 'base/base.html'%}
+{% load static %}
+
+{% block contenido %}
+
+<div class="contenedor-formProd d-flex justify-content-center">
+    <div class="card-formProd">
+        <form class="row g-3" id="form-prod" action="{% url 'productos:edicionInsumo' %}" method="post" >{% csrf_token %}
+            <div class="col-12">
+                <input type="hidden" name="id" value="{{ insumo.id }}">
+                <label for="nombre" class="form-label">Nombre</label>
+                <div class="input-group">
+                    <input type="text" name="nombre" class="form-control" id="nombreInsumoRegister" value="{{insumo.nombre}}" placeholder="Nombre del insumo" required/>
+                </div>
+            </div>
+            <label for="nombre" class="labelTxt" id="nombreInsumoLabel"></label>
+
+            <div class="col-12">
+                <label for="unidadMedida" class="form-label">Unidad de Medida</label>
+                <select name="unidadDeMedida" id="unidadMedidaRegister" required class="form-control">
+                    <option value="kg" {% if insumo.unidadDeMedida == 'kg' %}selected{% endif %}>Kilogramos</option>
+                    <option value="g" {% if insumo.unidadDeMedida == 'g' %}selected{% endif %}>Gramos</option>
+                    <option value="l" {% if insumo.unidadDeMedida == 'l' %}selected{% endif %}>Litros</option>
+                    <option value="ml" {% if insumo.unidadDeMedida == 'ml' %}selected{% endif %}>Mililitros</option>
+                    <option value="u" {% if insumo.unidadDeMedida == 'u' %}selected{% endif %}>Unidades</option>
+                    <option value="paq" {% if insumo.unidadDeMedida == 'paq' %}selected{% endif %}>Paquete</option>
+                    <option value="caja" {% if insumo.unidadDeMedida == 'caja' %}selected{% endif %}>Caja</option>
+                    <option value="taza" {% if insumo.unidadDeMedida == 'taza' %}selected{% endif %}>Taza</option>
+                    <option value="otro" {% if insumo.unidadDeMedida == 'otro' %}selected{% endif %}>Otro</option>
+                </select>
+            </div>
+            <label for="unidadMedida" class="labelTxt" id="unidadMedidaRegisterLabel"></label>
+            
+
+            <div class="col-12">
+                <label for="cantidadDisponible" class="form-label">Cantidad Disponible</label>
+                <div class="input-group">
+                    <input type="number" name="cantidadDisponible" class="form-control" id="cantDisponibleRegister" value="{{insumo.cantidadDisponible}}" required/>
+                </div>
+            </div>
+            <label for="cantidadDisponible" class="labelTxt" id="cantDisponibleRegisterLabel"></label>
+
+            <div class="col-12">
+                <label for="cantidadMinRequerida" class="form-label">Cantidad Mínima Requerida</label>
+                <div class="input-group">
+                    <input type="number" name="cantidadMinRequerida" class="form-control" id="cantMinRequeridaRegister" value="{{insumo.cantidadMinRequerida}}" required/>
+                </div>
+            </div>
+            <label for="cantidadMinRequerida" class="labelTxt" id="cantMinRequeridaRegisterLabel"></label>
+
+            <div class="col-12">
+                <label for="precioInsumo" class="form-label">Precio Compra</label>
+                <div class="input-group">
+                    <input type="text" name="precioInsumo" class="form-control" id="precioCompraRegister" value="{{insumo.precioInsumo}}" required/>
+                </div>
+            </div>
+            <label for="precioInsumo" class="labelTxt" id="precioCompraLabel"></label>
+            
+            <div class="col-12">
+                <button class="btn bg-primario w-100 mt-4" type="submit">Registrar</button>
+                <button class="btn bg-secundario w-100 mt-1" type="reset">Restablecer valores</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
