@@ -1,6 +1,6 @@
 from django.forms.models import inlineformset_factory
 from django import forms
-from .models import Venta,DetalleVenta
+from .models import ClienteMayorista, Venta,DetalleVenta
 
 class FormularioVenta(forms.ModelForm):
     class Meta:
@@ -55,5 +55,25 @@ DetalleVentaFormSet = inlineformset_factory(
     can_delete=True  # permite borrar el formulario
 )
 
+class FormularioMayorista(forms.ModelForm):
+    class Meta:
+        model = ClienteMayorista
+        fields = ['nombre', 'apellido','cuil', 'direccion','telefono', 'mail']
+        labels = {
+            'nombre': 'Nombre',
+            'apellido': 'Apellido',
+            'cuil': 'CUIL',
+            'direccion': 'Dirección',
+            'telefono': 'Teléfono',
+            'mail': 'Email',
+        }
+        widgets = {
+            'nombre': forms.TextInput(attrs={'class': 'form-control'}),
+            'apellido': forms.TextInput(attrs={'class': 'form-control'}),
+            'cuil': forms.TextInput(attrs={'class': 'form-control','maxlength': '13'}),
+            'direccion': forms.TextInput(attrs={'class': 'form-control'}),
+            'telefono': forms.TextInput(attrs={'class': 'form-control'}),
+            'mail': forms.TextInput(attrs={'class': 'form-control'}),
+        }
 
 

@@ -52,7 +52,7 @@ def verDetallesVenta(request,venta_id):
     
 
 from django.shortcuts import render
-from .models import Venta
+from .models import ClienteMayorista, Venta
 
 def buscarVentas(request):
     ventas = Venta.objects.all()
@@ -72,12 +72,6 @@ def buscarVentas(request):
     return render(request, 'ventas/ventas.html', {'ventas': ventas, 'fecha_inicio': fecha_inicio, 'fecha_fin': fecha_fin})
 
 
-from datetime import datetime
-import os
-from django.conf import settings
-from django.http import HttpResponse
-from .models import Venta
-from fpdf import FPDF
 
 def diccionario_colores(color): 
     colores = {
