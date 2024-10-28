@@ -39,10 +39,16 @@
                     </i>
                 </button>
             </div>
+            <a class="expPdf" href="{% url 'pedidos:generarPDFPedConfir' %}?fecha={{ busqueda }}%}"
+            ><i class="fa-solid fa-file-pdf px-2" style="font-size: 25px"></i
+            >Exportar PDF</a>
             {% endif %}
+
+            {% if mostrar_botonPdf %}
             <a class="expPdf" href="{% url 'pedidos:generarPDFPedidos' %}?fecha={{ busqueda }}%}"
             ><i class="fa-solid fa-file-pdf px-2" style="font-size: 25px"></i
             >Exportar PDF</a>
+            {% endif %}
         </div>
 
         <div class="table-responsive">

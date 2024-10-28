@@ -68,7 +68,7 @@ def buscarProveedor(request):
 def pedidos(request):
     pedidos = Pedido.objects.all()  # Obtener todos los pedidos
     mostrar_boton = True  # Variable para controlar la visibilidad del botón
-    
+    mostrar_botonPdf = False
     # Obtener todos los insumos y sus precios
     insumos_dict = {insumo.id: insumo.precioInsumo for insumo in Insumo.objects.all()}
     
@@ -108,6 +108,7 @@ def pedidos(request):
         'detallePedidoFormset': detallePedidoFormset,
         'pedidos': pedidos,
         'mostrar_boton': mostrar_boton,
+        'mostrar_botonPdf':mostrar_botonPdf,
         'insumos_dict': insumos_dict,  # Pasar los precios de los insumos
     })
     
@@ -119,7 +120,7 @@ def verDetallePedido(request,pedido_id):
 def buscarPedidoPorFecha(request):
     busqueda = request.POST.get('busqueda')  # Obtiene el término de búsqueda de la query
     pedidos = Pedido.objects.all()  # Obtiene todos los pedidos por defecto
-
+    mostrar_botonPdf = True
     if busqueda:  # Si hay un término de búsqueda
         try:
             fecha_busqueda = datetime.strptime(busqueda, '%d-%m-%Y').date()
@@ -127,7 +128,7 @@ def buscarPedidoPorFecha(request):
             request.session['pedidos_filtrados'] = busqueda
         except ValueError:
             pedidos = Pedido.objects.none()
-    return render(request, 'pedido/pedidos.html', {'pedidos': pedidos, 'busqueda': busqueda})
+    return render(request, 'pedido/pedidos.html', {'pedidos': pedidos, 'busqueda': busqueda, 'mostrar_botonPdf': mostrar_botonPdf})
 
 class PDFPedido(FPDF):
     def header(self):
@@ -230,6 +231,62 @@ def generarPDFPedidosPorFecha(request):
     # Preparar la respuesta
     response = HttpResponse(pdf.output(dest='S').encode('latin1'), content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="reportePedidoSegunFecha.pdf"'
+    return response
+
+def generarPDFPedidosConfirmados(request):
+    # Crear un objeto FPDF
+    pdf = PDFPedido()
+    pdf.add_page()
+    
+    pedidos = Pedido.objects.filter(estadoPedido='confirmado')
+    pdf.cell(w=0, h=5, txt=f'ESTADO: CONFIRMADO', border=0, ln=2, align='C', fill=0)
+    # Verificar si hay pedidos
+    if pedidos.exists():
+        for pedido in pedidos:
+            bcol_set(pdf, 'red')  # Color de fondo para títulos
+            tcol_set(pdf, 'white')
+            pdf.set_font("Arial", "B", 12)
+            # Dibujar la cabecera del pedido
+            pdf.cell(50, 10, "Pedido n°", 1, 0, 'C', fill=True)
+            pdf.cell(60, 10, "Proveedor", 1, 0, 'C', fill=True)
+            pdf.cell(40, 10, "Estado", 1, 0, 'C', fill=True)
+            pdf.cell(40, 10, "Total", 1, 1, 'C', fill=True)
+            
+            tcol_set(pdf, 'black')
+            pdf.set_font("Arial", "", 12)
+            # Dibujar la datos del pedido
+            pdf.cell(50, 10, str(pedido.id), 1, 0, 'C', fill=False)
+            pdf.cell(60, 10, str(pedido.proveedor), 1, 0, 'C', fill=False)
+            pdf.cell(40, 10, pedido.estadoPedido, 1, 0, 'C', fill=False)
+            pdf.cell(40, 10, str(pedido.precioTotalDelPedido), 1, 1, 'C', fill=False)
+
+            bcol_set(pdf, 'red')  # Color de fondo para títulos
+            tcol_set(pdf, 'white')
+            pdf.set_font("Arial", "B", 12)
+            # Cabecera de los detalles para cada pedido
+            pdf.cell(50, 10, "Insumo", 1, 0, 'C', fill=True)
+            pdf.cell(60, 10, "Precio", 1, 0, 'C', fill=True)
+            pdf.cell(40, 10, "Cantidad", 1, 0, 'C', fill=True)
+            pdf.cell(40, 10, "Subtotal", 1, 1, 'C', fill=True)
+
+            tcol_set(pdf, 'black')
+            pdf.set_font("Arial", "", 12)
+            # Detalles del pedido
+            detalles = DetallePedido.objects.filter(pedido=pedido)
+            for detalle in detalles:
+                pdf.cell(50, 10, detalle.insumos.nombre, 1, 0, 'C', fill=False)
+                pdf.cell(60, 10, str(detalle.insumos.precioInsumo), 1, 0, 'C', fill=False)
+                pdf.cell(40, 10, str(detalle.cantidadPedida), 1, 0, 'C', fill=False)
+                pdf.cell(40, 10, str(detalle.subTotal), 1, 1, 'C', fill=False)
+                
+            pdf.cell(0, 10, '', 0, 1)  # Espacio entre diferentes pedidos
+
+    else:
+        pdf.cell(0, 10, "No hay pedidos disponibles.", 0, 1, 'C')
+
+    # Preparar la respuesta
+    response = HttpResponse(pdf.output(dest='S').encode('latin1'), content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="reportePedidosConfirmados.pdf"'
     return response
 
 #-----------------------------------------------------------------------------------------------
