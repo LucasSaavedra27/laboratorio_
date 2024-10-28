@@ -80,19 +80,14 @@ class FormularioPedido(forms.ModelForm):
             'estadoPedido',  
         ]
         labels = {
-            'proveedor': 'Dni Proveedor',
+            'proveedor': 'Proveedor',
             'fechaPedido': 'Fecha Pedido',
             'estadoPedido': 'Estado',
-        }
-        CATEGORIA_CHOICES = [
-            ('recibido', 'Recibido'),
-            ('pendiente', 'Pendiente'),
-        ]   
+        } 
         widgets = {
-            
-            'proveedor': forms.TextInput(attrs={'class': 'form-control'}),
-            'fechaPedido': forms.TextInput(attrs={'class': 'form-control'}),
-            'estadoPedido': forms.TextInput(attrs={'class': 'form-control'}),
+            'proveedor': forms.Select(attrs={'class': 'form-control'}),
+            'fechaPedido': forms.DateInput(attrs={'type': 'date','class': 'form-control'}),
+            'estadoPedido': forms.Select(attrs={'class': 'form-control'}),
         }
         
         error_messages = {

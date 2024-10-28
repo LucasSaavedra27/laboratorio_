@@ -2,6 +2,7 @@ import os
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from apps.pedidos.models import Proveedor, Pedido
+from apps.productos.models import Insumo
 from apps.pedidos.forms import FormularioProveedor, FormularioPedido, DetallePedidoFormSet
 from fpdf import FPDF
 from django.conf import settings
@@ -63,46 +64,45 @@ def buscarProveedor(request):
 
 #---------------------------------------PEDIDOS--------------------------------------------------------
 def pedidos(request):
-    pedidos = Pedido.objects.all()
-    form = FormularioPedido()
-    mostrar_boton = True
-    
-    if request.method == 'POST':  # Si el formulario fue enviado
-        form = FormularioPedido(request.POST)
-        if form.is_valid():
-            form.save()  # Guarda el nuevo proveedor en la base de datos
-            return redirect('/pedidos') # Redirige a la misma página para actualizar la lista de proveedores
-    
-    if request.path == '/proveedores/buscar/':
-        mostrar_boton = False
-    return render(request,'pedido/pedidos.html',{'pedidos':pedidos, 'form': form,'mostrar_boton': mostrar_boton})
+    pedidos = Pedido.objects.all()  # Obtener todos los pedidos
+    mostrar_boton = True  # Variable para controlar la visibilidad de un botón
 
-def agregarPedido(request):
+    # Obtener todos los insumos y sus precios
+    insumos_dict = {insumo.id: insumo.precioInsumo for insumo in Insumo.objects.all()}
+    
     if request.method == 'POST':
         pedidoForm = FormularioPedido(request.POST)
         detallePedidoFormset = DetallePedidoFormSet(request.POST)
-        
+
         if pedidoForm.is_valid() and detallePedidoFormset.is_valid():
-            pedido = pedidoForm.save()  # guardarcel pedido    
+            pedido = pedidoForm.save()  # Guardar el pedido
             totalPedido = 0
             
-            for detalle in detallePedidoFormset: 
-                detalle = detalle.save(commit=False) # No guardar todavía los detalles
-                detalle.pedido = pedido # Asociamos el detalle al pedido
+            # Guardar cada detalle del pedido
+            for detalle in detallePedidoFormset:
+                detalle = detalle.save(commit=False)  # No guardar aún
+                detalle.pedido = pedido  # Asociar detalle al pedido
                 
-                # Calculamos el subtotal usando la cantidad pedida y el precio del insumo
-                detalle.subTotal = detalle.cantidadPedida * detalle.insumos.precioInsumo  # Asegúrate de que Insumo tenga un campo `precio`
-                totalPedido += detalle.subTotal
-                detalle.save()
+                # Calcular el subtotal (esto es redundante en el frontend)
+                detalle.save()  # Guardar el detalle
             
-            pedido.precioTotalDelPedido = totalPedido
-            pedido.save()
-            return redirect('/pedidos')
-    else:
-        pedidoForm = FormularioPedido()
-        detallePedidoFormset = DetallePedidoFormSet()
+            pedido.precioTotalDelPedido = totalPedido  # Actualizar el total del pedido
+            pedido.save()  # Guardar el pedido
 
-    return render(request, 'pedido/agregarPedido.html', {'pedidoForm': pedidoForm,'detallePedidoFormset': detallePedidoFormset,})
+            return redirect('/pedidos')  # Redirigir a la lista de pedidos
+
+    else:
+        pedidoForm = FormularioPedido()  # Crear un nuevo formulario vacío
+        detallePedidoFormset = DetallePedidoFormSet()  # Crear un nuevo formset vacío
+
+    # Renderizar la plantilla con los formularios
+    return render(request, 'pedido/pedidos.html', {
+        'pedidoForm': pedidoForm,
+        'detallePedidoFormset': detallePedidoFormset,
+        'pedidos': pedidos,
+        'mostrar_boton': mostrar_boton,
+        'insumos_dict': insumos_dict,  # Pasar los precios de los insumos
+    })
 
 #-----------------------------------------------------------------------------------------------
 

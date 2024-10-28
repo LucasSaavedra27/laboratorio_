@@ -100,13 +100,30 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Registro Pedido</h5>
+                <h3 class="text-center" style="color: #a63348;">Agregar un pedido</h3>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
-                    {{ form.as_p }}
+                    {{ pedidoForm.as_table }}
+            
+                    <h3>Detalles de Insumo</h3>
+                    {{ detallePedidoFormset.management_form }}
+                    
+                    <div id="detalle-pedido-container">  <!-- Contenedor para los formularios -->
+                        {% for form in detallePedidoFormset %}
+                            <div class="detalle-pedido-form">
+                                {{ form.as_p }}
+                                <h5 class="subtotal" id="detallePedido-{{ forloop.counter0 }}-subtotal">Subtotal: $0.00</h5> <!-- Subtotal para cada detalle -->
+                            </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="">
+                        <button type="button" class="btn btn-secondary mt-3" id="btn-addProd">Agregar Insumo</button>
+                        <h4 class="total">Total: $<span id="total-pedido">0.00</span></h4>
+                    </div>
                     <button type="submit" class="btn w-100 mt-3 btn-addProv">Agregar</button>
                     <button type="button" class="btn btncancelProv w-100 mt-2" data-bs-dismiss="modal" aria-label="Close">Cancelar</button>
                 </form>
@@ -114,6 +131,7 @@
         </div>
     </div>
 </div>
+
 
 <div
     class="modal fade"
@@ -152,4 +170,75 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block js %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() { //js para agregar mas detallePedido
+        let formsetContainer = document.getElementById('detalle-pedido-container');
+        let addInsumButton = document.getElementById('btn-addProd');
+        
+        addInsumButton.addEventListener('click', function() {
+            // Obtiene el número total de formularios ya existentes
+            let totalForms = document.getElementById('id_detalles-TOTAL_FORMS');
+            let currentFormCount = parseInt(totalForms.value);
+            
+            // Clona el primer formulario
+            let newForm = formsetContainer.children[0].cloneNode(true);
+            
+            // Cambia los IDs y nombres de los inputs para que sean únicos
+            newForm.querySelectorAll('input, select, textarea').forEach(function(input) {
+                let name = input.name.replace(/-0-/, '-' + currentFormCount + '-');  // Cambia el índice
+                let id = input.id.replace(/-0-/, '-' + currentFormCount + '-');      // Cambia el índice
+                input.name = name;
+                input.id = id;
+                input.value = '';  // Limpiar el valor del nuevo formulario
+            });
+    
+            // Agregar el nuevo formulario al contenedor
+            formsetContainer.appendChild(newForm);
+            
+            // Actualizar el número total de formularios
+            totalForms.value = currentFormCount + 1;
+        });
+    });
+
+    {% comment %} document.addEventListener('DOMContentLoaded', function() {
+        const detallePedidoContainer = document.getElementById('detalle-pedido-container');
+        const totalPedidoElement = document.getElementById('total-pedido');
+
+        function actualizarSubtotal(form) {
+            const insumoSelect = form.querySelector('select[name*="insumos"]');
+            const cantidadInput = form.querySelector('input[name*="cantidadPedida"]');
+            const subtotalElement = form.querySelector('.subtotal');
+
+            const insumoId = insumoSelect.value;
+            const cantidad = parseFloat(cantidadInput.value) || 0;
+
+            // Obtener el precio del insumo desde un objeto que contiene los precios
+            const precioInsumo = insumos_dict[insumoId]; // Asegúrate de que este dict está accesible en el JS
+            const subtotal = (precioInsumo * cantidad).toFixed(2);
+
+            subtotalElement.textContent = `Subtotal: $${subtotal}`;
+            actualizarTotal();
+        }
+
+        function actualizarTotal() {
+            let total = 0;
+            const subtotales = detallePedidoContainer.querySelectorAll('.subtotal');
+            subtotales.forEach(function(subtotal) {
+                const subtotalValue = parseFloat(subtotal.textContent.replace('Subtotal: $', '')) || 0;
+                total += subtotalValue;
+            });
+            totalPedidoElement.textContent = total.toFixed(2);
+        }
+
+        detallePedidoContainer.addEventListener('change', function(e) {
+            if (e.target.matches('select[name*="insumos"]') || e.target.matches('input[name*="cantidadPedida"]')) {
+                const form = e.target.closest('.detalle-pedido-form');
+                actualizarSubtotal(form);
+            }
+        });
+    }); {% endcomment %}
+    </script>
 {% endblock %}
