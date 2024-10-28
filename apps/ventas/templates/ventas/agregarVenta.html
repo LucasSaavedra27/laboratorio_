@@ -34,38 +34,39 @@
 
 
 {% block js %}
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('btn-addProd').addEventListener('click', function() {
-            const formsetContainer = document.getElementById('detalleVentaContainer');// se obtiene el contenedor de los formularios de detall de venta
-            const totalForms = document.getElementById('id_detalleVenta-TOTAL_FORMS'); 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('btn-addProd').addEventListener('click', function() {
+                const formsetContainer = document.getElementById('detalleVentaContainer');// se obtiene el contenedor de los formularios de detall de venta
+                const totalForms = document.getElementById('id_detalleVenta-TOTAL_FORMS'); 
 
-            // Verificamos que el campo TOTAL_FORMS existe
-            if (totalForms) {
-                const contadorForm = parseInt(totalForms.value);
-                
-                const nuevoForm = formsetContainer.children[contadorForm - 1].cloneNode(true);// se clona el último formulario
+                // Verificamos que el campo TOTAL_FORMS existe
+                if (totalForms) {
+                    const contadorForm = parseInt(totalForms.value);
+                    
+                    const nuevoForm = formsetContainer.children[contadorForm - 1].cloneNode(true);// se clona el último formulario
 
-                const inputs = nuevoForm.getElementsByTagName('input');//se obtienen los inputs del formulario para limpiarlos
-                for (let input of inputs) { // Limpia los valores del nuevo formulario
-                    input.value = '';
+                    const inputs = nuevoForm.getElementsByTagName('input');//se obtienen los inputs del formulario para limpiarlos
+                    for (let input of inputs) { // Limpia los valores del nuevo formulario
+                        input.value = '';
+                    }
+                    
+                    nuevoForm.querySelectorAll('input, select').forEach((element) => { // vamos a Actualizar los nombres y IDs de los campos del nuevo formulario (lo vemos en el html)
+                        element.name = element.name.replace(/-\d+-/, `-${contadorForm}-`);
+                        element.id = element.id.replace(/-\d+-/, `-${contadorForm}-`);
+                    });
+
+                    // Incrementa el contador de formularios
+                    totalForms.value = contadorForm + 1;
+
+                    // Agrega el nuevo formulario al contenedor
+                    formsetContainer.appendChild(nuevoForm);
+                } else {
+                    console.error('El elemento TOTAL_FORMS no se encuentra en el DOM.');
                 }
-                
-                nuevoForm.querySelectorAll('input, select').forEach((element) => { // vamos a Actualizar los nombres y IDs de los campos del nuevo formulario (lo vemos en el html)
-                    element.name = element.name.replace(/-\d+-/, `-${contadorForm}-`);
-                    element.id = element.id.replace(/-\d+-/, `-${contadorForm}-`);
-                });
-
-                // Incrementa el contador de formularios
-                totalForms.value = contadorForm + 1;
-
-                // Agrega el nuevo formulario al contenedor
-                formsetContainer.appendChild(nuevoForm);
-            } else {
-                console.error('El elemento TOTAL_FORMS no se encuentra en el DOM.');
-            }
+            });
         });
-    });
-</script>
+    </script>
+    <script src="{% static 'js/tratamientoFechas.js'%}"></script>
 {% endblock %}
 
