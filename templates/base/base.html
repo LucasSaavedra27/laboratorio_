@@ -59,7 +59,7 @@
             <a href="/html/gestion_compras.html"><i class="fa-solid fa-cart-shopping"></i>Compras</a>
             <a href="{% url 'ventas:ventas' %}"><i class="fa-solid fa-cash-register"></i>Ventas</a>
             <a href="/html/gestion_proveedores.html"><i class="fa-solid fa-people-carry-box"></i>Proveedores</a>
-            <a href="#"><i class="fa-solid fa-users"></i>Empleados</a>
+            <a href="/admin/usuarios/empleado/"><i class="fa-solid fa-users"></i>Empleados</a>
           {% else %}
             <a href="{% url 'productos:productos' %}"><i class="fa-solid fa-bread-slice"></i>Productos</a>
             <a href="/html/gestion_clientes.html"><i class="fa-solid fa-person-circle-check"></i>Clientes</a>
@@ -110,7 +110,7 @@
             <a href="/html/gestion_proveedores.html" class="nav-link px-2">Proveedores</a>
           </li>
           <li class="nav-item">
-            <a href="/html/empleados.html" class="nav-link px-2">Empleados</a>
+            <a href="/admin/usuarios/empleado/" class="nav-link px-2">Empleados</a>
           </li>
         {% else %}
           <li class="nav-item">
