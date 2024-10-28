@@ -6,12 +6,12 @@
     <div class="col-12">
         <h2 class="text-center pb-3">Registro de Pedidos</h2>
         <div class="busqueda d-flex">
-            <form class="d-flex align-items-center justify-content-center" role="search" method="POST" action="{% url 'pedidos:buscarProveedor' %}">
+            <form class="d-flex align-items-center justify-content-center" role="search" method="POST" action="{% url 'pedidos:buscarPorFecha' %}">
                 {% csrf_token %}
                 <input
                     class="form-control mb-3"
                     type="search"
-                    placeholder="Buscar por dni"
+                    placeholder="Ej: 20-11-2024"
                     aria-label="buscar"
                     name="busqueda" 
                     value="{{ busqueda|default:'' }}" 
@@ -40,7 +40,7 @@
                 </button>
             </div>
             {% endif %}
-            <a class="expPdf" href="{% url 'pedidos:generarPDF' %}"
+            <a class="expPdf" href="{% url 'pedidos:generarPDFPedidos' %}?fecha={{ busqueda }}%}"
             ><i class="fa-solid fa-file-pdf px-2" style="font-size: 25px"></i
             >Exportar PDF</a>
         </div>
@@ -55,6 +55,7 @@
                         <th scope="col">Estado</th>
                         <th scope="col">Total</th>
                         <th scope="col">Detalle</th>
+                        <th scope="col">Opciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -63,16 +64,19 @@
                         <th scope="row">{{ forloop.counter }}</th>
                         <td>{{ pedido.proveedor.dni }}</td>
                         <td>{{ pedido.fechaPedido }}</td>
-                        {% if proveedor.estadoPedido == 'recibido' %}
-                        <td style="background-color: #10c610;">{{ proveedor.estado }}</td>
-                        {% else %}
-                        <td>{{ proveedor.estado }}</td>
-                        {% endif %}
+                        {% if pedido.estadoPedido == 'cancelado' %}
+                        <td style="background-color: #d81111;">{{ pedido.estadoPedido }}</td>{% endif %}
+                        {% if pedido.estadoPedido == 'pendiente' %}
+                        <td style="background-color: #e4f352;">{{ pedido.estadoPedido }}</td>{% endif %}
+                        {% if pedido.estadoPedido == 'confirmado' %}
+                        <td style="background-color: #4bf156;">{{ pedido.estadoPedido }}</td>{% endif %}
                         <td>{{ pedido.precioTotalDelPedido }}</td>
-                        <td>{{ pedido.detallePedido }}</td>
+                        <td>
+                            <a href="{% url 'pedidos:verDetallePedido' pedido.id %}"><i class="fa-solid fa-eye" title="Ver detalles"></i></a>
+                        </td>
                         <td>               
-                            <a href="editar/{{pedido.id}}"><i class="fa-solid fa-pen-to-square" title="Editar"></i></a>                 
-                            <a href="eliminar/{{pedido.id}}"><i class="fa-solid fa-trash-can" title="Eliminar"></i></a>   
+                            {% comment %} <a href="editar/{{pedido.id}}"><i class="fa-solid fa-pen-to-square" title="Editar"></i></a>                 
+                            <a href="eliminar/{{pedido.id}}"><i class="fa-solid fa-trash-can" title="Eliminar"></i></a>    {% endcomment %}
                                         
                         </td>
                     </tr>

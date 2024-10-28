@@ -1,0 +1,50 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block contenido %}
+    <div class="contenedor-agregarVenta d-flex justify-content-center align-items-center">
+        <div class="table-responsive">
+            <h2 class="text-center">Detalles de Pedido</h2>
+            <table class="table">
+                <div><strong>Número de Pedido: {{pedido_id}}</strong></div>
+                <thead class="bg-table">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Insumo</th>
+                        <th scope="col">Precio del insumo</th>
+                        <th scope="col">cantidad</th>
+                        <th scope="col">Unidad de medida</th>
+                        <th scope="col">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for detallePedido in detallesPedido %} 
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>{{ detallePedido.insumos.nombre }}</td>
+                        <td>${{ detallePedido.insumos.precioInsumo }}</td>
+                        <td>{{ detallePedido.cantidadPedida }}</td>
+                        <td>{{ detallePedido.insumos.unidadDeMedida }}</td>
+                        <td>${{ detallePedido.subTotal }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="10">No hay detalles de pedido disponibles.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot class="bg-table">
+                    <tr>
+                        <td colspan="5" class="text-end"><strong>Total:</strong></td>
+                        <td><strong>${{ pedido.precioTotalDelPedido }}</strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+    <div class="d-flex justify-content-center align-items-center">
+        <a href="{%url 'pedidos:pedidos' %}" class="btn-volver"><i class="fa-solid fa-arrow-left">Volver</i></a>
+        <br><br>
+    </div>
+    
+{% endblock %}

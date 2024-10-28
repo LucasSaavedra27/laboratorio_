@@ -1,7 +1,9 @@
+from email.utils import parsedate
 import os
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from apps.pedidos.models import Proveedor, Pedido
+from django.urls import reverse
+from apps.pedidos.models import Proveedor, Pedido, DetallePedido
 from apps.productos.models import Insumo
 from apps.pedidos.forms import FormularioProveedor, FormularioPedido, DetallePedidoFormSet
 from fpdf import FPDF
@@ -65,8 +67,8 @@ def buscarProveedor(request):
 #---------------------------------------PEDIDOS--------------------------------------------------------
 def pedidos(request):
     pedidos = Pedido.objects.all()  # Obtener todos los pedidos
-    mostrar_boton = True  # Variable para controlar la visibilidad de un botón
-
+    mostrar_boton = True  # Variable para controlar la visibilidad del botón
+    
     # Obtener todos los insumos y sus precios
     insumos_dict = {insumo.id: insumo.precioInsumo for insumo in Insumo.objects.all()}
     
@@ -75,22 +77,27 @@ def pedidos(request):
         detallePedidoFormset = DetallePedidoFormSet(request.POST)
 
         if pedidoForm.is_valid() and detallePedidoFormset.is_valid():
-            pedido = pedidoForm.save()  # Guardar el pedido
+            # Guarda el pedido sin calcular el total aún
+            pedido = pedidoForm.save()
+
+            # Guarda cada detalle y calcula el total después de que el pedido tiene un ID
             totalPedido = 0
-            
-            # Guardar cada detalle del pedido
-            for detalle in detallePedidoFormset:
-                detalle = detalle.save(commit=False)  # No guardar aún
-                detalle.pedido = pedido  # Asociar detalle al pedido
+            for detalle_form in detallePedidoFormset:
+                detalle = detalle_form.save(commit=False)
+                detalle.pedido = pedido  # Asigna el pedido a cada detalle
+                detalle.save()
                 
-                # Calcular el subtotal (esto es redundante en el frontend)
-                detalle.save()  # Guardar el detalle
-            
-            pedido.precioTotalDelPedido = totalPedido  # Actualizar el total del pedido
-            pedido.save()  # Guardar el pedido
+                insumo = detalle.insumos
+                insumo.cantidadDisponible -= detalle.cantidadPedida
+                insumo.save()
+                # Acumula el subtotal de cada detalle en totalPedido
+                totalPedido += detalle.subTotal  # Asegúrate de que `subTotal` esté definido y calculado en `DetallePedido`
 
-            return redirect('/pedidos')  # Redirigir a la lista de pedidos
+            # Actualiza el campo `precioTotalDelPedido` y guarda el pedido
+            pedido.precioTotalDelPedido = totalPedido
+            pedido.save()
 
+            return redirect('/pedidos')
     else:
         pedidoForm = FormularioPedido()  # Crear un nuevo formulario vacío
         detallePedidoFormset = DetallePedidoFormSet()  # Crear un nuevo formset vacío
@@ -103,6 +110,127 @@ def pedidos(request):
         'mostrar_boton': mostrar_boton,
         'insumos_dict': insumos_dict,  # Pasar los precios de los insumos
     })
+    
+def verDetallePedido(request,pedido_id):
+    detallesPedido = DetallePedido.objects.filter(pedido_id=pedido_id)
+    pedido = Pedido.objects.get(id=pedido_id)
+    return render(request,'pedido/verDetallePedido.html',{'detallesPedido':detallesPedido,'pedido_id':pedido_id,'pedido':pedido})
+
+def buscarPedidoPorFecha(request):
+    busqueda = request.POST.get('busqueda')  # Obtiene el término de búsqueda de la query
+    pedidos = Pedido.objects.all()  # Obtiene todos los pedidos por defecto
+
+    if busqueda:  # Si hay un término de búsqueda
+        try:
+            fecha_busqueda = datetime.strptime(busqueda, '%d-%m-%Y').date()
+            pedidos = pedidos.filter(fechaPedido=fecha_busqueda)
+            request.session['pedidos_filtrados'] = busqueda
+        except ValueError:
+            pedidos = Pedido.objects.none()
+    return render(request, 'pedido/pedidos.html', {'pedidos': pedidos, 'busqueda': busqueda})
+
+class PDFPedido(FPDF):
+    def header(self):
+        logo = os.path.join(settings.BASE_DIR, 'static', 'img', 'logotipo.png')
+        
+        # Verificar si el archivo existe
+        if os.path.exists(logo):
+            self.image(logo, x=10, y=10, w=30, h=30) 
+        
+        self.set_font('Arial', '', 15)
+
+        tcol_set(self, 'red')
+        tfont_size(self,30)
+        tfont(self,'B')
+        self.cell(w = 0, h = 10, txt = 'Reporte de', border = 0, ln=1,
+                align = 'C', fill = 0)
+        self.cell(w = 0, h = 10, txt = 'Pedidos', border = 0, align = 'C', ln=1, fill = 0)
+        
+        tfont_size(self,10)
+        tcol_set(self, 'black')
+        tfont(self,'I')
+        self.cell(w = 0, h = 10, txt = f'Generado el {datetime.now().strftime("%d/%m/%y")}', border = 0, ln=2,
+                align = 'C', fill = 0)
+
+        self.ln(5)
+
+    # Page footer
+    def footer(self):
+        # Position at 1.5 cm from bottom
+        self.set_y(-20)
+
+        # Arial italic 8
+        self.set_font('Arial', 'I', 12)
+
+        # Page number
+        self.cell(w = 0, h = 10, txt =  'Pagina ' + str(self.page_no()),
+                 border = 0,
+                align = 'C', fill = 0)
+
+def generarPDFPedidosPorFecha(request):
+    # Crear un objeto FPDF
+    pdf = PDFPedido()
+    pdf.add_page()
+    
+    fecha_busqueda = request.session.get('pedidos_filtrados', None)
+    if fecha_busqueda:
+        try:
+            fecha_busqueda = datetime.strptime(fecha_busqueda, '%d-%m-%Y').date()
+            pedidos = Pedido.objects.filter(fechaPedido=fecha_busqueda)
+        except ValueError:
+            pedidos = Pedido.objects.none()
+    else:
+        pedidos = Pedido.objects.none()
+    # Verificar si hay pedidos
+    
+    pdf.cell(w=0, h=5, txt=f'FECHA: {fecha_busqueda.strftime("%d-%m-%Y")}', border=0, ln=2, align='C', fill=0)
+    if pedidos.exists():
+        for pedido in pedidos:
+            bcol_set(pdf, 'red')  # Color de fondo para títulos
+            tcol_set(pdf, 'white')
+            pdf.set_font("Arial", "B", 12)
+            # Dibujar la cabecera del pedido
+            pdf.cell(50, 10, "Pedido n°", 1, 0, 'C', fill=True)
+            pdf.cell(60, 10, "Proveedor", 1, 0, 'C', fill=True)
+            pdf.cell(40, 10, "Estado", 1, 0, 'C', fill=True)
+            pdf.cell(40, 10, "Total", 1, 1, 'C', fill=True)
+            
+            tcol_set(pdf, 'black')
+            pdf.set_font("Arial", "", 12)
+            # Dibujar la datos del pedido
+            pdf.cell(50, 10, str(pedido.id), 1, 0, 'C', fill=False)
+            pdf.cell(60, 10, str(pedido.proveedor), 1, 0, 'C', fill=False)
+            pdf.cell(40, 10, pedido.estadoPedido, 1, 0, 'C', fill=False)
+            pdf.cell(40, 10, str(pedido.precioTotalDelPedido), 1, 1, 'C', fill=False)
+
+            bcol_set(pdf, 'red')  # Color de fondo para títulos
+            tcol_set(pdf, 'white')
+            pdf.set_font("Arial", "B", 12)
+            # Cabecera de los detalles para cada pedido
+            pdf.cell(50, 10, "Insumo", 1, 0, 'C', fill=True)
+            pdf.cell(60, 10, "Precio", 1, 0, 'C', fill=True)
+            pdf.cell(40, 10, "Cantidad", 1, 0, 'C', fill=True)
+            pdf.cell(40, 10, "Subtotal", 1, 1, 'C', fill=True)
+
+            tcol_set(pdf, 'black')
+            pdf.set_font("Arial", "", 12)
+            # Detalles del pedido
+            detalles = DetallePedido.objects.filter(pedido=pedido)
+            for detalle in detalles:
+                pdf.cell(50, 10, detalle.insumos.nombre, 1, 0, 'C', fill=False)
+                pdf.cell(60, 10, str(detalle.insumos.precioInsumo), 1, 0, 'C', fill=False)
+                pdf.cell(40, 10, str(detalle.cantidadPedida), 1, 0, 'C', fill=False)
+                pdf.cell(40, 10, str(detalle.subTotal), 1, 1, 'C', fill=False)
+                
+            pdf.cell(0, 10, '', 0, 1)  # Espacio entre diferentes pedidos
+
+    else:
+        pdf.cell(0, 10, "No hay pedidos disponibles.", 0, 1, 'C')
+
+    # Preparar la respuesta
+    response = HttpResponse(pdf.output(dest='S').encode('latin1'), content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="reportePedidoSegunFecha.pdf"'
+    return response
 
 #-----------------------------------------------------------------------------------------------
 
@@ -137,8 +265,6 @@ def tfont_size(hoja, size):
 
 def tfont(hoja, estilo, fuente='Arial'):
     hoja.set_font(fuente, style=estilo)
-
-
 
 class PDF(FPDF):
     def header(self):

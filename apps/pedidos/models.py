@@ -25,12 +25,7 @@ class Pedido(models.Model):
     ]
     fechaPedido = models.DateField(blank=False,null=False)
     estadoPedido = models.CharField(max_length=10,choices=ESTADO_PEDIDO,blank=False,null=False)
-    precioTotalDelPedido = models.DecimalField(max_digits=10, decimal_places=2,blank=False,null=False)
-    
-    def save(self, *args, **kwargs):
-        # Calcular total del pedido sumando los subtotales de los detalles
-        self.precioTotalDelPedido = sum(detalle.subTotal for detalle in self.detalles.all())
-        super().save(*args, **kwargs)
+    precioTotalDelPedido = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, default=0)
     
     def __str__(self):
         return f"{self.fechaPedido} {self.estadoPedido}"

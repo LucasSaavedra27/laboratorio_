@@ -14,4 +14,7 @@ urlpatterns = [
     path('proveedores/generarPDF/', views.generarPDF, name='generarPDF'),
     
     path('pedidos/',views.pedidos,name='pedidos'),
+    path('pedidos/verDetallesPedido/<pedido_id>',views.verDetallePedido,name='verDetallePedido'),
+    path('pedidos/buscar/', views.buscarPedidoPorFecha, name='buscarPorFecha'),
+    path('pedidos/buscar/generarPDF/', views.generarPDFPedidosPorFecha, name='generarPDFPedidos'),
 ]
