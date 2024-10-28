@@ -52,13 +52,21 @@
     <div class="container-menu shadow">
       <div class="cont-menu">
         <nav>
-          <a href="/html/estadisticas.html"><i class="fa-solid fa-chart-simple"></i>Estadísticas</a>
-          <a href="{% url 'productos:productos' %}"><i class="fa-solid fa-bread-slice"></i>Productos</a>
-          <a href="/html/gestion_clientes.html"><i class="fa-solid fa-person-circle-check"></i>Clientes</a>
-          <a href="/html/gestion_compras.html"><i class="fa-solid fa-cart-shopping"></i>Compras</a>
-          <a href="{% url 'ventas:ventas' %}"><i class="fa-solid fa-cash-register"></i>Ventas</a>
-          <a href="/html/gestion_proveedores.html"><i class="fa-solid fa-people-carry-box"></i>Proveedores</a>
-          <a href="/html/empleados.html"><i class="fa-solid fa-users"></i>Empleados</a>
+          {% if user.is_superuser %}
+            <a href="/html/estadisticas.html"><i class="fa-solid fa-chart-simple"></i>Estadísticas</a>
+            <a href="{% url 'productos:productos' %}"><i class="fa-solid fa-bread-slice"></i>Productos</a>
+            <a href="/html/gestion_clientes.html"><i class="fa-solid fa-person-circle-check"></i>Clientes</a>
+            <a href="/html/gestion_compras.html"><i class="fa-solid fa-cart-shopping"></i>Compras</a>
+            <a href="{% url 'ventas:ventas' %}"><i class="fa-solid fa-cash-register"></i>Ventas</a>
+            <a href="/html/gestion_proveedores.html"><i class="fa-solid fa-people-carry-box"></i>Proveedores</a>
+            <a href="#"><i class="fa-solid fa-users"></i>Empleados</a>
+          {% else %}
+            <a href="{% url 'productos:productos' %}"><i class="fa-solid fa-bread-slice"></i>Productos</a>
+            <a href="/html/gestion_clientes.html"><i class="fa-solid fa-person-circle-check"></i>Clientes</a>
+            <a href="/html/gestion_compras.html"><i class="fa-solid fa-cart-shopping"></i>Compras</a>
+            <a href="{% url 'ventas:ventas' %}"><i class="fa-solid fa-cash-register"></i>Ventas</a>
+            <a href="/html/gestion_proveedores.html"><i class="fa-solid fa-people-carry-box"></i>Proveedores</a>
+          {% endif %}
         </nav>
         <label for="btn-menu" class="equis"><i class="fa-solid fa-xmark"></i></label>
       </div>
@@ -79,30 +87,51 @@
     <footer class="footer py-3 my-4">
       {% if user.is_authenticated %}
       <ul class="nav justify-content-center border-bottom pb-3 mb-3">
-        <li class="nav-item">
-          <a href="/html/index.html" class="nav-link px-2">Inicio</a>
-        </li>
-        <li class="nav-item">
-          <a href="/html/estadisticas.html" class="nav-link px-2">Estadísticas</a>
-        </li>
-        <li class="nav-item">
-          <a href="/html/productos.html" class="nav-link px-2">Productos</a>
-        </li>
-        <li class="nav-item">
-          <a href="/html/gestion_clientes.html" class="nav-link px-2">Clientes</a>
-        </li>
-        <li class="nav-item">
-          <a href="/html/gestion_compras.html" class="nav-link px-2">Compras</a>
-        </li>
-        <li class="nav-item">
-          <a href="{% url 'ventas:ventas' %}" class="nav-link px-2">Ventas</a>
-        </li>
-        <li class="nav-item">
-          <a href="/html/gestion_proveedores.html" class="nav-link px-2">Proveedores</a>
-        </li>
-        <li class="nav-item">
-          <a href="/html/empleados.html" class="nav-link px-2">Empleados</a>
-        </li>
+        {% if user.is_superuser %}
+          <li class="nav-item">
+            <a href="/html/index.html" class="nav-link px-2">Inicio</a>
+          </li>
+          <li class="nav-item">
+            <a href="/html/estadisticas.html" class="nav-link px-2">Estadísticas</a>
+          </li>
+          <li class="nav-item">
+            <a href="/html/productos.html" class="nav-link px-2">Productos</a>
+          </li>
+          <li class="nav-item">
+            <a href="/html/gestion_clientes.html" class="nav-link px-2">Clientes</a>
+          </li>
+          <li class="nav-item">
+            <a href="/html/gestion_compras.html" class="nav-link px-2">Compras</a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'ventas:ventas' %}" class="nav-link px-2">Ventas</a>
+          </li>
+          <li class="nav-item">
+            <a href="/html/gestion_proveedores.html" class="nav-link px-2">Proveedores</a>
+          </li>
+          <li class="nav-item">
+            <a href="/html/empleados.html" class="nav-link px-2">Empleados</a>
+          </li>
+        {% else %}
+          <li class="nav-item">
+            <a href="/html/index.html" class="nav-link px-2">Inicio</a>
+          </li>
+          <li class="nav-item">
+            <a href="/html/productos.html" class="nav-link px-2">Productos</a>
+          </li>
+          <li class="nav-item">
+            <a href="/html/gestion_clientes.html" class="nav-link px-2">Clientes</a>
+          </li>
+          <li class="nav-item">
+            <a href="/html/gestion_compras.html" class="nav-link px-2">Compras</a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'ventas:ventas' %}" class="nav-link px-2">Ventas</a>
+          </li>
+          <li class="nav-item">
+            <a href="/html/gestion_proveedores.html" class="nav-link px-2">Proveedores</a>
+          </li>
+        {% endif %}
       </ul>
       <p class="text-center">© 2024 Panadería El Maná</p>
       {% else %}
