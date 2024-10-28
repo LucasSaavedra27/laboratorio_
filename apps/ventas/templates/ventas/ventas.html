@@ -5,21 +5,32 @@
 <div class="container" id="container-tabla">
     <div class="col-12">
         <h2 class="text-center pb-3">Registro de ventas</h2>
-        <div class="busqueda d-flex">
-            <form class="d-flex align-items-center justify-content-center" role="search" method="POST" action="#">
+        <div class="busqueda d-flex justify-content-between align-items-center">
+            <form class="d-flex align-items-center" role="search" method="POST" action="{% url 'ventas:buscarVentas' %}">
                 {% csrf_token %}
-                <input class="form-control mb-3" type="search" placeholder="Buscar por fecha de venta" aria-label="buscar" name="busqueda" value="{{ busqueda|default:'' }}" />
-                <button class="btn" type="submit">
-                    <i class="fa-solid fa-magnifying-glass" style="font-size: 16px"></i>
-                </button>
-                <a href="{%url 'ventas:ventas' %}"><i class="fa-solid fa-rotate-left"></i></a>
+                <div class="container">
+                    <div class="row">
+                        <div class="col">
+                            <label for="fecha_inicio" class="me-1">Fecha de inicio:</label>
+                            <input type="date" id="fecha_inicio" name="fecha_inicio" class="form-control busquedaFecha d-inline" placeholder="inicio" style="width: 150px;">
+                            <label for="fecha_fin" class="ms-2 me-1">Fecha de fin:</label>
+                            <input type="date" id="fecha_fin" name="fecha_fin" class="form-control busquedaFecha d-inline" style="width: 150px;">
+                        </div>
+                        <div class="col">
+                            <button class="btn" type="submit">
+                                <i class="fa-solid fa-magnifying-glass" style="font-size: 16px"></i>
+                            </button>
+                            <a href="{% url 'ventas:ventas' %}" class="ms-2"><i class="fa-solid fa-rotate-left"></i></a> 
+                        </div>  
+                    </div>
+                </div>
             </form>
-   
-          <a href="{%url 'ventas:agregarVenta' %}"><i class="fa-solid fa-square-plus" title="Agregar venta" style="font-size: 30px"></i></a>
-
-          <a class="expPdf" href="#"><i class="fa-solid fa-file-pdf px-2" style="font-size: 25px"></i>Exportar PDF</a>
-
+            <a href="{% url 'ventas:agregarVenta' %}"><i class="fa-solid fa-square-plus" title="Agregar venta" style="font-size: 30px"></i></a>
+            <a href="{% url 'ventas:exportarPDF' %}"><i class="expPdf fa-solid fa-file-pdf px-2" style="font-size: 25px"></i>Exportar PDF</a>
         </div>
+        
+        
+        
     
         <div class="table-responsive">
             <table class="table">
