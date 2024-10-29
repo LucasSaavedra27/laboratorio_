@@ -116,6 +116,11 @@ class DetallePedidoForm(forms.ModelForm):
             'cantidadPedida': forms.NumberInput(attrs={'class': 'form-control','step': '0.01'}),
             'observaciones': forms.TextInput(attrs={'class': 'form-control'}),
         }
+        error_messages = {
+            'insumos': {
+                'required': 'Ingresar fecha de recepción.',
+            },
+        }
     
     def clean_cantidad(self):
         cantidad = self.cleaned_data.get('cantidadPedida')

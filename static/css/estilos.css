@@ -470,11 +470,11 @@ form #form-busqueda {
   color: #000000;
 }
 
-.fa-square-plus,.fa-eye{
+.fa-square-plus,.fa-eye, .fa-list-check{
   color: #a63348;
 }
 
-.errorlist, .fa-eye:hover{
+.errorlist, .fa-eye:hover, .fa-list-check:hover{
   color: #ff002f;
 }
 

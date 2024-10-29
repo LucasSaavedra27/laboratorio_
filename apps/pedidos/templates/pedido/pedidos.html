@@ -8,15 +8,7 @@
         <div class="busqueda d-flex">
             <form class="d-flex align-items-center justify-content-center" role="search" method="POST" action="{% url 'pedidos:buscarPorFecha' %}">
                 {% csrf_token %}
-                <input
-                    class="form-control mb-3"
-                    type="search"
-                    placeholder="Ej: 20-11-2024"
-                    aria-label="buscar"
-                    name="busqueda" 
-                    value="{{ busqueda|default:'' }}" 
-                />
-                
+                <input class="form-control" type="date" id="busqueda" name="busqueda" required>   
                 <button class="btn" type="submit">
                     <i class="fa-solid fa-magnifying-glass" style="font-size: 16px" title="Buscar"></i>
                 </button>
@@ -62,7 +54,6 @@
                         <th scope="col">Total</th>
                         <th scope="col">Detalle</th>
                         <th scope="col">Recepción</th>
-                        <th scope="col">Opciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -72,23 +63,37 @@
                         <td>{{ pedido.proveedor }}</td>
                         <td>{{ pedido.fechaPedido }}</td>
                         {% if pedido.estadoPedido == 'cancelado' %}
-                        <td style="background-color: #d81111;">{{ pedido.estadoPedido }}</td>{% endif %}
+                        <td style="background-color: #d81111;">{{ pedido.estadoPedido }}
+                            <span class=''>
+                                <a href="{% url 'pedidos:actualizarPedido' pedido.id 'c'%}" style="margin-left: 8px;"><i class="fa-solid fa-check" style="color: #f9b8b8;"></i></a>
+                                <a href="{% url 'pedidos:actualizarPedido' pedido.id 'p'%}" style="margin-left: 8px;"><i class="fa-solid fa-hourglass-start" style="color: #f9b8b8;"></i></a>
+                            </span>
+                        </td>{% endif %}
                         {% if pedido.estadoPedido == 'pendiente' %}
-                        <td style="background-color: #e4f352;">{{ pedido.estadoPedido }}</td>{% endif %}
+                        <td style="background-color: #e4f352;">{{ pedido.estadoPedido }}
+                            <span class=''>
+                                <a href="{% url 'pedidos:actualizarPedido' pedido.id 'c'%}" style="margin-left: 8px;"><i class="fa-solid fa-check" style="color: #a63348;"></i></a>
+                                <a href="{% url 'pedidos:actualizarPedido' pedido.id 'x'%}" style="margin-left: 8px;"><i class="fa-solid fa-x" style="color: #a63348;"></i></a>
+                            </span>
+                        </td>{% endif %}
                         {% if pedido.estadoPedido == 'confirmado' %}
-                        <td style="background-color: #4bf156;">{{ pedido.estadoPedido }}</td>{% endif %}
+                        <td style="background-color: #4bf156;">{{ pedido.estadoPedido }}
+                            <span class=''>
+                                <a href="{% url 'pedidos:actualizarPedido' pedido.id 'p'%}" style="margin-left: 8px;"><i class="fa-solid fa-hourglass-start" style="color: #a63348;"></i></a>
+                                <a href="{% url 'pedidos:actualizarPedido' pedido.id 'x'%}" style="margin-left: 8px;"><i class="fa-solid fa-x" style="color: #a63348;"></i></a>
+                            </span>
+                        </td>{% endif %}
                         <td>{{ pedido.precioTotalDelPedido }}</td>
                         <td>
                             <a href="{% url 'pedidos:verDetallePedido' pedido.id %}"><i class="fa-solid fa-eye" title="Ver detalles"></i></a>
                         </td>
+                        {% if pedido.estadoPedido == 'confirmado' %}
                         <td>
                             <a href="{% url 'pedidos:recepcionDePedido' pedido.id %}"><i class="fa-solid fa-list-check" title="Agregar Recepcion"></i></a>
                         </td>
-                        <td>               
-                            {% comment %} <a href="editar/{{pedido.id}}"><i class="fa-solid fa-pen-to-square" title="Editar"></i></a>                 
-                            <a href="eliminar/{{pedido.id}}"><i class="fa-solid fa-trash-can" title="Eliminar"></i></a>    {% endcomment %}
-                                        
-                        </td>
+                        {% else %}
+                            <td></td>
+                        {% endif %}
                     </tr>
                     {% empty %}
                     <tr>
@@ -145,45 +150,6 @@
         </div>
     </div>
 </div>
-
-
-<div
-    class="modal fade"
-    id="deleteModal"
-    tabindex="-1"
-    aria-labelledby="eliminarModal"
-    aria-hidden="true"
->
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="eliminarModal">
-                    <i class="fa-solid fa-circle-exclamation"></i>
-                    ATENCIÓN
-                </h1>
-                <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"
-                ></button>
-            </div>
-            <div class="modal-body">¿Estás seguro de eliminar el registro?</div>
-            <div class="modal-footer">
-                <button
-                    type="button"
-                    class="btn bg-secundario"
-                    data-bs-dismiss="modal"
-                    id="btn-cancel"
-                >Cerrar
-                </button>
-                <button type="button" class="btn bg-primario" id="btn-del">
-                Eliminar
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
 {% endblock %}
 
 {% block js %}
@@ -216,43 +182,5 @@
             totalForms.value = currentFormCount + 1;
         });
     });
-
-    {% comment %} document.addEventListener('DOMContentLoaded', function() {
-        const detallePedidoContainer = document.getElementById('detalle-pedido-container');
-        const totalPedidoElement = document.getElementById('total-pedido');
-
-        function actualizarSubtotal(form) {
-            const insumoSelect = form.querySelector('select[name*="insumos"]');
-            const cantidadInput = form.querySelector('input[name*="cantidadPedida"]');
-            const subtotalElement = form.querySelector('.subtotal');
-
-            const insumoId = insumoSelect.value;
-            const cantidad = parseFloat(cantidadInput.value) || 0;
-
-            // Obtener el precio del insumo desde un objeto que contiene los precios
-            const precioInsumo = insumos_dict[insumoId]; // Asegúrate de que este dict está accesible en el JS
-            const subtotal = (precioInsumo * cantidad).toFixed(2);
-
-            subtotalElement.textContent = `Subtotal: $${subtotal}`;
-            actualizarTotal();
-        }
-
-        function actualizarTotal() {
-            let total = 0;
-            const subtotales = detallePedidoContainer.querySelectorAll('.subtotal');
-            subtotales.forEach(function(subtotal) {
-                const subtotalValue = parseFloat(subtotal.textContent.replace('Subtotal: $', '')) || 0;
-                total += subtotalValue;
-            });
-            totalPedidoElement.textContent = total.toFixed(2);
-        }
-
-        detallePedidoContainer.addEventListener('change', function(e) {
-            if (e.target.matches('select[name*="insumos"]') || e.target.matches('input[name*="cantidadPedida"]')) {
-                const form = e.target.closest('.detalle-pedido-form');
-                actualizarSubtotal(form);
-            }
-        });
-    }); {% endcomment %}
     </script>
 {% endblock %}

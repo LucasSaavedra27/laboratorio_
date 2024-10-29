@@ -87,10 +87,6 @@ def pedidos(request):
                 detalle = detalle_form.save(commit=False)
                 detalle.pedido = pedido  # Asigna el pedido a cada detalle
                 detalle.save()
-                
-                insumo = detalle.insumos
-                insumo.cantidadDisponible -= detalle.cantidadPedida
-                insumo.save()
                 # Acumula el subtotal de cada detalle en totalPedido
                 totalPedido += detalle.subTotal  # Asegúrate de que `subTotal` esté definido y calculado en `DetallePedido`
 
@@ -133,12 +129,22 @@ def buscarPedidoPorFecha(request):
     mostrar_botonPdf = True
     if busqueda:  # Si hay un término de búsqueda
         try:
-            fecha_busqueda = datetime.strptime(busqueda, '%d-%m-%Y').date()
-            pedidos = pedidos.filter(fechaPedido=fecha_busqueda)
+            pedidos = pedidos.filter(fechaPedido=busqueda)
             request.session['pedidos_filtrados'] = busqueda
         except ValueError:
             pedidos = Pedido.objects.none()
     return render(request, 'pedido/pedidos.html', {'pedidos': pedidos, 'busqueda': busqueda, 'mostrar_botonPdf': mostrar_botonPdf})
+
+def actualizarEstadoPedido(request,pedido_id,caracter):
+    pedido = get_object_or_404(Pedido, id=pedido_id)
+    if caracter == 'c':
+        pedido.estadoPedido = 'confirmado'
+    elif caracter == 'p':
+        pedido.estadoPedido = 'pendiente'
+    elif caracter == 'x':
+        pedido.estadoPedido = 'cancelado'    
+    pedido.save()
+    return redirect('pedidos:pedidos')
 
 class PDFPedido(FPDF):
     def header(self):
@@ -186,15 +192,15 @@ def generarPDFPedidosPorFecha(request):
     fecha_busqueda = request.session.get('pedidos_filtrados', None)
     if fecha_busqueda:
         try:
-            fecha_busqueda = datetime.strptime(fecha_busqueda, '%d-%m-%Y').date()
-            pedidos = Pedido.objects.filter(fechaPedido=fecha_busqueda)
+            fecha_busqueda_date = datetime.strptime(fecha_busqueda, "%Y-%m-%d").date()
+            pedidos = Pedido.objects.filter(fechaPedido=fecha_busqueda_date)
         except ValueError:
             pedidos = Pedido.objects.none()
     else:
         pedidos = Pedido.objects.none()
     # Verificar si hay pedidos
     
-    pdf.cell(w=0, h=5, txt=f'FECHA: {fecha_busqueda.strftime("%d-%m-%Y")}', border=0, ln=2, align='C', fill=0)
+    pdf.cell(w=0, h=5, txt=f'FECHA: {fecha_busqueda_date.strftime("%d-%m-%Y")}', border=0, ln=2, align='C', fill=0)
     if pedidos.exists():
         for pedido in pedidos:
             bcol_set(pdf, 'red')  # Color de fondo para títulos
