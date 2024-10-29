@@ -56,11 +56,12 @@
                 <thead class="bg-table">
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Dni Proveedor</th>
+                        <th scope="col">Proveedor</th>
                         <th scope="col">Fecha Pedido</th>
                         <th scope="col">Estado</th>
                         <th scope="col">Total</th>
                         <th scope="col">Detalle</th>
+                        <th scope="col">Recepción</th>
                         <th scope="col">Opciones</th>
                     </tr>
                 </thead>
@@ -68,7 +69,7 @@
                     {% for pedido in pedidos %}
                     <tr>
                         <th scope="row">{{ forloop.counter }}</th>
-                        <td>{{ pedido.proveedor.dni }}</td>
+                        <td>{{ pedido.proveedor }}</td>
                         <td>{{ pedido.fechaPedido }}</td>
                         {% if pedido.estadoPedido == 'cancelado' %}
                         <td style="background-color: #d81111;">{{ pedido.estadoPedido }}</td>{% endif %}
@@ -79,6 +80,9 @@
                         <td>{{ pedido.precioTotalDelPedido }}</td>
                         <td>
                             <a href="{% url 'pedidos:verDetallePedido' pedido.id %}"><i class="fa-solid fa-eye" title="Ver detalles"></i></a>
+                        </td>
+                        <td>
+                            <a href="{% url 'pedidos:recepcionDePedido' pedido.id %}"><i class="fa-solid fa-list-check" title="Agregar Recepcion"></i></a>
                         </td>
                         <td>               
                             {% comment %} <a href="editar/{{pedido.id}}"><i class="fa-solid fa-pen-to-square" title="Editar"></i></a>                 

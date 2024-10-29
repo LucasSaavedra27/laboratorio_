@@ -1,5 +1,5 @@
 from django import forms
-from .models import Proveedor, Pedido, DetallePedido, Insumo
+from .models import Proveedor, Pedido, DetallePedido, RecepcionPedido, DetalleRecepcionPedido
 
 from django.forms.models import inlineformset_factory
 
@@ -133,4 +133,50 @@ DetallePedidoFormSet = inlineformset_factory(
     extra=1,  # comienza mostrando 1 formulario
     can_delete=True  # permite borrar el formulario
 )
+#---------------------------------------RECEPCIONPEDIDOS--------------------------------------------------------
+class FormularioRecepcionPedido(forms.ModelForm):
+    class Meta:
+        model = RecepcionPedido
+        fields = [
+            'empleado', 
+            'fechaDeRecepcion',
+            'pedido'
+        ]
+        labels = {
+            'empleado': 'Empleado',
+            'fechaDeRecepcion': 'Fecha de Recepción',
+            'pedido': 'pedido',
+        } 
+        widgets = {
+            'empleado': forms.TextInput(attrs={'class': 'form-control', 'readonly': 'readonly'}),
+            'fechaDeRecepcion': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'pedido': forms.TextInput(attrs={'class': 'form-control', 'readonly': 'readonly'}),
+        }
         
+        error_messages = {
+            'fechaDeRecepcion': {
+                'required': 'Ingresar fecha de recepción.',
+            },
+        }
+        
+class DetalleRecepcionPedidoForm(forms.ModelForm):
+    class Meta:
+        model = DetalleRecepcionPedido
+        fields = ['detallePedido', 'cantidadRecibida', 'estado']
+        labels = {
+            'detallePedido': 'Detalle',
+            'cantidadRecibida': 'Cantidad Recibida',
+            'estado': 'Estado',
+        } 
+        widgets = {
+            'detallePedido': forms.TextInput(attrs={'readonly': 'readonly', 'class': 'form-control'}),
+            'cantidadRecibida': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
+            'estado': forms.Select(attrs={'class': 'form-control'}),
+        }
+
+DetalleRecepcionPedidoFormSet = forms.inlineformset_factory(
+    RecepcionPedido,
+    DetalleRecepcionPedido,
+    form=DetalleRecepcionPedidoForm,
+    extra=0,
+)

@@ -48,18 +48,19 @@ class DetallePedido(models.Model):
 class RecepcionPedido(models.Model):
     empleado = models.ForeignKey(Empleado,on_delete=models.CASCADE,related_name='empleado')
     fechaDeRecepcion = models.DateField(blank=False,null=False)
+    pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name='recepciones', null=True)
     
     def __str__(self):
         return f"{self.empleado.nombre} {self.empleado.apellido} {self.fechaDeRecepcion}"
     
 class DetalleRecepcionPedido(models.Model):
+    recepcionPedido = models.ForeignKey(RecepcionPedido, on_delete=models.CASCADE, related_name='detalleRecepcionPedido', null=True)
     detallePedido = models.ForeignKey(DetallePedido,on_delete=models.CASCADE,related_name='detalleRecepcionPedido')
-    
     ESTADO = [
         ('completo','Completo'),
         ('incompleto','Incompleto'),
     ]
-    cantidadRecibida = models.PositiveBigIntegerField(blank=False, null=False)
+    cantidadRecibida = models.PositiveBigIntegerField(blank=False, null=False, default=0)
     estado = models.CharField(max_length=10,choices=ESTADO,blank=False,null=False)
     
     def __str__(self):
