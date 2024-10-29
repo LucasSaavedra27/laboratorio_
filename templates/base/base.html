@@ -33,12 +33,12 @@
                   <p>{{user.username}}</p>
                 </a>
             </div>
-              <a href="{% url 'logout' %} " id="cerrarSesion">Cerrar Sesión</a> 
+              <a href="{% url 'inicio:logout' %} " id="cerrarSesion">Cerrar Sesión</a> 
           </div>
             
           {% else %}
             <div class="usuario">
-              <a href="{% url 'login' %}">
+              <a href="{% url 'inicio:login' %}">
                 <i class="fa-regular fa-user"></i>
                 <p>Iniciar Sesión</p>
               </a>

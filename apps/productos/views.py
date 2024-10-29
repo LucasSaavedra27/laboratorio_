@@ -2,14 +2,12 @@ from datetime import datetime
 import os
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
 from apps.productos.models import Producto
 from apps.productos.forms import FormularioProducto
 from fpdf import FPDF
 from django.conf import settings
 
 
-@login_required
 def productos(request):
     productos = Producto.objects.all()  # Obtén todos los productos de la base de datos
     return render(request, 'productos/productos.html', {'productos': productos})
