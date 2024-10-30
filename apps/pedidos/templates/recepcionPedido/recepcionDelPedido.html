@@ -6,22 +6,9 @@
     <div class="col-12">
         <h2 class="text-center pb-3">Recepción de Pedido {{ pedido.id }}</h2>
         <div class="busqueda d-flex">
-            <form class="d-flex align-items-center justify-content-center" role="search" method="POST" action="{% url 'pedidos:buscarProveedor' %}">
-                {% csrf_token %}
-                <input
-                    class="form-control mb-3"
-                    type="search"
-                    placeholder="Buscar por dni"
-                    aria-label="buscar"
-                    name="busqueda" 
-                    value="{{ busqueda|default:'' }}" 
-                />
-                
-                <button class="btn" type="submit">
-                    <i class="fa-solid fa-magnifying-glass" style="font-size: 16px" title="Buscar"></i>
-                </button>
-                <a href="/proveedores"><i class="fa-solid fa-rotate-left" title="Recargar página"></i></a>
-            </form>
+            <div class="d-flex align-items-center justify-content-center">
+                <a href="{% url 'pedidos:recepcionDePedido' pedido.id %}"><i class="fa-solid fa-rotate-left" id="recargaPagRecepcion" title="Recargar página" style="font-size: 25px;color:#a63348"></i></a>
+            </div>
             
             {% if mostrar_boton %}
             <div class="btn-modal">
@@ -51,10 +38,10 @@
                     <tr>
                         <th scope="col">Proveedor</th>
                         <th scope="col">Fecha Pedido</th>
-                        <th scope="col">Estado</th>
+                        <th scope="col">Estado Pedido</th>
                         <th scope="col">Total</th>
                         <th scope="col">Detalle</th>
-                        <th scope="col">Opciones</th>
+                        <th scope="col">Estado Recepción</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -71,14 +58,17 @@
                         <td>
                             <a href="{% url 'pedidos:verDetallePedidoDesdeRecepcion' pedido.id %}"><i class="fa-solid fa-eye" title="Ver detalles"></i></a>
                         </td>
-                        <td>               
-                            {% comment %} <a href="editar/{{proveedor.id}}"><i class="fa-solid fa-pen-to-square" title="Editar"></i></a>                 
-                            <a href="eliminar/{{proveedor.id}}"><i class="fa-solid fa-trash-can" title="Eliminar"></i></a>              {% endcomment %}
-                        </td>
                     </tr>
+                    {% for detalle, estado in detalles_con_estados %}
+                    <tr>
+                        <td>{{ detalle.insumos.nombre }}</td>
+                        <td>{{ detalle.cantidadPedida }}</td>
+                        <td>{{ estado }}</td> <!-- Muestra el estado de cada detalle -->
+                    </tr>
+                    {% endfor %}
                     {% if not pedido %} 
                     <tr>
-                        <td colspan="10">No hay proveedores disponibles.</td>
+                        <td colspan="10">No hay pedidos disponibles.</td>
                     </tr>
                     {% endif %}
                     {% if mensaje %}
@@ -92,6 +82,9 @@
                     {% endif %}
                 </tbody>
             </table>
+        </div>
+        <div class="d-flex justify-content-center align-items-center">
+            <a href="{% url 'pedidos:pedidos' %}" class="btn-volver"><i class="fa-solid fa-arrow-left"></i> Volver</a>
         </div>
     </div>
 </div>
