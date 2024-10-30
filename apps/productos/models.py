@@ -25,7 +25,7 @@ class Producto(models.Model):
     fechaDeVencimiento = models.DateField(blank=False,null=False)
     categoria = models.CharField(max_length=15,choices=CATEGORIAS,blank=False,null=False)
     unidadDeMedida = models.CharField(max_length=10,choices=UNIDADES_MEDIDA,blank=False,null=False,default='unidad')
-    cantidadDisponible = models.PositiveIntegerField(blank=False,null=False)
+    cantidadDisponible = models.DecimalField(max_digits=10, decimal_places=2,blank=False,null=False)
     cantidadMinRequerida = models.PositiveIntegerField(blank=False,null=False)
     
     def __str__(self):

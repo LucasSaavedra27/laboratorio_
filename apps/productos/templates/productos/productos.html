@@ -48,9 +48,11 @@
                         <td>{{ producto.categoria }}</td>
                         <td>{{ producto.unidadDeMedida }}</td>
                         {% if producto.cantidadDisponible <= producto.cantidadMinRequerida %}
-                        <td style="background-color: #d81111;">{{ producto.cantidadDisponible }}</td>
+                            <td style="background-color: #d81111;">{{ producto.cantidadDisponible }}</td>
                         {% else %}
-                        <td>{{ producto.cantidadDisponible }}</td>
+                            <td>
+                                {{ producto.cantidadDisponible }}
+                            </td>
                         {% endif %}
                         <td>{{ producto.cantidadMinRequerida }}</td>
                         <td>

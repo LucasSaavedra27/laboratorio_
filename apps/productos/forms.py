@@ -11,7 +11,8 @@ class FormularioProducto(forms.ModelForm):
             'precioDeCosto', 
             'fechaDeElaboracion', 
             'fechaDeVencimiento', 
-            'categoria', 
+            'categoria',
+            'unidadDeMedida',
             'cantidadDisponible', 
             'cantidadMinRequerida',
         ]
@@ -22,6 +23,7 @@ class FormularioProducto(forms.ModelForm):
             'fechaDeElaboracion': 'Fecha de Elaboración',
             'fechaDeVencimiento': 'Fecha de Vencimiento',
             'categoria': 'Categoría',
+            'unidadDeMedida':'Unidad de medida',
             'cantidadDisponible': 'Cantidad Disponible',
             'cantidadMinRequerida': 'Cantidad Mínima Requerida',
         }
@@ -37,7 +39,8 @@ class FormularioProducto(forms.ModelForm):
             'fechaDeElaboracion': forms.DateInput(attrs={'type': 'date','class': 'form-control'}),
             'fechaDeVencimiento': forms.DateInput(attrs={'type': 'date','class': 'form-control'}),
             'categoria': forms.Select(attrs={'class': 'form-control'}), 
-            'cantidadDisponible': forms.NumberInput(attrs={'class': 'form-control'}),
+            'unidadDeMedida': forms.Select(attrs={'class': 'form-control'}), 
+            'cantidadDisponible': forms.NumberInput(attrs={'class': 'form-control','step': '0.01'}),
             'cantidadMinRequerida': forms.NumberInput(attrs={'class': 'form-control'}),
         }
         

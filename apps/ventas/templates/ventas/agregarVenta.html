@@ -17,13 +17,13 @@
                     {% for form in detalleVentaFormset %}
                         <div class="detalle-form">
                             {{ form.as_p }}
-                            <h5 class="subtotal" id="detalleVenta-{{ forloop.counter0 }}-subtotal">Subtotal: $0.00</h5> <!-- Subtotal para cada detalle -->
+                            <h5 class="subtotal" id="detalleVenta-{{ forloop.counter0 }}-subtotal">Subtotal: $<span id="id_producto-{{ forloop.counter0 }}-precio"></span></h5>
                         </div>
                     {% endfor %}
                 </div>
-                <div class="">
-                    <button type="button" class="btn btn-secondary mt-3" id="btn-addProd">Agregar producto</button>
-                    <h4 class="total">Total: $</h4>
+                <button type="button" class="btn btn-secondary mt-3" id="btn-addProd">Agregar producto</button>
+                <div class="d-flex justify-content-end">
+                    <h4 class="total">Total: $<span id="id_total_ventas"></span></h4>
                 </div>
                 <button type="submit" class="btn btn-addVenta w-100 mt-3">Guardar Venta</button>
                 <a href="{% url 'ventas:ventas' %}" class="btn btn-cancelProd w-100 mt-2">Cancelar</a>
@@ -36,37 +36,112 @@
 {% block js %}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('btn-addProd').addEventListener('click', function() {
-                const formsetContainer = document.getElementById('detalleVentaContainer');// se obtiene el contenedor de los formularios de detall de venta
-                const totalForms = document.getElementById('id_detalleVenta-TOTAL_FORMS'); 
+        const formsetContainer = document.getElementById('detalleVentaContainer');
+        const totalForms = document.getElementById('id_detalleVenta-TOTAL_FORMS');
+        const ElementoTotal = document.getElementById('id_total_ventas');
 
-                // Verificamos que el campo TOTAL_FORMS existe
-                if (totalForms) {
-                    const contadorForm = parseInt(totalForms.value);
-                    
-                    const nuevoForm = formsetContainer.children[contadorForm - 1].cloneNode(true);// se clona el último formulario
+        // Función para agregar un nuevo formulario de detalle de venta
+        document.getElementById('btn-addProd').addEventListener('click', function() {
+            if (totalForms) {
+                const contadorForm = parseInt(totalForms.value);
+                const nuevoForm = formsetContainer.children[contadorForm - 1].cloneNode(true);
 
-                    const inputs = nuevoForm.getElementsByTagName('input');//se obtienen los inputs del formulario para limpiarlos
-                    for (let input of inputs) { // Limpia los valores del nuevo formulario
-                        input.value = '';
-                    }
-                    
-                    nuevoForm.querySelectorAll('input, select').forEach((element) => { // vamos a Actualizar los nombres y IDs de los campos del nuevo formulario (lo vemos en el html)
-                        element.name = element.name.replace(/-\d+-/, `-${contadorForm}-`);
-                        element.id = element.id.replace(/-\d+-/, `-${contadorForm}-`);
-                    });
-
-                    // Incrementa el contador de formularios
-                    totalForms.value = contadorForm + 1;
-
-                    // Agrega el nuevo formulario al contenedor
-                    formsetContainer.appendChild(nuevoForm);
-                } else {
-                    console.error('El elemento TOTAL_FORMS no se encuentra en el DOM.');
+                // Limpiar valores de los inputs en el formulario clonado
+                const inputs = nuevoForm.getElementsByTagName('input');
+                for (let input of inputs) {
+                    input.value = '';
                 }
-            });
+
+                // Actualizar los nombres y IDs de los campos del nuevo formulario
+                nuevoForm.querySelectorAll('input, select').forEach((element) => {
+                    element.name = element.name.replace(/-\d+-/, `-${contadorForm}-`);
+                    element.id = element.id.replace(/-\d+-/, `-${contadorForm}-`);
+                });
+
+                const subtotalSpan = nuevoForm.querySelector('.subtotal span');
+                subtotalSpan.id = `id_producto-${contadorForm}-precio`;
+
+                // Incrementar el contador de formularios y agregar el nuevo formulario al contenedor
+                totalForms.value = contadorForm + 1;
+                formsetContainer.appendChild(nuevoForm);
+
+                // Agregar el evento para calcular subtotal y total al nuevo formulario
+                agregarEventosFormulario(contadorForm);
+            } else {
+                console.error('El elemento TOTAL_FORMS no se encuentra en el DOM.');
+            }
         });
-    </script>
-    <script src="{% static 'js/tratamientoFechas.js'%}"></script>
+
+        // Función para agregar eventos de cálculo a cada formulario de detalle de venta
+        function agregarEventosFormulario(formIndex) {
+            const productoSelect = document.getElementById(`id_detalleVenta-${formIndex}-producto`);
+            const cantidadProducto = document.getElementById(`id_detalleVenta-${formIndex}-cantidad`);
+            const productoPrecio = document.getElementById(`id_producto-${formIndex}-precio`);
+
+            if (productoSelect && cantidadProducto && productoPrecio) {
+                // Escuchar cambios en el campo de cantidad y en el producto seleccionado
+                productoSelect.addEventListener('change', actualizarSubtotal);
+                cantidadProducto.addEventListener('input', actualizarSubtotal);
+
+                function actualizarSubtotal() {
+                    const productoId = productoSelect.value;
+                    const cantidad = parseFloat(cantidadProducto.value) || 0;
+
+                    if (productoId) {
+                        fetch(`/ventas/obtener-precio-producto/${productoId}/`)
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.precio) {
+                                    let subtotal = data.precio * cantidad;
+                                    productoPrecio.textContent = subtotal.toFixed(2); // Mostrar subtotal formateado
+
+                                    // Actualizar el total general de todos los subtotales
+                                    actualizarTotal();
+                                } else {
+                                    productoPrecio.textContent = '0';
+                                    actualizarTotal();
+                                    alert(data.error || 'Error al obtener el precio');
+                                }
+                            })
+                            .catch(error => console.error('Error:', error));
+                    } else {
+                        productoPrecio.textContent = '';
+                        actualizarTotal();
+                    }
+                }
+            } else {
+                console.error(`Elementos del formulario de índice ${formIndex} no encontrados.`);
+            }
+        }
+
+        // Función para actualizar el total general
+        function actualizarTotal() {
+            let totalVenta = 0;
+
+            // Sumar subtotales de cada producto
+            document.querySelectorAll('h5.subtotal span[id^="id_producto-"][id$="-precio"]').forEach((span) => {
+                const subtotal = parseFloat(span.textContent) || 0;
+                totalVenta += subtotal;
+            });
+
+            if (ElementoTotal) {
+                ElementoTotal.textContent = totalVenta.toFixed(2); // Mostrar el total formateado
+            } else {
+                console.error('Elemento de total no encontrado en el DOM.');
+            }
+        }
+
+        // Agregar eventos al formulario inicial
+        if (totalForms) {
+            for (let i = 0; i < parseInt(totalForms.value); i++) {
+                agregarEventosFormulario(i);
+            }
+        } else {
+            console.error('Elemento TOTAL_FORMS no encontrado en el DOM.');
+        }
+    });
+
+</script>
+<script src="{% static 'js/tratamientoFechas.js'%}"></script>
 {% endblock %}
 

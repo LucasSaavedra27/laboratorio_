@@ -6,7 +6,8 @@ from apps.usuarios.models import Empleado
 from fpdf import FPDF
 from datetime import datetime
 import os
-from django.http import HttpResponse
+from django.http import HttpResponse,JsonResponse
+from apps.productos.models import Producto
 
 def ventas(request):
     ventas = Venta.objects.all()
@@ -171,7 +172,7 @@ def exportarPDF(request):
                pdf.cell(40, 10, "Consumidor Final", 1, 0, 'C', fill=True)
             else:
                 pdf.cell(40, 10, f"{venta.clienteMayorista.cuil}", 1, 0, 'C', fill=True)
-            pdf.cell(25, 10, f"{venta.total:.2f}", 1, 0, 'C', fill=True)  # Con `.2f` para el total decimal
+            pdf.cell(25, 10, f"${venta.total:.2f}", 1, 0, 'C', fill=True)  # Con `.2f` para el total decimal
             pdf.cell(30, 10, f"{venta.empleado.dni}", 1, 1, 'C', fill=True)
     else:
         pdf.cell(0, 10, "No hay productos disponibles.", 0, 1, 'C')
@@ -179,3 +180,10 @@ def exportarPDF(request):
     response = HttpResponse(pdf.output(dest='S').encode('latin1'), content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="reporteProductos.pdf"'
     return response
+
+def obtener_precio_producto(request, producto_id):
+    try:
+        producto = Producto.objects.get(id=producto_id)
+        return JsonResponse({'precio': str(producto.precioDeVenta)})
+    except Producto.DoesNotExist:
+        return JsonResponse({'error': 'Producto no encontrado'}, status=404)
