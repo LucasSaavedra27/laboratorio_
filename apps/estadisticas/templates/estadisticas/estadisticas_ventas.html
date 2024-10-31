@@ -4,11 +4,11 @@
 {% block titulo %}Estadísticas de Ventas{% endblock %}
 
 {% block contenido %}
-<div class="contenedor-estadisticas container mt-5">
+<div class="contenedor-estadisticas container mt-5 mx-0 justify-content-center">
     <h2 class="text-center">Estadísticas de Ventas</h2>
-    <div class="row">
+    <div class="row justify-content-center">
         <!-- Gráfico de Ventas Totales por Empleado -->
-        <div class="col-md-6">
+        <div class="col-md-4">
             <h3 class="text-center">Ventas Totales por Empleado</h3>
             <div class="chart-container">
                 {{ graph_empleado_html|safe }}
@@ -16,10 +16,18 @@
         </div>
         
         <!-- Gráfico de Ventas Totales por Mes -->
-        <div class="col-md-6">
+        <div class="col-md-4">
             <h3 class="text-center">Ventas Diarias por Mes</h3>
             <div class="chart-container">
                 {{ graph_mes_html|safe }}
+            </div>
+        </div>
+
+        <!-- Gráfico de Ventas Totales por Mes -->
+        <div class="col-md-4">
+            <h3 class="text-center">Ventas Diarias por Mes</h3>
+            <div class="chart-container">
+                {{ graph_categorias_html|safe }}
             </div>
         </div>
     </div>
