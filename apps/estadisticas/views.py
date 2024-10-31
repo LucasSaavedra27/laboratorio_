@@ -7,7 +7,7 @@ import pandas as pd
 
 
 def estadisticas_ventas(request):
-    # --- Gráfico de ventas totales por empleado  --- #
+    # --- Grafico de ventas totales por empleado  --- #
     datos_ventas_empleado = Venta.objects.values( # pylint: disable=no-member
         "empleado__nombre", "empleado__apellido"
     ).annotate(total_ventas=Sum("total"))
@@ -29,7 +29,7 @@ def estadisticas_ventas(request):
     # Se convierte a HTML
     graph_empleado_html = fig_empleado.to_html(full_html=False)
 
-    # --- Gráfico de ventas totales por mes  --- #
+    # --- Grafico de ventas totales por mes  --- #
     datos_ventas_mes = Venta.objects.values( # pylint: disable=no-member
         "fechaDeVenta__year", "fechaDeVenta__month", "fechaDeVenta__day"
     ).annotate(total_ventas=Sum("total"))
@@ -59,7 +59,7 @@ def estadisticas_ventas(request):
     # Se convierte a HTML
     graph_mes_html = fig_mes.to_html(full_html=False)
 
-    # --- Gráfico de ventas agrupadas por categoria de productos y dia del mes  --- #
+    # --- Grafico de ventas agrupadas por categoria de productos y dia del mes  --- #
     
     # Se filtra las ventas del mes actual
     hoy = date.today()
