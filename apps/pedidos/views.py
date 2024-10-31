@@ -77,22 +77,29 @@ def pedidos(request):
 
         if pedidoForm.is_valid() and detallePedidoFormset.is_valid():
             # Guarda el pedido sin calcular el total aún
-            pedido = pedidoForm.save()
+            pedido = pedidoForm.save(commit=False)
 
             # Guarda cada detalle y calcula el total después de que el pedido tiene un ID
             totalPedido = 0
+            detalles_guardados = False
             for detalle_form in detallePedidoFormset:
-                detalle = detalle_form.save(commit=False)
-                detalle.pedido = pedido  # Asigna el pedido a cada detalle
-                detalle.save()
-                # Acumula el subtotal de cada detalle en totalPedido
-                totalPedido += detalle.subTotal  # Asegúrate de que `subTotal` esté definido y calculado en `DetallePedido`
-
+                if detalle_form.cleaned_data.get('DELETE'):
+                    continue
+                if detalle_form.is_valid():
+                    detalle = detalle_form.save(commit=False)
+                    detalle.pedido = pedido  # Asigna el pedido a cada detalle
+                    detalle.save()
+                    # Acumula el subtotal de cada detalle en totalPedido
+                    totalPedido += detalle.subTotal  # Asegúrate de que `subTotal` esté definido y calculado en `DetallePedido`
+                    detalles_guardados = True
+                    
             # Actualiza el campo `precioTotalDelPedido` y guarda el pedido
-            pedido.precioTotalDelPedido = totalPedido
-            pedido.save()
-
-            return redirect('/pedidos')
+            if detalles_guardados:
+                pedido.precioTotalDelPedido = totalPedido
+                pedido.save()
+                return redirect('/pedidos')
+            else:
+                pedidoForm.add_error(None, "Se debe agregar al menos un detalle al pedido.")
     else:
         pedidoForm = FormularioPedido()  # Crear un nuevo formulario vacío
         detallePedidoFormset = DetallePedidoFormSet()  # Crear un nuevo formset vacío

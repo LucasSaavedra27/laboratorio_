@@ -14,6 +14,7 @@
                         <th scope="col">Precio del insumo</th>
                         <th scope="col">cantidad</th>
                         <th scope="col">Unidad de medida</th>
+                        <th scope="col">Obs</th>
                         <th scope="col">Total</th>
                     </tr>
                 </thead>
@@ -25,6 +26,7 @@
                         <td>${{ detallePedido.insumos.precioInsumo }}</td>
                         <td>{{ detallePedido.cantidadPedida }}</td>
                         <td>{{ detallePedido.insumos.unidadDeMedida }}</td>
+                        <td>{{ detallePedido.observaciones }}</td>
                         <td>${{ detallePedido.subTotal }}</td>
                     </tr>
                     {% empty %}
@@ -35,7 +37,7 @@
                 </tbody>
                 <tfoot class="bg-table">
                     <tr>
-                        <td colspan="5" class="text-end"><strong>Total:</strong></td>
+                        <td colspan="6" class="text-end"><strong>Total:</strong></td>
                         <td><strong>${{ pedido.precioTotalDelPedido }}</strong></td>
                     </tr>
                 </tfoot>
