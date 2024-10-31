@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'apps.productos',
     'apps.usuarios',
     'apps.ventas',
+    'apps.estadisticas',
     'django_extensions',
 ]
 

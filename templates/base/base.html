@@ -53,7 +53,7 @@
       <div class="cont-menu">
         <nav>
           {% if user.is_superuser %}
-            <a href="/html/estadisticas.html"><i class="fa-solid fa-chart-simple"></i>Estadísticas</a>
+            <a href="{% url 'estadisticas:estadisticas_ventas' %}"><i class="fa-solid fa-chart-simple"></i>Estadísticas</a>
             <a href="{% url 'productos:productos' %}"><i class="fa-solid fa-bread-slice"></i>Productos</a>
             <a href="{% url 'ventas:listadoMayoristas' %}"><i class="fa-solid fa-person-circle-check"></i>Clientes</a>
             <a href="/html/gestion_compras.html"><i class="fa-solid fa-cart-shopping"></i>Compras</a>
@@ -92,7 +92,7 @@
             <a href="/html/index.html" class="nav-link px-2">Inicio</a>
           </li>
           <li class="nav-item">
-            <a href="/html/estadisticas.html" class="nav-link px-2">Estadísticas</a>
+            <a href="{% url 'estadisticas:estadisticas_ventas' %}" class="nav-link px-2">Estadísticas</a>
           </li>
           <li class="nav-item">
             <a href="/html/productos.html" class="nav-link px-2">Productos</a>

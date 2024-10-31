@@ -448,10 +448,13 @@ form #form-busqueda {
   margin: 30px;
 }
 
-.contenedor-agregarProd,.contenedor-agregarVenta{
+.contenedor-agregarProd,.contenedor-agregarVenta {
   padding-top: 160px;
 }
 
+.contenedor-estadisticas {
+  padding-top: 100px;
+}
 .card-agregarProd,.card-agregarVenta{
   padding: 30px;
   width: 30%;
@@ -490,3 +493,8 @@ form #form-busqueda {
   width: 200px;
 }
 
+.chart-container {
+  max-width: 600px; /* Ajusta este valor según el tamaño que prefieras */
+  height: 400px; /* También ajusta este valor según la altura deseada */
+  margin: 0 auto; /* Centra el gráfico en la pantalla */
+}
