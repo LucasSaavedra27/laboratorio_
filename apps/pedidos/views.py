@@ -317,39 +317,40 @@ def recepcionPedido(request, pedido_id):
 
     if request.method == "POST":
         recepPedidoForm = FormularioRecepcionPedido(request.POST)
-        recepcion = recepPedidoForm.save(commit=False)
-        detalleRecepPedidoFormset = DetalleRecepcionPedidoFormSet(request.POST, instance=recepcion)
-        
-        if recepPedidoForm.is_valid() and detalleRecepPedidoFormset.is_valid():
+        detalleRecepPedidoFormset = DetalleRecepcionPedidoFormSet(request.POST)  # Inicializar aquí
+
+        if recepPedidoForm.is_valid():
+            recepcion = recepPedidoForm.save(commit=False)
             recepcion.empleado = empleado
             recepcion.pedido = pedido
-            recepcion.save()
-            print("Recepcion guardada:", recepcion)
-            detalleRecepPedidoFormset.instance = recepcion
-            detalleRecepPedidoFormset.save()
-            
-            for i, detalle_form in enumerate(detalleRecepPedidoFormset):
-                detalle = detalle_form.save(commit=False)
-                detalle.detallePedido = detalle_form.cleaned_data.get('detallePedido')
-                
-                # Verificar y establecer el estado
-                if detalle.detallePedido.cantidadPedida > detalle.cantidadRecibida:
-                    detalle.estado = 'incompleto'
-                elif detalle.detallePedido.cantidadPedida == detalle.cantidadRecibida:
-                    detalle.estado = 'completo'
-                else:
-                    detalle.estado = 'erroneo'
-                    
-                detalle.recepcionPedido = recepcion
-                detalle.save()
-                print("Detalle guardado:", detalle)
-                
-                # Actualizar la cantidad disponible del insumo
-                insumo = detalle.detallePedido.insumos 
-                insumo.cantidadDisponible += detalle.cantidadRecibida
-                insumo.save()
+            recepcion.save()  # Guarda la recepción primero
 
-            return redirect('pedidos:recepcionDePedido', pedido_id=pedido.id)
+            if detalleRecepPedidoFormset.is_valid():
+                for detalle_form in detalleRecepPedidoFormset:
+                    detalle = detalle_form.save(commit=False)
+                    
+                    # Verificar y establecer el estado
+                    if detalle.detallePedido.cantidadPedida > detalle.cantidadRecibida:
+                        detalle.estado = 'incompleto'
+                    elif detalle.detallePedido.cantidadPedida == detalle.cantidadRecibida:
+                        detalle.estado = 'completo'
+                    else:
+                        detalle.estado = 'erroneo'
+
+                    detalle.recepcionPedido = recepcion  # Usa la instancia, no el ID
+                    detalle.save()
+                    print("Detalle guardado:", detalle)
+                    
+                    # Actualizar la cantidad disponible del insumo
+                    insumo = detalle.detallePedido.insumos 
+                    insumo.cantidadDisponible += detalle.cantidadRecibida
+                    insumo.save()
+
+                return redirect('pedidos:recepcionDePedido', pedido_id=pedido.id)
+            else:
+                print("Errores en el formset:", detalleRecepPedidoFormset.errors)
+        else:
+                print("Errores en el formset:", detalleRecepPedidoFormset.errors)
     else:
         recepPedidoForm = FormularioRecepcionPedido(initial={'empleado': empleado, 'pedido': pedido})
         # Crear el formset de detalle de recepción
@@ -358,7 +359,7 @@ def recepcionPedido(request, pedido_id):
         # Añadir formularios para cada detalle de pedido
         for detalle in detalles_pedido:
             detalleRecepPedidoFormset.forms.append(
-                DetalleRecepcionPedidoForm(initial={'detallePedido': detalle.id})  # Usar el ID del DetallePedido
+                DetalleRecepcionPedidoForm(initial={'detallePedido': detalle.__str__})  # Usar el ID del DetallePedido
             )
     
     return render(request, 'recepcionPedido/recepcionDelPedido.html', {

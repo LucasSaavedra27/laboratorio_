@@ -7,11 +7,12 @@
             <h2 class="text-center">Detalles Recepcion de Pedido</h2>
             <table class="table">
                 <div><strong>Número de Pedido: {{recepcionPedido.pedido.id}}</strong></div>
+                <div><strong>Recibe: {{recepcionPedido.empleado}}</strong></div>
+                <div><strong>Fecha: {{recepcionPedido.fechaDeRecepcion}}</strong></div>
+
                 <thead class="bg-table">
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Recibe</th>
-                        <th scope="col">Fecha</th>
                         <th scope="col">Insumo</th>
                         <th scope="col">Cantidad Pedida</th>
                         <th scope="col">Cantidad Recibida</th>
@@ -22,12 +23,10 @@
                     {% for detalleRecepcion in detallesRecepcionPedido %} 
                     <tr>
                         <th scope="row">{{ forloop.counter }}</th>
-                        <td>{{ detalleRecepcion.empleado }}</td>
-                        <td>${{ detalleRecepcion.fechaDeRecepcion }}</td>
                         <td>{{ detalleRecepcion.detallePedido.insumos }}</td>
                         <td>{{ detalleRecepcion.detallePedido.cantidadPedida }}</td>
-                        <td>${{ detalleRecepcion.cantidadRecibida }}</td>
-                        <td>${{ detalleRecepcion.estado }}</td>
+                        <td>{{ detalleRecepcion.cantidadRecibida }}</td>
+                        <td>{{ detalleRecepcion.estado }}</td>
                     </tr>
                     {% empty %}
                     <tr>

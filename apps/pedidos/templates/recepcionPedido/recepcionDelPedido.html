@@ -40,7 +40,7 @@
                         <th scope="col">Fecha Pedido</th>
                         <th scope="col">Estado Pedido</th>
                         <th scope="col">Total</th>
-                        <th scope="col">Detalle</th>
+                        <th scope="col">Detalle Pedido</th>
                         <th scope="col">Estado Recepción</th>
                     </tr>
                 </thead>
@@ -56,11 +56,11 @@
                         <td style="background-color: #4bf156;">{{ pedido.estadoPedido }}</td>{% endif %}
                         <td>{{ pedido.precioTotalDelPedido }}</td>
                         <td>
-                            <a href="{% url 'pedidos:verDetallePedidoDesdeRecepcion' pedido.id %}"><i class="fa-solid fa-eye" title="Ver detalles"></i></a>
+                            <a href="{% url 'pedidos:verDetallePedidoDesdeRecepcion' pedido.id %}"><i class="fa-solid fa-eye" title="Ver detalles Pedido"></i></a>
                         </td>
                         <td>
                             {% if celdaRecepcion %} 
-                            <a href="{% url 'pedidos:verDetallesRecepcionPedido' pedido.id %}"><i class="fa-solid fa-eye" title="Ver detalles"></i></a>
+                            <a href="{% url 'pedidos:verDetallesRecepcionPedido' pedido.id %}"><i class="fa-solid fa-eye" title="Ver detalles Recepcion"></i></a>
                             {% endif %}
                         </td>
                     </tr>

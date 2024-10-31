@@ -85,7 +85,7 @@
                         </td>{% endif %}
                         <td>{{ pedido.precioTotalDelPedido }}</td>
                         <td>
-                            <a href="{% url 'pedidos:verDetallePedido' pedido.id %}"><i class="fa-solid fa-eye" title="Ver detalles"></i></a>
+                            <a href="{% url 'pedidos:verDetallePedido' pedido.id %}"><i class="fa-solid fa-eye" title="Ver detalle pedido {{pedido.id}}"></i></a>
                         </td>
                         {% if pedido.estadoPedido == 'confirmado' %}
                         <td>
