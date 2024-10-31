@@ -59,6 +59,7 @@ class DetalleRecepcionPedido(models.Model):
     ESTADO = [
         ('completo','Completo'),
         ('incompleto','Incompleto'),
+        ('erroneo','Erroneo'),
     ]
     cantidadRecibida = models.PositiveBigIntegerField(blank=False, null=False, default=0)
     estado = models.CharField(max_length=10,choices=ESTADO,blank=False,null=False)

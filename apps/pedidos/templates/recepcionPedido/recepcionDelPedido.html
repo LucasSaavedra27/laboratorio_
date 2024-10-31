@@ -58,14 +58,12 @@
                         <td>
                             <a href="{% url 'pedidos:verDetallePedidoDesdeRecepcion' pedido.id %}"><i class="fa-solid fa-eye" title="Ver detalles"></i></a>
                         </td>
+                        <td>
+                            {% if celdaRecepcion %} 
+                            <a href="{% url 'pedidos:verDetallesRecepcionPedido' pedido.id %}"><i class="fa-solid fa-eye" title="Ver detalles"></i></a>
+                            {% endif %}
+                        </td>
                     </tr>
-                    {% for detalle, estado in detalles_con_estados %}
-                    <tr>
-                        <td>{{ detalle.insumos.nombre }}</td>
-                        <td>{{ detalle.cantidadPedida }}</td>
-                        <td>{{ estado }}</td> <!-- Muestra el estado de cada detalle -->
-                    </tr>
-                    {% endfor %}
                     {% if not pedido %} 
                     <tr>
                         <td colspan="10">No hay pedidos disponibles.</td>
@@ -100,11 +98,12 @@
                 <form method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
                     {{ recepPedidoForm.as_p }}
+                    
                     <h2>Detalles de la Recepción</h2>
                     {{ detalleRecepPedidoFormset.management_form }}
                     {% for form in detalleRecepPedidoFormset %}
                         <div class="formset_row">
-                            {{ form.as_p }}  <!-- Muestra cada formulario del formset -->
+                            {{ form.as_p }}  <!-- Asegúrate de que los campos sean visibles -->
                         </div>
                     {% endfor %}
                     <button type="submit" class="btn w-100 mt-3 btn-addProv">Guardar Recepción</button>

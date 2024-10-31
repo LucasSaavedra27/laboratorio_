@@ -22,4 +22,5 @@ urlpatterns = [
     
     path('pedidos/recepcionPedido/<pedido_id>',views.recepcionPedido,name='recepcionDePedido'),
     path('pedidos/recepcionPedido/verDetallesPedido/<pedido_id>',views.verDetallePedido,name='verDetallePedidoDesdeRecepcion'),
+    path('pedidos/recepcionPedido/verDetallesRecepcion/<pedido_id>',views.verDetallesRecepcionPedido,name='verDetallesRecepcionPedido'),
 ]
