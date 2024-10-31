@@ -1,0 +1,78 @@
+{%extends 'base/base.html'%}
+{% load static %}
+
+{% block contenido %}
+
+<div class="contenedor-formProd d-flex justify-content-center">
+    <div class="card-formProd">
+        <form class="row g-3" id="form-prod" action="{% url 'ventas:edicionMayorista' %}" method="post" >{% csrf_token %}
+            <div class="col-12">
+                <input type="hidden" name="id" value="{{ cliente.id }}">
+                <label for="nombreClienteRegister" class="form-label"
+                    >Nombre</label
+                >
+                <div class="input-group">
+                    <input type="text" name="nombre" class="form-control" id="nombreClienteRegister" value="{{cliente.nombre}}" placeholder="Ingrese nombre del cliente" required/>
+                </div>
+            </div>
+            <label for="nombreClienteRegister" class="labelTxt" id="nombreClienteLabel"></label>
+
+            <div class="col-12">
+                <label for="apellidoClienteRegister" class="form-label"
+                    >Apellido</label
+                >
+                <div class="input-group">
+                    <input type="text" name="apellido" class="form-control" id="apellidoClienteRegister" value="{{cliente.apellido}}" placeholder="Ingrese apellido del cliente" required/>
+                </div>
+            </div>
+            <label for="apellidoClienteRegister" class="labelTxt" id="apellidoClienteLabel"></label>
+
+            <div class="col-12">
+                <label for="cuilClienteRegister" class="form-label"
+                    >CUIL</label
+                >
+                <div class="input-group">
+                    <input type="text" name="cuil" class="form-control" id="cuilClienteRegister" value="{{cliente.cuil}}" placeholder="Ingrese CUIL del cliente" required/>
+                </div>
+            </div>
+            <label for="cuilClienteRegister" class="labelTxt" id="cuilclienteLabel"></label>
+
+            <div class="col-12">
+                <label for="direccionClienteRegister" class="form-label"
+                    >Dirección</label
+                >
+                <div class="input-group">
+                    <input type="text" name="direccion" class="form-control" id="direccionClienteRegister" value="{{cliente.direccion}}" placeholder="Ingrese dirección del cliente" required/>
+                </div>
+            </div>
+            <label for="direccionClienteRegister" class="labelTxt" id="direccionclienteLabel"></label>
+            
+            <div class="col-12">
+                <label for="telefonoClienteRegister" class="form-label"
+                    >Teléfono</label
+                >
+                <div class="input-group">
+                    <input type="text" name="telefono" class="form-control" id="telefonoClienteRegister" value="{{cliente.telefono}}" placeholder="Ingrese teléfono del cliente" required/>
+                </div>
+            </div>
+            <label for="telefonoClienteRegister" class="labelTxt" id="telclienteLabel"></label>
+
+            <div class="col-12">
+                <label for="mailClienteRegister" class="form-label"
+                    >Email</label
+                >
+                <div class="input-group">
+                    <input type="text" name="mail" class="form-control" id="mailClienteRegister" value="{{cliente.mail}}" placeholder="Ingrese email del cliente" required/>
+                </div>
+            </div>
+            <label for="mailClienteRegister" class="labelTxt" id="mailclienteLabel"></label>
+
+            <div class="col-12">
+                <button class="btn bg-primario w-100 mt-4" type="submit">Registrar</button>
+                <button class="btn bg-secundario w-100 mt-1" type="reset">Restablecer valores</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+

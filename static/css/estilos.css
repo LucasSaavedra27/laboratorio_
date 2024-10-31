@@ -312,6 +312,7 @@ form #form-busqueda {
 .busqueda {
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 10px;
 }
 
 .fa-pen-to-square {
@@ -484,3 +485,8 @@ form #form-busqueda {
   padding: 10px;
   color: #ffffff;
 }
+
+.busquedaFecha{
+  width: 200px;
+}
+

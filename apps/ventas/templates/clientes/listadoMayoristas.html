@@ -1,0 +1,69 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block contenido %}
+<div class="container" id="container-tabla">
+    <div class="col-12">
+        <h2 class="text-center pb-3">Registro de clientes mayoristas</h2>
+        <div class="busqueda d-flex justify-content-between align-items-center">
+            <form class="d-flex align-items-center" role="search" method="POST" action="{% url 'ventas:buscarMayorista' %}">
+                {% csrf_token %}
+                
+                <input class="form-control mb-3" type="search" placeholder="Buscar por cuil" aria-label="buscar" name="busqueda" value="{{ busqueda|default:'' }}" />
+                <button class="btn" type="submit">
+                    <i class="fa-solid fa-magnifying-glass" style="font-size: 16px"></i>
+                </button>
+                <a href="{% url 'ventas:listadoMayoristas' %}" class="ms-2"><i class="fa-solid fa-rotate-left"></i></a>
+                  
+            </form>
+            <a href="{% url 'ventas:agregarMayorista' %}"><i class="fa-solid fa-square-plus" title="Agregar venta" style="font-size: 30px"></i></a>
+            <a class="expPdf" href="{% url 'ventas:exportarPDF_Mayoristas' %}"><i class="expPdf fa-solid fa-file-pdf px-2" style="font-size: 25px"></i>Exportar PDF</a>
+        </div>
+        
+        
+        
+    
+        <div class="table-responsive">
+            <table class="table">
+                <thead class="bg-table">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Apellido</th>
+                        <th scope="col">CUIL</th>
+                        <th scope="col">Dirección</th>
+                        <th scope="col">Teléfono</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Detalle</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cliente in clientes %} 
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>{{ cliente.nombre }}</td>
+                        <td>{{ cliente.apellido }}</td>
+                        <td>{{ cliente.cuil }}</td>
+                        <td>{{ cliente.direccion }}</td>
+                        <td>{{ cliente.telefono }}</td>
+                        <td>{{ cliente.mail}}</td>
+                        <td>
+                            <a href="{% url 'ventas:editarMayorista' cliente.id %}"><i class="fa-solid fa-pen-to-square" title="Editar" data-bs-toggle="modal" data-bs-target="#exampleModal"></i></a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="10">No hay ventas disponibles.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'js/tratamientoFechas.js'%}"></script>
+{% endblock %}

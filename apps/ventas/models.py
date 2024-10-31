@@ -5,7 +5,7 @@ from decimal import Decimal
 # Create your models here.
 
 class ClienteMayorista(Persona):
-    cuil = models.CharField(max_length=10,blank=False, null=False)
+    cuil = models.CharField(max_length=13,blank=False, null=False)
     
     def __str__(self):
         return f"{self.nombre} {self.apellido} {self.cuil}"

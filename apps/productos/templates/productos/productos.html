@@ -15,10 +15,8 @@
                 <a href="{% url 'productos:productos' %}"><i class="fa-solid fa-rotate-left"></i></a>
             </form>
    
-          <a href="{% url 'productos:agregarProducto' %}"><i class="fa-solid fa-square-plus" title="Agregar producto" style="font-size: 30px"></i></a>
-
-          <a class="expPdf" href="{% url 'productos:generarPDF' %}"><i class="fa-solid fa-file-pdf px-2" style="font-size: 25px"></i>Exportar PDF</a>
-
+        <a href="{% url 'productos:agregarProducto' %}"><i class="fa-solid fa-square-plus" title="Agregar producto" style="font-size: 30px"></i></a>
+        <a class="expPdf" href="#" data-bs-toggle="modal" data-bs-target="#pdfModal"><i class="fa-solid fa-file-pdf px-2" style="font-size: 25px"></i>Exportar PDF</a>
         </div>
 
         <div class="table-responsive">
@@ -50,9 +48,11 @@
                         <td>{{ producto.categoria }}</td>
                         <td>{{ producto.unidadDeMedida }}</td>
                         {% if producto.cantidadDisponible <= producto.cantidadMinRequerida %}
-                        <td style="background-color: #d81111;">{{ producto.cantidadDisponible }}</td>
+                            <td style="background-color: #d81111;">{{ producto.cantidadDisponible }}</td>
                         {% else %}
-                        <td>{{ producto.cantidadDisponible }}</td>
+                            <td>
+                                {{ producto.cantidadDisponible }}
+                            </td>
                         {% endif %}
                         <td>{{ producto.cantidadMinRequerida }}</td>
                         <td>
@@ -67,6 +67,22 @@
                     {% endfor %}
                 </tbody>
             </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="pdfModal" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="pdfModalLabel">Seleccione el tipo de reporte</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Elija el tipo de reporte que desea exportar en PDF:</p>
+                <a href="{% url 'productos:generarPDF' %}" class="btn btn-addProd text-center">Todos los productos</a>
+                <a href="{% url 'productos:generarPDF_bajoStock' %}" class="btn btn-addProd text-center">Productos con bajo stock</a>
+            </div>
         </div>
     </div>
 </div>

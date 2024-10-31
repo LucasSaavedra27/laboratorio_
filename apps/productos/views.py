@@ -2,14 +2,12 @@ from datetime import datetime
 import os
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
 from apps.productos.models import Producto, Insumo
 from apps.productos.forms import FormularioProducto, FormularioInsumo
 from fpdf import FPDF
 from django.conf import settings
 
 
-@login_required
 def productos(request):
     productos = Producto.objects.all()  # Obtén todos los productos de la base de datos
     return render(request, 'productos/productos.html', {'productos': productos})
@@ -95,6 +93,10 @@ def tfont(hoja, estilo, fuente='Arial'):
 
 
 class PDF(FPDF):
+    def __init__(self, title):
+        super().__init__()
+        self.title = title
+    
     def header(self):
         logo = os.path.join(settings.BASE_DIR, 'static', 'img', 'logotipo.png')
         
@@ -107,7 +109,7 @@ class PDF(FPDF):
         tcol_set(self, 'red')
         tfont_size(self,30)
         tfont(self,'B')
-        self.cell(w = 0, h = 20, txt = 'Reporte de productos', border = 0, ln=1,
+        self.cell(w = 0, h = 20, txt = self.title, border = 0, ln=1,
                 align = 'C', fill = 0)
 
         tfont_size(self,10)
@@ -133,7 +135,7 @@ class PDF(FPDF):
 
 def generarPDF(request):
     # Crear un objeto FPDF
-    pdf = PDF()
+    pdf = PDF("Reporte de productos")
     pdf.add_page()
     
     # Configuración de la tabla
@@ -181,6 +183,56 @@ def generarPDF(request):
     return response
 
 
+def generarPDF_bajoStock(request):
+    # Crear un objeto FPDF
+    pdf = PDF("Reporte de Stock")
+    pdf.add_page()
+    pdf.cell(w = 0, h = 10, txt = 'Productos bajos y/o vaciós de stock ', border = 0, ln=2,
+                align = 'C', fill = 0)
+    
+    # Configuración de la tabla
+    # Cambiar el color del fondo a verde para los títulos de la tabla
+    bcol_set(pdf, 'red')  # Establece el color verde para el fondo de las celdas
+    tcol_set(pdf, 'white')
+    pdf.set_font("Arial", "B", 12)
+
+    # Dibujar las celdas de los títulos con fondo verde
+    pdf.cell(50, 10, "Nombre", 1, 0, 'C', fill=True)
+    pdf.cell(40, 10, "Fecha Venc", 1, 0, 'C', fill=True)
+    pdf.cell(50, 10, "Cantidad Disponible", 1, 0, 'C', fill=True)
+    pdf.cell(50, 10, "Cantidad Min requerida", 1, 1, 'C', fill=True)
+
+    tcol_set(pdf, 'black')
+    # Cambiar el estilo de fuente para el contenido
+    pdf.set_font("Arial", "", 12)
+
+    # Obtener todos los productos de la base de datos
+    productos = Producto.objects.all()
+
+    # Verificar si hay productos
+    if productos.exists():
+        c = 0  # Contador para alternar el color de las filas
+        for producto in productos:
+            c += 1
+
+            # Alternar el color de fondo entre gris y blanco
+            if c % 2 == 0:
+                bcol_set(pdf, 'gray2')  # Fila gris
+            else:
+                bcol_set(pdf, 'white')  # Fila blanca
+            
+            if producto.cantidadDisponible < producto.cantidadMinRequerida or producto.cantidadDisponible==0 or producto.cantidadDisponible<=(producto.cantidadMinRequerida+10):
+                pdf.cell(50, 10, producto.nombre, 1, 0, 'C', fill=True)
+                pdf.cell(40, 10, f"{producto.fechaDeVencimiento}", 1, 0, 'C', fill=True)
+                pdf.cell(50, 10, f"{producto.cantidadDisponible}", 1, 0, 'C', fill=True)
+                pdf.cell(50, 10, f"{producto.cantidadMinRequerida}", 1, 1, 'C', fill=True)
+    else:
+        pdf.cell(0, 10, "No hay productos disponibles.", 0, 1, 'C')
+
+    # Preparar la respuesta
+    response = HttpResponse(pdf.output(dest='S').encode('latin1'), content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="reporteProductos.pdf"'
+    return response
 #-------------------------------------INSUMOS----------------------------------------------------------
 
 def insumos(request):

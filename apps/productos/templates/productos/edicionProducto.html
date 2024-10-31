@@ -38,7 +38,7 @@
                 <label for="fechaElabRegister" class="form-label"
                 >Fecha de Elaboración</label>
                 <div class="input-group">
-                <input type="date" name="fechaDeElaboracion" class="form-control" id="fechaElabRegister" value="{{producto.fechaDeElaboracion|date:'Y-m-d'}}" required/>
+                <input type="date" name="fechaDeElaboracion" class="form-control" id="fechaElabRegister" value="{{producto.fechaDeElaboracion|date:'Y-m-d'}}" required readonly/>
                 </div>
             </div>
             <label for="fechaElabRegister" class="labelTxt" id="fechaElabLabel"></label>
@@ -47,7 +47,7 @@
                 <label for="fechaVencRegister" class="form-label"
                 >Fecha de Vencimiento</label>
                 <div class="input-group">
-                <input type="date" name="fechaDeVencimiento" class="form-control" id="fechaVencRegister" value="{{producto.fechaDeVencimiento|date:'Y-m-d'}}" required/>
+                <input type="date" name="fechaDeVencimiento" class="form-control" id="fechaVencRegister" value="{{producto.fechaDeVencimiento|date:'Y-m-d'}}" required readonly/>
                 </div>
             </div>
             <label for="fechaVencRegister" class="labelTxt" id="fechaVencLabel"></label>
@@ -69,7 +69,7 @@
             <div class="col-12">
                 <label for="unidadDeMedidaRegister" class="form-label">Unidad de medida</label>
                 <select name="unidadDeMedida" id="unidadDeMedidaRegister" required class="form-control">
-                    <option selected disabled>{{producto.unidadDeMedida}}</option>
+                    <option value="{{producto.unidadDeMedida}}">{{producto.unidadDeMedida}}</option>
                     <option value="kg">Kilogramos</option>
                     <option value="g">Gramos</option>
                     <option value="l">Litros</option>

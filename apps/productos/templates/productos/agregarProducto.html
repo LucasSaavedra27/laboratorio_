@@ -15,4 +15,24 @@
     </div>
 {% endblock %}
 
+{% block js %}
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // deshabilitar fechas posteriores a la actual
+            function deshabilitarFechasPasadas() {
+                const fechaActual = new Date().toISOString().split("T")[0];
+                
+                // Selecciona solo el campo de fecha de elaboración y establece su valor máximo
+                const campoFechaElaboracion = document.getElementById("id_fechaDeElaboracion");
+                if (campoFechaElaboracion) {
+                    campoFechaElaboracion.setAttribute("max", fechaActual);
+                }
+            }
+
+            window.onload = deshabilitarFechasPasadas;
+
+            
+        });
+    </script>
+{% endblock %}
 
