@@ -134,14 +134,14 @@
                         {% for form in detallePedidoFormset %}
                             <div class="detalle-pedido-form">
                                 {{ form.as_p }}
-                                <h5 class="subtotal" id="detallePedido-{{ forloop.counter0 }}-subtotal">Subtotal: $0.00</h5> <!-- Subtotal para cada detalle -->
+                                <!-- Subtotal para cada detalle -->
+                                <h5 class="subtotal" id="detallePedido-{{ forloop.counter0 }}-subtotal">Subtotal: $<span id="id_insumo-{{ forloop.counter0 }}-precio"></span></h5>
                             </div>
                         {% endfor %}
                     </div>
-                    
-                    <div class="">
-                        <button type="button" class="btn btn-secondary mt-3" id="btn-addProd">Agregar Insumo</button>
-                        <h4 class="total">Total: $<span id="total-pedido">0.00</span></h4>
+                    <button type="button" class="btn btn-secondary mt-3" id="btn-addProd">Agregar Insumo</button>
+                    <div class="d-flex justify-content-end">
+                        <h4 class="total">Total: $<span id="id_total_pedido"></span></h4>
                     </div>
                     <button type="submit" class="btn w-100 mt-3 btn-addProv">Agregar</button>
                     <button type="button" class="btn btncancelProv w-100 mt-2" data-bs-dismiss="modal" aria-label="Close">Cancelar</button>
@@ -154,33 +154,112 @@
 
 {% block js %}
 <script>
-    document.addEventListener("DOMContentLoaded", function() { //js para agregar mas detallePedido
-        let formsetContainer = document.getElementById('detalle-pedido-container');
+    document.addEventListener('DOMContentLoaded', function() {
+        const formsetContainer = document.getElementById('detalle-pedido-container');
+        const totalForms = document.getElementById('id_detalles-TOTAL_FORMS');
+        const ElementoTotal = document.getElementById('id_total_pedido');
         let addInsumButton = document.getElementById('btn-addProd');
-        
+
+        // Función para agregar un nuevo formulario de detalle de insumo
         addInsumButton.addEventListener('click', function() {
-            // Obtiene el número total de formularios ya existentes
-            let totalForms = document.getElementById('id_detalles-TOTAL_FORMS');
-            let currentFormCount = parseInt(totalForms.value);
+            if (totalForms) {
+                const contadorForm = parseInt(totalForms.value);
+                const nuevoForm = formsetContainer.children[contadorForm - 1].cloneNode(true);
+
+                // Limpiar valores de los inputs en el formulario clonado
+                const inputs = nuevoForm.getElementsByTagName('input');
+                for (let input of inputs) {
+                    input.value = '';
+                }
+
+                // Actualizar los nombres y IDs de los campos del nuevo formulario
+                nuevoForm.querySelectorAll('input, select').forEach((element) => {
+                    element.name = element.name.replace(/-\d+-/, `-${contadorForm}-`);
+                    element.id = element.id.replace(/-\d+-/, `-${contadorForm}-`);
+                });
+
+                const subtotalSpan = nuevoForm.querySelector('.subtotal span');
+                subtotalSpan.id = `id_insumo-${contadorForm}-precio`;
             
-            // Clona el primer formulario
-            let newForm = formsetContainer.children[0].cloneNode(true);
-            
-            // Cambia los IDs y nombres de los inputs para que sean únicos
-            newForm.querySelectorAll('input, select, textarea').forEach(function(input) {
-                let name = input.name.replace(/-0-/, '-' + currentFormCount + '-');  // Cambia el índice
-                let id = input.id.replace(/-0-/, '-' + currentFormCount + '-');      // Cambia el índice
-                input.name = name;
-                input.id = id;
-                input.value = '';  // Limpiar el valor del nuevo formulario
-            });
-    
-            // Agregar el nuevo formulario al contenedor
-            formsetContainer.appendChild(newForm);
-            
-            // Actualizar el número total de formularios
-            totalForms.value = currentFormCount + 1;
+                // Incrementar el contador de formularios y agregar el nuevo formulario al contenedor
+                totalForms.value = contadorForm + 1;
+                formsetContainer.appendChild(nuevoForm);
+
+                // Agregar el evento para calcular subtotal y total al nuevo formulario
+                agregarEventosFormulario(contadorForm);
+            } else {
+                console.error('El elemento TOTAL_FORMS no se encuentra en el DOM.');
+            }
         });
+
+        // Función para agregar eventos de cálculo a cada formulario de detalle de insumo
+        function agregarEventosFormulario(formIndex) {
+            console.log(`Agregando eventos para el formulario en el índice: ${formIndex}`);
+            const insumoSelect = document.getElementById(`id_detalles-${formIndex}-insumos`);
+            const cantidadInsumo = document.getElementById(`id_detalles-${formIndex}-cantidadPedida`);
+            const insumoPrecio = document.getElementById(`id_insumo-${formIndex}-precio`);
+
+            if (insumoSelect && cantidadInsumo && insumoPrecio) {
+                // Escuchar cambios en el campo de cantidad y en el insumo seleccionado
+                insumoSelect.addEventListener('change', actualizarSubtotal);
+                cantidadInsumo.addEventListener('input', actualizarSubtotal);
+
+                function actualizarSubtotal() {
+                    const insumoId = insumoSelect.value;
+                    const cantidad = parseFloat(cantidadInsumo.value) || 0;
+
+                    if (insumoId) {
+                        fetch(`/obtener-precio-insumo/${insumoId}/`)
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.precio) {
+                                    let subtotal = data.precio * cantidad;
+                                    insumoPrecio.textContent = subtotal.toFixed(2); // Mostrar subtotal formateado
+
+                                    // Actualizar el total general de todos los subtotales
+                                    actualizarTotal();
+                                } else {
+                                    insumoPrecio.textContent = '0';
+                                    actualizarTotal();
+                                    alert(data.error || 'Error al obtener el precio');
+                                }
+                            })
+                            .catch(error => console.error('Error:', error));
+                    } else {
+                        insumoPrecio.textContent = '';
+                        actualizarTotal();
+                    }
+                }
+            } else {
+                console.error(`Elementos del formulario de índice ${formIndex} no encontrados.`);
+            }
+        }
+
+        // Función para actualizar el total general
+        function actualizarTotal() {
+            let totalPedido = 0;
+
+            // Sumar subtotales de cada insumo
+            document.querySelectorAll('h5.subtotal span[id^="id_insumo-"][id$="-precio"]').forEach((span) => {
+                const subtotal = parseFloat(span.textContent) || 0;
+                totalPedido += subtotal;
+            });
+
+            if (ElementoTotal) {
+                ElementoTotal.textContent = totalPedido.toFixed(2); // Mostrar el total formateado
+            } else {
+                console.error('Elemento de total no encontrado en el DOM.');
+            }
+        }
+
+        // Agregar eventos al formulario inicial
+        if (totalForms) {
+            for (let i = 0; i < parseInt(totalForms.value); i++) {
+                agregarEventosFormulario(i);
+            }
+        } else {
+            console.error('Elemento TOTAL_FORMS no encontrado en el DOM.');
+        }
     });
-    </script>
+</script>
 {% endblock %}

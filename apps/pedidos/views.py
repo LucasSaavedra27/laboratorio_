@@ -1,8 +1,6 @@
 import os
-from django.contrib import messages
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
-from django.urls import reverse
 from apps.pedidos.models import Proveedor, Pedido, DetallePedido, RecepcionPedido, DetalleRecepcionPedido
 from apps.productos.models import Insumo
 from apps.usuarios.models import Empleado
@@ -10,7 +8,7 @@ from apps.pedidos.forms import FormularioProveedor, FormularioPedido, DetallePed
 from fpdf import FPDF
 from django.conf import settings
 from datetime import datetime
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 
 #-------------------------------------PROVEEDORES----------------------------------------------------------
 @login_required
@@ -381,6 +379,12 @@ def verDetallesRecepcionPedido(request, pedido_id):
         'recepcionPedido': recepcionPedido
     })
 
+def obtener_precio_Insumo(request, insumo_id):
+    try:
+        insumo = Insumo.objects.get(id=insumo_id)
+        return JsonResponse({'precio': str(insumo.precioInsumo)})
+    except Insumo.DoesNotExist:
+        return JsonResponse({'error': 'Insumo no encontrado'}, status=404)
 #-----------------------------------------------------------------------------------------------
 def diccionario_colores(color): 
     colores = {
