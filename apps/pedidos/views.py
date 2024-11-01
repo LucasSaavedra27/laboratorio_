@@ -117,10 +117,16 @@ def pedidos(request):
 def verDetallePedido(request,pedido_id):
     detallesPedido = DetallePedido.objects.filter(pedido_id=pedido_id)
     pedido = Pedido.objects.get(id=pedido_id)
-    if request.path == f'/pedidos/recepcionPedido/verDetallesPedido/{pedido_id}':
-        url_retorno = f'/pedidos/recepcionPedido/{pedido_id}'  # Cambia esto a la URL que desees
+
+    # Verificando desde dónde se accedió a esta vista
+    if request.path.startswith('/pedidos/recepcionPedido/verDetallesPedido/'):
+        url_retorno = f'/pedidos/recepcionPedido/{pedido_id}'
+    elif 'url_retorno' in request.session:
+        url_retorno = request.session['url_retorno']  # Usa la URL de búsqueda almacenada
+        del request.session['url_retorno']
     else:
         url_retorno = '/pedidos/'
+
     return render(request, 'pedido/verDetallePedido.html', {
         'detallesPedido': detallesPedido,
         'pedido_id': pedido_id,
@@ -129,16 +135,43 @@ def verDetallePedido(request,pedido_id):
     })
 
 def buscarPedidoPorFecha(request):
-    busqueda = request.POST.get('busqueda')  # Obtiene el término de búsqueda de la query
-    pedidos = Pedido.objects.all()  # Obtiene todos los pedidos por defecto
+    busqueda_fecha = request.session.get('busqueda_fecha', None)
+    busqueda_numero = request.session.get('busqueda_numero', None)
     mostrar_botonPdf = True
-    if busqueda:  # Si hay un término de búsqueda
+    pedidos = Pedido.objects.all()  # Obtiene todos los pedidos por defecto
+
+    # Si se hace una solicitud POST, actualiza los criterios de búsqueda desde el formulario
+    if request.method == 'POST':
+        busqueda_fecha = request.POST.get('busqueda_fecha')
+        busqueda_numero = request.POST.get('busqueda_numero')
+        
+        # Guarda la URL completa de búsqueda en la sesión para el retorno
+        request.session['url_retorno'] = request.get_full_path()
+        
+        # Actualiza los criterios de búsqueda en la sesión
+        request.session['busqueda_fecha'] = busqueda_fecha
+        request.session['busqueda_numero'] = busqueda_numero
+
+    # Realiza el filtrado solo si hay términos de búsqueda
+    if busqueda_fecha or busqueda_numero:
         try:
-            pedidos = pedidos.filter(fechaPedido=busqueda)
-            request.session['pedidos_filtrados'] = busqueda
+            # Filtra por fecha si se proporciona
+            if busqueda_fecha:
+                pedidos = pedidos.filter(fechaPedido=busqueda_fecha)
+            
+            # Filtra por número de pedido si se proporciona
+            if busqueda_numero:
+                pedidos = pedidos.filter(id=busqueda_numero)
+        
         except ValueError:
             pedidos = Pedido.objects.none()
-    return render(request, 'pedido/pedidos.html', {'pedidos': pedidos, 'busqueda': busqueda, 'mostrar_botonPdf': mostrar_botonPdf})
+
+    return render(request, 'pedido/pedidos.html', {
+        'pedidos': pedidos,
+        'busqueda_fecha': busqueda_fecha,
+        'busqueda_numero': busqueda_numero,
+        'mostrar_botonPdf': mostrar_botonPdf
+    })
 
 def actualizarEstadoPedido(request,pedido_id,caracter):
     pedido = get_object_or_404(Pedido, id=pedido_id)
@@ -189,23 +222,27 @@ class PDFPedido(FPDF):
                  border = 0,
                 align = 'C', fill = 0)
 
-def generarPDFPedidosPorFecha(request):
+def generarPDFPedidos(request):
     # Crear un objeto FPDF
     pdf = PDFPedido()
     pdf.add_page()
     
-    fecha_busqueda = request.session.get('pedidos_filtrados', None)
-    if fecha_busqueda:
+    busqueda_fecha = request.session.get('busqueda_fecha', None)
+    busqueda_numero = request.session.get('busqueda_numero', None)
+    pedidos = Pedido.objects.all()
+    # Verificar si hay pedidos
+    if busqueda_fecha or busqueda_numero:  # Si hay algún término de búsqueda
         try:
-            fecha_busqueda_date = datetime.strptime(fecha_busqueda, "%Y-%m-%d").date()
-            pedidos = Pedido.objects.filter(fechaPedido=fecha_busqueda_date)
+            # Filtra por fecha si se proporcionó
+            if busqueda_fecha:
+                pedidos = pedidos.filter(fechaPedido=busqueda_fecha)
+            
+            # Filtra por número de pedido si se proporcionó
+            if busqueda_numero and busqueda_numero.isdigit():
+                pedidos = pedidos.filter(id=busqueda_numero)
         except ValueError:
             pedidos = Pedido.objects.none()
-    else:
-        pedidos = Pedido.objects.none()
-    # Verificar si hay pedidos
     
-    pdf.cell(w=0, h=5, txt=f'FECHA: {fecha_busqueda_date.strftime("%d-%m-%Y")}', border=0, ln=2, align='C', fill=0)
     if pedidos.exists():
         for pedido in pedidos:
             bcol_set(pdf, 'red')  # Color de fondo para títulos
@@ -251,7 +288,7 @@ def generarPDFPedidosPorFecha(request):
 
     # Preparar la respuesta
     response = HttpResponse(pdf.output(dest='S').encode('latin1'), content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="reportePedidoSegunFecha.pdf"'
+    response['Content-Disposition'] = 'attachment; filename="reportePedido.pdf"'
     return response
 
 def generarPDFPedidosConfirmados(request):
@@ -358,13 +395,13 @@ def recepcionPedido(request, pedido_id):
 
     else:
         recepPedidoForm = FormularioRecepcionPedido(initial={'fechaDeRecepcion': '', 'pedido': pedido}, empleado=empleado)
-
+        
     return render(request, 'recepcionPedido/recepcionDelPedido.html', {
         'pedido': pedido,
         'detallesPedido': detalles_pedido,
         'recepPedidoForm': recepPedidoForm,
         'celdaRecepcion': celdaRecepcion,
-        'mostrar_boton':mostrar_boton
+        'mostrar_boton':mostrar_boton,
     })
 
     

@@ -17,10 +17,10 @@ urlpatterns = [
     path('pedidos/',login_required(views.pedidos),name='pedidos'),
     path('pedidos/verDetallesPedido/<pedido_id>',login_required(views.verDetallePedido),name='verDetallePedido'),
     path('pedidos/buscar/', login_required(views.buscarPedidoPorFecha), name='buscarPorFecha'),
-    path('pedidos/buscar/generarPDF/', login_required(views.generarPDFPedidosPorFecha), name='generarPDFPedidos'),
+    path('pedidos/buscar/generarPDF/', login_required(views.generarPDFPedidos), name='generarPDFPedidos'),
     path('pedidos/generarPDF/', login_required(views.generarPDFPedidosConfirmados), name='generarPDFPedConfir'),
     path('pedidos/<pedido_id>/<str:caracter>/',login_required(views.actualizarEstadoPedido),name='actualizarPedido'),
-    path('obtener-precio-insumo/<insumo_id>/', login_required(views.obtener_precio_Insumo), name='obtener_precio_insumo'),
+    path('obtener-precio-insumo/<insumo_id>/', login_required(views.obtener_precio_Insumo), name='obtener_precio_insumo'), #fetch para el subtotal
     
     path('pedidos/recepcionPedido/<pedido_id>',login_required(views.recepcionPedido),name='recepcionDePedido'),
     path('pedidos/recepcionPedido/<pedido_id>/generarPDF/',login_required(views.generarPDFRecepPedido),name='generarPDFrecepcion'),

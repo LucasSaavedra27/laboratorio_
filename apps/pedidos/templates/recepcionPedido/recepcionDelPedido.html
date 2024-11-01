@@ -107,7 +107,7 @@
                             <label class="form-control">Cantidad Pedida: {{ detalle.cantidadPedida }}</label><br>
                             <label class="form-label" for="cantidadRecibida-{{ forloop.counter0 }}">Cantidad Recibida:</label><br>
                             <input class="form-control" type="number" name="cantidadRecibida-{{ forloop.counter0 }}" value="0" min="0" required>
-                        </div>
+                        </div><br>
                     {% endfor %}
                     <button type="submit" class="btn w-100 mt-3 btn-addProv">Guardar Recepción</button>
                     <button type="button" class="btn btncancelProv w-100 mt-2" data-bs-dismiss="modal" aria-label="Close">Cancelar</button>
@@ -155,3 +155,15 @@
     </div>
 </div>
 {% endblock %}
+{% block js %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Obtener la fecha del pedido desde el template
+            const fechaPedido = '{{ pedido.fechaPedido|date:"Y-m-d" }}';  // Formato YYYY-MM-DD
+            const inputFechaRecepcion = document.getElementById('id_fechaDeRecepcion');
+
+            // Establecer el atributo min del input de fecha
+            inputFechaRecepcion.setAttribute('min', fechaPedido);
+        });
+    </script>
+{% endblock %}   
