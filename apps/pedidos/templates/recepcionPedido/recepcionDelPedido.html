@@ -27,7 +27,7 @@
                 </button>
             </div>
             {% endif %}
-            <a class="expPdf" href="{% url 'pedidos:generarPDF' %}"
+            <a class="expPdf" href="{% url 'pedidos:generarPDFrecepcion' pedido.id%}"
             ><i class="fa-solid fa-file-pdf px-2" style="font-size: 25px"></i
             >Exportar PDF</a>
         </div>
@@ -98,6 +98,7 @@
                 <form method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
                     {{ recepPedidoForm.as_p }}
+
                     {% for detalle in detallesPedido %}
                         <h3 class="text-center" style="color: #a63348;font-size: 20px;;">Detalle {{ detalle.id }}</h3>
                         <div>

@@ -23,6 +23,8 @@ urlpatterns = [
     path('obtener-precio-insumo/<insumo_id>/', login_required(views.obtener_precio_Insumo), name='obtener_precio_insumo'),
     
     path('pedidos/recepcionPedido/<pedido_id>',login_required(views.recepcionPedido),name='recepcionDePedido'),
+    path('pedidos/recepcionPedido/<pedido_id>/generarPDF/',login_required(views.generarPDFRecepPedido),name='generarPDFrecepcion'),
     path('pedidos/recepcionPedido/verDetallesPedido/<pedido_id>',login_required(views.verDetallePedido),name='verDetallePedidoDesdeRecepcion'),
     path('pedidos/recepcionPedido/verDetallesRecepcion/<pedido_id>',login_required(views.verDetallesRecepcionPedido),name='verDetallesRecepcionPedido'),
+
 ]

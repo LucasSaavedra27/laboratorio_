@@ -309,7 +309,8 @@ def generarPDFPedidosConfirmados(request):
     response = HttpResponse(pdf.output(dest='S').encode('latin1'), content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="reportePedidosConfirmados.pdf"'
     return response
-#-------------------------------------RECEPCIONPEDIDO----------------------------------------------------------
+
+#-------------------------------------RECEPCION PEDIDO----------------------------------------------------------
 def recepcionPedido(request, pedido_id):
     pedido = get_object_or_404(Pedido, id=pedido_id)
     empleado = get_object_or_404(Empleado, user=request.user)
@@ -382,7 +383,105 @@ def obtener_precio_Insumo(request, insumo_id):
         return JsonResponse({'precio': str(insumo.precioInsumo)})
     except Insumo.DoesNotExist:
         return JsonResponse({'error': 'Insumo no encontrado'}, status=404)
-#-----------------------------------------------------------------------------------------------
+
+class PDFRecepcionPedido(FPDF):
+    def header(self):
+        logo = os.path.join(settings.BASE_DIR, 'static', 'img', 'logotipo.png')
+        
+        # Verificar si el archivo existe
+        if os.path.exists(logo):
+            self.image(logo, x=10, y=5, w=35, h=35) 
+        
+        self.set_font('Arial', '', 15)
+
+        tcol_set(self, 'red')
+        tfont_size(self,30)
+        tfont(self,'B')
+        self.cell(w = 0, h = 10, txt = 'Reporte de', border = 0, ln=1,
+                align = 'C', fill = 0)
+        self.cell(w = 0, h = 15, txt = 'Recepción', border = 0, align = 'C', ln=1, fill = 0)
+        
+        tfont_size(self,10)
+        tcol_set(self, 'black')
+        tfont(self,'I')
+        self.cell(w = 0, h = 10, txt = f'Generado el {datetime.now().strftime("%d/%m/%y")}', border = 0, ln=2,
+                align = 'C', fill = 0)
+
+        self.ln(5)
+
+    # Page footer
+    def footer(self):
+        # Position at 1.5 cm from bottom
+        self.set_y(-20)
+
+        # Arial italic 8
+        self.set_font('Arial', 'I', 12)
+
+        # Page number
+        self.cell(w = 0, h = 10, txt =  'Pagina ' + str(self.page_no()),
+                 border = 0,
+                align = 'C', fill = 0)
+             
+def generarPDFRecepPedido(request,pedido_id):
+    # Crear un objeto FPDF
+    pdf = PDFRecepcionPedido()
+    pdf.add_page()
+    
+    pedido = Pedido.objects.get(id=pedido_id)
+    recepcion = RecepcionPedido.objects.get(pedido=pedido)
+    # pdf.cell(w=0, h=5, txt=f'PEDIDO: {pedido_id}', border=0, ln=2, align='C', fill=0)
+    # Verificar si hay pedidos
+    if pedido:
+        
+        #---------------------------recepcion-------------------------
+        pdf.cell(w=0, h=5, txt=f'RECEPCION: {recepcion.id}', border=0, ln=2, align='C', fill=0)
+        bcol_set(pdf, 'red')  # Color de fondo para títulos
+        tcol_set(pdf, 'white')
+        pdf.set_font("Arial", "B", 12)
+        # Dibujar la cabecera de Recepcion
+        pdf.cell(100, 10, "Empleado", 1, 0, 'C', fill=True)
+        pdf.cell(45, 10, "Fecha Recepción", 1, 0, 'C', fill=True)
+        pdf.cell(45, 10, "Pedido Recibido", 1, 1, 'C', fill=True)
+        
+        tcol_set(pdf, 'black')
+        pdf.set_font("Arial", "", 12)
+        # Dibujar la datos del pedido
+        pdf.cell(100, 10, str(recepcion.empleado), 1, 0, 'C', fill=False)
+        pdf.cell(45, 10, str(recepcion.fechaDeRecepcion), 1, 0, 'C', fill=False)
+        pdf.cell(45, 10, str(recepcion.pedido.id), 1, 1, 'C', fill=False)
+
+        bcol_set(pdf, 'red')  # Color de fondo para títulos
+        tcol_set(pdf, 'white')
+        pdf.set_font("Arial", "B", 12)
+        
+        pdf.cell(0, 10, '', 0, 1)  # Espacio entre recepcion y detalles
+        
+        # Cabecera de los detalles para cada pedido
+        pdf.cell(50, 10, "Insumo", 1, 0, 'C', fill=True)
+        pdf.cell(35, 10, "Unidad Medida", 1, 0, 'C', fill=True)
+        pdf.cell(35, 10, "Cantidad Pedida", 1, 0, 'C', fill=True)
+        pdf.cell(40, 10, "Cantidad Recibida", 1, 0, 'C', fill=True)
+        pdf.cell(30, 10, "Estado", 1, 1, 'C', fill=True)
+
+        tcol_set(pdf, 'black')
+        pdf.set_font("Arial", "", 12)
+        # Detalles de la recepcion
+        detalles = DetalleRecepcionPedido.objects.filter(recepcionPedido=recepcion)
+        for detalle in detalles:
+            pdf.cell(50, 10, detalle.detallePedido.insumos.nombre, 1, 0, 'C', fill=False)
+            pdf.cell(35, 10, detalle.detallePedido.insumos.unidadDeMedida, 1, 0, 'C', fill=False)
+            pdf.cell(35, 10, str(detalle.detallePedido.cantidadPedida), 1, 0, 'C', fill=False)
+            pdf.cell(40, 10, str(detalle.cantidadRecibida), 1, 0, 'C', fill=False)
+            pdf.cell(30, 10, detalle.estado, 1, 1, 'C', fill=False)
+    
+    else:   
+        pdf.cell(0, 10, "No hay pedidos disponibles.", 0, 1, 'C')
+
+    # Preparar la respuesta
+    response = HttpResponse(pdf.output(dest='S').encode('latin1'), content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="reporteRecepcionPedido.pdf"'
+    return response
+#---------------------------------------PDF PROVEEDORES--------------------------------------------------------
 def diccionario_colores(color): 
     colores = {
         'black' : (0,0,0), 
