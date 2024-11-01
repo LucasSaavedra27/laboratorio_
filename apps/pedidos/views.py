@@ -1,4 +1,5 @@
 import os
+from django.contrib import messages
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from apps.pedidos.models import Proveedor, Pedido, DetallePedido, RecepcionPedido, DetalleRecepcionPedido
@@ -101,6 +102,7 @@ def pedidos(request):
                 # Actualiza el total del pedido y guarda
                 pedido.precioTotalDelPedido = totalPedido
                 pedido.save()  # Guarda el pedido actualizado
+                messages.success(request, f'Pedido creado correctamente. Número de pedido: {pedido.id}')
                 return redirect('/pedidos')
             else:
                 pedidoForm.add_error(None, "Se debe agregar al menos un detalle al pedido.")

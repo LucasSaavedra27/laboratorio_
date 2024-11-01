@@ -125,6 +125,14 @@
         </div>
     </div>
 </div>
+{% if messages %}
+<div class="alert alert-success alert-dismissible fade show" role="alert" style="position: absolute; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1000;background-color: #f2f2f2;">
+    {% for message in messages %}
+        <p>{{ message }}</p>
+    {% endfor %}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endif %}
 
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
