@@ -356,7 +356,7 @@ def recepcionPedido(request, pedido_id):
             return redirect('pedidos:recepcionDePedido', pedido_id=pedido.id)
 
     else:
-        recepPedidoForm = FormularioRecepcionPedido(initial={'empleado': empleado, 'pedido': pedido})
+        recepPedidoForm = FormularioRecepcionPedido(initial={'fechaDeRecepcion': '', 'pedido': pedido}, empleado=empleado)
 
     return render(request, 'recepcionPedido/recepcionDelPedido.html', {
         'pedido': pedido,

@@ -98,7 +98,6 @@
                 <form method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
                     {{ recepPedidoForm.as_p }}
-
                     {% for detalle in detallesPedido %}
                         <h3 class="text-center" style="color: #a63348;font-size: 20px;;">Detalle {{ detalle.id }}</h3>
                         <div>

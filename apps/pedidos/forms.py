@@ -146,20 +146,20 @@ DetallePedidoFormSet = inlineformset_factory(
 )
 #---------------------------------------RECEPCIONPEDIDOS--------------------------------------------------------
 class FormularioRecepcionPedido(forms.ModelForm):
+    empleado_info = forms.CharField(label='Empleado', required=False, widget=forms.TextInput(attrs={'class': 'form-control', 'readonly': 'readonly'}))
+
     class Meta:
         model = RecepcionPedido
         fields = [
-            'empleado', 
+            'empleado_info',  # Cambia a empleado_info
             'fechaDeRecepcion',
             'pedido'
         ]
         labels = {
-            'empleado': 'Empleado',
             'fechaDeRecepcion': 'Fecha de Recepción',
-            'pedido': 'pedido',
-        } 
+            'pedido': 'Pedido',
+        }
         widgets = {
-            'empleado': forms.TextInput(attrs={'class': 'form-control', 'readonly': 'readonly'}),
             'fechaDeRecepcion': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'pedido': forms.TextInput(attrs={'class': 'form-control', 'readonly': 'readonly'}),
         }
@@ -169,6 +169,14 @@ class FormularioRecepcionPedido(forms.ModelForm):
                 'required': 'Ingresar fecha de recepción.',
             },
         }
+        
+    def __init__(self, *args, **kwargs):
+        empleado = kwargs.pop('empleado', None)  # Extraer el empleado del kwargs
+        super().__init__(*args, **kwargs)
+
+        if empleado:
+            # Combina el nombre, apellido y DNI del empleado
+            self.fields['empleado_info'].initial = f"{empleado.nombre} {empleado.apellido}, DNI: {empleado.dni}"
         
 class DetalleRecepcionPedidoForm(forms.ModelForm):
     class Meta:
