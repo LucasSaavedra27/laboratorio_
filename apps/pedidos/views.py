@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from apps.pedidos.models import Proveedor, Pedido, DetallePedido, RecepcionPedido, DetalleRecepcionPedido
 from apps.productos.models import Insumo
 from apps.usuarios.models import Empleado
-from apps.pedidos.forms import FormularioProveedor, FormularioPedido, DetallePedidoFormSet, FormularioRecepcionPedido,DetalleRecepcionPedidoForm, DetalleRecepcionPedidoFormSet
+from apps.pedidos.forms import FormularioProveedor, FormularioPedido, DetallePedidoFormSet, FormularioRecepcionPedido,DetalleRecepcionPedidoForm
 from fpdf import FPDF
 from django.conf import settings
 from datetime import datetime
@@ -313,16 +313,15 @@ def generarPDFPedidosConfirmados(request):
 def recepcionPedido(request, pedido_id):
     pedido = get_object_or_404(Pedido, id=pedido_id)
     empleado = get_object_or_404(Empleado, user=request.user)
-    
+
     # Obtener todos los detalles del pedido
     detalles_pedido = DetallePedido.objects.filter(pedido=pedido)
     recepcionPedido_instance = RecepcionPedido.objects.filter(pedido=pedido).first()
     celdaRecepcion = recepcionPedido_instance is not None  
-    mostrar_boton = not celdaRecepcion  
+    mostrar_boton = not celdaRecepcion
 
     if request.method == "POST":
         recepPedidoForm = FormularioRecepcionPedido(request.POST)
-        detalleRecepPedidoFormset = DetalleRecepcionPedidoFormSet(request.POST)  # Inicializar aquí
 
         if recepPedidoForm.is_valid():
             recepcion = recepPedidoForm.save(commit=False)
@@ -330,50 +329,41 @@ def recepcionPedido(request, pedido_id):
             recepcion.pedido = pedido
             recepcion.save()  # Guarda la recepción primero
 
-            if detalleRecepPedidoFormset.is_valid():
-                for detalle_form in detalleRecepPedidoFormset:
-                    detalle = detalle_form.save(commit=False)
-                    
-                    # Verificar y establecer el estado
-                    if detalle.detallePedido.cantidadPedida > detalle.cantidadRecibida:
-                        detalle.estado = 'incompleto'
-                    elif detalle.detallePedido.cantidadPedida == detalle.cantidadRecibida:
-                        detalle.estado = 'completo'
-                    else:
-                        detalle.estado = 'erroneo'
+            # Procesar cada formulario de DetalleRecepcionPedido
+            for i, detalle in enumerate(detalles_pedido):
+                cantidad_recibida = request.POST.get(f'cantidadRecibida-{i}')  # Asegúrate de que el nombre sea correcto
 
-                    detalle.recepcionPedido = recepcion  # Usa la instancia, no el ID
-                    detalle.save()
-                    print("Detalle guardado:", detalle)
-                    
+                if cantidad_recibida:  # Asegúrate de que no sea None o vacío
+                    detalle_recepcion = DetalleRecepcionPedido(
+                        recepcionPedido=recepcion,
+                        detallePedido=detalle,
+                        cantidadRecibida=int(cantidad_recibida),
+                    )
+                    if detalle.cantidadPedida > int(cantidad_recibida):
+                        detalle_recepcion.estado = 'incompleto'
+                    elif detalle.cantidadPedida == int(cantidad_recibida):
+                        detalle_recepcion.estado = 'completo'
+                    else:
+                        detalle_recepcion.estado = 'erroneo'
+
+                    detalle_recepcion.save()
+
                     # Actualizar la cantidad disponible del insumo
-                    insumo = detalle.detallePedido.insumos 
-                    insumo.cantidadDisponible += detalle.cantidadRecibida
+                    insumo = detalle.insumos
+                    insumo.cantidadDisponible += int(cantidad_recibida)
                     insumo.save()
 
-                return redirect('pedidos:recepcionDePedido', pedido_id=pedido.id)
-            else:
-                print("Errores en el formset:", detalleRecepPedidoFormset.errors)
-        else:
-                print("Errores en el formset:", detalleRecepPedidoFormset.errors)
+            return redirect('pedidos:recepcionDePedido', pedido_id=pedido.id)
+
     else:
         recepPedidoForm = FormularioRecepcionPedido(initial={'empleado': empleado, 'pedido': pedido})
-        # Crear el formset de detalle de recepción
-        detalleRecepPedidoFormset = DetalleRecepcionPedidoFormSet(queryset=DetalleRecepcionPedido.objects.none(), instance=recepcionPedido_instance)
-        
-        # Añadir formularios para cada detalle de pedido
-        for detalle in detalles_pedido:
-            detalleRecepPedidoFormset.forms.append(
-                DetalleRecepcionPedidoForm(initial={'detallePedido': detalle.__str__})  # Usar el ID del DetallePedido
-            )
-    
+
     return render(request, 'recepcionPedido/recepcionDelPedido.html', {
         'pedido': pedido,
         'detallesPedido': detalles_pedido,
         'recepPedidoForm': recepPedidoForm,
-        'detalleRecepPedidoFormset': detalleRecepPedidoFormset,
-        'mostrar_boton': mostrar_boton,
-        'celdaRecepcion': celdaRecepcion
+        'celdaRecepcion': celdaRecepcion,
+        'mostrar_boton':mostrar_boton
     })
 
     

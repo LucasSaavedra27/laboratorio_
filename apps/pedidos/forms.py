@@ -173,20 +173,4 @@ class FormularioRecepcionPedido(forms.ModelForm):
 class DetalleRecepcionPedidoForm(forms.ModelForm):
     class Meta:
         model = DetalleRecepcionPedido
-        fields = ['detallePedido', 'cantidadRecibida']
-        labels = {
-            'detallePedido': 'Detalle',
-            'cantidadRecibida': 'Cantidad Recibida',
-        } 
-        widgets = {
-            'detallePedido': forms.TextInput(attrs={'readonly': 'readonly', 'class': 'form-control'}),
-            'cantidadRecibida': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
-        }
-
-DetalleRecepcionPedidoFormSet = forms.inlineformset_factory(
-    RecepcionPedido,
-    DetalleRecepcionPedido,
-    form=DetalleRecepcionPedidoForm,
-    extra=0,  # Número de formularios adicionales
-    can_delete=True  # Permite eliminar instancias
-)
+        fields = ['cantidadRecibida']

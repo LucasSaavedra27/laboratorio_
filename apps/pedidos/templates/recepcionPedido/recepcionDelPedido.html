@@ -98,12 +98,15 @@
                 <form method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
                     {{ recepPedidoForm.as_p }}
-                    
-                    <h2>Detalles de la Recepción</h2>
-                    {{ detalleRecepPedidoFormset.management_form }}
-                    {% for form in detalleRecepPedidoFormset %}
-                        <div class="formset_row">
-                            {{ form.as_p }}  <!-- Asegúrate de que los campos sean visibles -->
+
+                    {% for detalle in detallesPedido %}
+                        <h3 class="text-center" style="color: #a63348;font-size: 20px;;">Detalle {{ detalle.id }}</h3>
+                        <div>
+                            <label class="form-control">Insumo: {{ detalle.insumos.nombre }}</label><br>
+                            <input type="hidden" name="detallePedido-{{ forloop.counter0 }}" value="{{ detalle.id }}">
+                            <label class="form-control">Cantidad Pedida: {{ detalle.cantidadPedida }}</label><br>
+                            <label class="form-label" for="cantidadRecibida-{{ forloop.counter0 }}">Cantidad Recibida:</label><br>
+                            <input class="form-control" type="number" name="cantidadRecibida-{{ forloop.counter0 }}" value="0" min="0" required>
                         </div>
                     {% endfor %}
                     <button type="submit" class="btn w-100 mt-3 btn-addProv">Guardar Recepción</button>

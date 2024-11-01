@@ -14,6 +14,7 @@
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">Insumo</th>
+                        <th scope="col">Unidad Medida</th>
                         <th scope="col">Cantidad Pedida</th>
                         <th scope="col">Cantidad Recibida</th>
                         <th scope="col">Estado</th>
@@ -24,6 +25,7 @@
                     <tr>
                         <th scope="row">{{ forloop.counter }}</th>
                         <td>{{ detalleRecepcion.detallePedido.insumos }}</td>
+                        <td>{{ detalleRecepcion.detallePedido.insumos.unidadDeMedida }}</td>
                         <td>{{ detalleRecepcion.detallePedido.cantidadPedida }}</td>
                         <td>{{ detalleRecepcion.cantidadRecibida }}</td>
                         <td>{{ detalleRecepcion.estado }}</td>
