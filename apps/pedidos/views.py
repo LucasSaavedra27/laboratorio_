@@ -70,33 +70,37 @@ def pedidos(request):
     mostrar_botonPdf = False
     # Obtener todos los insumos y sus precios
     insumos_dict = {insumo.id: insumo.precioInsumo for insumo in Insumo.objects.all()}
-    
+
     if request.method == 'POST':
         pedidoForm = FormularioPedido(request.POST)
         detallePedidoFormset = DetallePedidoFormSet(request.POST)
 
         if pedidoForm.is_valid() and detallePedidoFormset.is_valid():
-            # Guarda el pedido sin calcular el total aún
-            pedido = pedidoForm.save(commit=False)
-
-            # Guarda cada detalle y calcula el total después de que el pedido tiene un ID
+            detalles_validos = False
             totalPedido = 0
-            detalles_guardados = False
+
+            # Verificar si hay al menos un detalle válido
             for detalle_form in detallePedidoFormset:
-                if detalle_form.cleaned_data.get('DELETE'):
-                    continue
-                if detalle_form.is_valid():
-                    detalle = detalle_form.save(commit=False)
-                    detalle.pedido = pedido  # Asigna el pedido a cada detalle
-                    detalle.save()
-                    # Acumula el subtotal de cada detalle en totalPedido
-                    totalPedido += detalle.subTotal  # Asegúrate de que `subTotal` esté definido y calculado en `DetallePedido`
-                    detalles_guardados = True
-                    
-            # Actualiza el campo `precioTotalDelPedido` y guarda el pedido
-            if detalles_guardados:
+                if not detalle_form.cleaned_data.get('DELETE') and detalle_form.is_valid():
+                    detalles_validos = True
+                    break
+            
+            if detalles_validos:
+                # Guarda el pedido primero
+                pedido = pedidoForm.save()  # Guarda el pedido y obtiene un ID
+                
+                for detalle_form in detallePedidoFormset:
+                    if detalle_form.cleaned_data.get('DELETE'):
+                        continue
+                    if detalle_form.is_valid():
+                        detalle = detalle_form.save(commit=False)  # No guarda aún
+                        detalle.pedido = pedido  # Asigna el pedido a cada detalle
+                        detalle.save()  # Ahora guarda el detalle
+                        totalPedido += detalle.subTotal  # Suma el subtotal
+
+                # Actualiza el total del pedido y guarda
                 pedido.precioTotalDelPedido = totalPedido
-                pedido.save()
+                pedido.save()  # Guarda el pedido actualizado
                 return redirect('/pedidos')
             else:
                 pedidoForm.add_error(None, "Se debe agregar al menos un detalle al pedido.")
@@ -110,7 +114,7 @@ def pedidos(request):
         'detallePedidoFormset': detallePedidoFormset,
         'pedidos': pedidos,
         'mostrar_boton': mostrar_boton,
-        'mostrar_botonPdf':mostrar_botonPdf,
+        'mostrar_botonPdf': mostrar_botonPdf,
         'insumos_dict': insumos_dict,  # Pasar los precios de los insumos
     })
     

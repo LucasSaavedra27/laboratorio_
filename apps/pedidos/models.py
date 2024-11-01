@@ -34,7 +34,7 @@ class DetallePedido(models.Model):
     pedido = models.ForeignKey(Pedido,null=True, on_delete=models.CASCADE, related_name='detalles')
     insumos = models.ForeignKey(Insumo,on_delete=models.CASCADE,related_name='insumos')
     cantidadPedida = models.PositiveIntegerField(blank=False,null=False)
-    observaciones = models.TextField()
+    observaciones = models.TextField(null=True, blank=True)
     subTotal = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     
     def save(self, *args, **kwargs):

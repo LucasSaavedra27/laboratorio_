@@ -123,9 +123,6 @@ class DetallePedidoForm(forms.ModelForm):
             'cantidadPedida':{
                 'required': 'Ingresar cantidad pedida.',
             },
-            'observaciones':{
-                'required': 'Ingresar observación o S/O (sin obs).',
-            }
         }
     
     def clean_cantidad(self):
