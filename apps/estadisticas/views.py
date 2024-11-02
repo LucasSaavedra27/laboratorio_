@@ -71,7 +71,7 @@ def estadisticas_ventas(request):
         df_ventas.pivot(index='Categoria_mixed', columns='Dia', values='TotalVentas'),
         color_continuous_scale='Viridis',
         labels=dict(x="Día del Mes", y="Categoría de Producto", color="Ventas Totales"),
-        title="Ventas por Categoría y Día del Mes"
+        # title="Ventas por Categoría y Día del Mes"
     )
     fig.update_layout(
         xaxis_title="Día del Mes",

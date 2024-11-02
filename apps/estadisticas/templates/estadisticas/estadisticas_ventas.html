@@ -4,12 +4,12 @@
 {% block titulo %}Estadísticas de Ventas{% endblock %}
 
 {% block contenido %}
-<div class="contenedor-estadisticas container mt-5 {% comment %} mx-0 {% endcomment %}"> 
+<div class="contenedor-estadisticas {% comment %} mx-0 {% endcomment %}"> 
     <h2 class="text-center">Estadísticas de Ventas</h2>
 
     <!-- Formulario de selección de mes y año -->
-    <div class="row mb-4">
-        <form method="post" action="{% url 'estadisticas:estadisticas_ventas' %}" class="form-inline">
+    <div class="mb-4">
+        <form method="post" action="{% url 'estadisticas:estadisticas_ventas' %}" class="form-inline m-4">
             {% csrf_token %}
             <div class="form-group mr-2">
                 {{ form.as_p }}
@@ -17,36 +17,38 @@
             </div>
         </form>
     </div>
+</div>
 
     {% if mensaje %}
         <p class="text-center text-danger">{{ mensaje }}</p>
     {% else %}
-    <div class="row mb-5 pb-5">
-        <!-- Gráfico de Ventas Totales por Empleado -->
-        <div class="col-md-4">
-            <h3 class="text-center">Ventas Totales por Empleado</h3>
-            <div class="chart-container">
-                {{ graph_empleado_html|safe }}
+    <div class="full-width-div">
+        <div class="row">
+            <!-- Gráfico de Ventas Totales por Empleado -->
+            <div class="col-md-6 col-12 col-xl-4 p-3">
+                <h3 class="text-center pb-4">Totales por Empleado</h3>
+                <div class="chart-container">
+                    {{ graph_empleado_html|safe }}
+                </div>
             </div>
-        </div>
-        
-        <!-- Gráfico de Ventas Diarias por Mes -->
-        <div class="col-md-4">
-            <h3 class="text-center">Ventas Diarias por Mes</h3>
-            <div class="chart-container">
-                {{ graph_mes_html|safe }}
+            
+            <!-- Gráfico de Ventas Diarias por Mes -->
+            <div class="col-md-6 col-12 col-xl-4 p-3">
+                <h3 class="text-center pb-4">Diarias por Mes</h3>
+                <div class="chart-container">
+                    {{ graph_mes_html|safe }}
+                </div>
             </div>
-        </div>
 
-        <!-- Gráfico de Ventas por Categoría de Productos y Día del Mes -->
-        <div class="col-md-4">
-            <h3 class="text-center">Ventas Diarias por Mes</h3>
-            <div class="chart-container">
-                {{ graph_categorias_html|safe }}
+            <!-- Gráfico de Ventas por Categoría de Productos y Día del Mes -->
+            <div class="col-md-6 col-12 col-xl-4 p-3">
+                <h3 class="text-center pb-4">Por Categoría y Día del Mes</h3>
+                <div class="chart-container">
+                    {{ graph_categorias_html|safe }}
+                </div>
             </div>
         </div>
     </div>
     {% endif %}
-</div>
 
 {% endblock %}

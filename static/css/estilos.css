@@ -490,11 +490,9 @@ form #form-busqueda {
 }
 
 .contenedor-estadisticas {
-  padding-top: 100px;
+  padding-top: 160px;
 }
 
-.chart-container {
-  max-width: 600px; 
-  height: 400px; 
-  margin: 0 auto; 
+.full-width-div {
+  width: 100%;
 }
