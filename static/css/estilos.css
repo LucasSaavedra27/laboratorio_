@@ -448,7 +448,7 @@ form #form-busqueda {
   margin: 30px;
 }
 
-.contenedor-agregarProd,.contenedor-agregarVenta{
+.contenedor-agregarProd,.contenedor-agregarVenta {
   padding-top: 160px;
 }
 
@@ -490,3 +490,12 @@ form #form-busqueda {
   width: 200px;
 }
 
+.contenedor-estadisticas {
+  padding-top: 100px;
+}
+
+.chart-container {
+  max-width: 600px; 
+  height: 400px; 
+  margin: 0 auto; 
+}
