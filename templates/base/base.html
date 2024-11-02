@@ -90,7 +90,7 @@
       <ul class="nav justify-content-center border-bottom pb-3 mb-3">
         {% if user.is_superuser %}
           <li class="nav-item">
-            <a href="/html/index.html" class="nav-link px-2">Inicio</a>
+            <a href="{% url 'inicio:index' %}" class="nav-link px-2">Inicio</a>
           </li>
           <li class="nav-item">
             <a href="/html/estadisticas.html" class="nav-link px-2">Estadísticas</a>
@@ -115,7 +115,7 @@
           </li>
         {% else %}
           <li class="nav-item">
-            <a href="/html/index.html" class="nav-link px-2">Inicio</a>
+            <a href="{% url 'inicio:index' %}" class="nav-link px-2">Inicio</a>
           </li>
           <li class="nav-item">
             <a href="{% url 'productos:productos' %}" class="nav-link px-2">Productos</a>
