@@ -72,7 +72,7 @@
                         {% if insumo.unidadDeMedida == 'caja' %}<td>Caja</td>{% endif %}
                         {% if insumo.unidadDeMedida == 'taza' %}<td>Taza</td>{% endif %}
                         {% if insumo.unidadDeMedida == 'otro' %}<td>Otro</td>{% endif %}
-                        {% if insumo.cantidadDisponible < insumo.cantidadMinRequerida %}
+                        {% if insumo.cantidadDisponible <= insumo.cantidadMinRequerida|add:10 %}
                         <td style="background-color: #d81111;">{{ insumo.cantidadDisponible }}</td>
                         {% else %}
                         <td>{{ insumo.cantidadDisponible }}</td>

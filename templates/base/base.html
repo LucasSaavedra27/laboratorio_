@@ -114,6 +114,9 @@
           <li class="nav-item">
             <a href="/admin/usuarios/empleado/" class="nav-link px-2">Empleados</a>
           </li>
+          <li class="nav-item">
+            <a href="{% url 'inicio:index' %}" class="nav-link px-2">Estadísticas</a>
+          </li>
         {% else %}
           <li class="nav-item">
             <a href="{% url 'inicio:index' %}" class="nav-link px-2">Inicio</a>

@@ -98,8 +98,11 @@ def estadisticas_ventas(request):
         # title="Ventas Totales por Empleado",
         color="empleados",
     )
+    
     fig_empleado.update_layout(
-        xaxis_title="Empleados", yaxis_title="Total de Ventas en $"
+        xaxis_title="Empleados",
+        yaxis_title="Total de Ventas en $",
+        xaxis=dict(tickvals=[]),
     )
 
     # Se convierte a HTML

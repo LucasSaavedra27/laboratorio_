@@ -348,7 +348,7 @@ def generarPDFInsumoFaltante(request):
     if insumos.exists():
         c = 0  # Contador para alternar el color de las filas
         for insumo in insumos:
-            if insumo.cantidadDisponible < insumo.cantidadMinRequerida:
+            if insumo.cantidadDisponible < insumo.cantidadMinRequerida + 10:
                 c += 1
 
                 # Alternar el color de fondo entre gris y blanco
