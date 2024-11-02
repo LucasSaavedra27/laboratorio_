@@ -178,7 +178,7 @@ def exportarPDF(request):
         pdf.cell(0, 10, "No hay productos disponibles.", 0, 1, 'C')
 
     response = HttpResponse(pdf.output(dest='S').encode('latin1'), content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="reporteProductos.pdf"'
+    response['Content-Disposition'] = 'attachment; filename="reporteVenta.pdf"'
     return response
 
 def obtener_precio_producto(request, producto_id):

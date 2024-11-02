@@ -96,19 +96,19 @@
             <a href="/html/estadisticas.html" class="nav-link px-2">Estadísticas</a>
           </li>
           <li class="nav-item">
-            <a href="/html/productos.html" class="nav-link px-2">Productos</a>
+            <a href="{% url 'productos:productos' %}" class="nav-link px-2">Productos</a>
           </li>
           <li class="nav-item">
             <a href="{% url 'ventas:listadoMayoristas' %}" class="nav-link px-2">Clientes</a>
           </li>
           <li class="nav-item">
-            <a href="/html/gestion_compras.html" class="nav-link px-2">Compras</a>
+            <a href="{% url 'productos:insumos' %}" class="nav-link px-2">Insumos</a>
           </li>
           <li class="nav-item">
             <a href="{% url 'ventas:ventas' %}" class="nav-link px-2">Ventas</a>
           </li>
           <li class="nav-item">
-            <a href="/html/gestion_proveedores.html" class="nav-link px-2">Proveedores</a>
+            <a href="{% url 'pedidos:proveedores' %}" class="nav-link px-2">Proveedores</a>
           </li>
           <li class="nav-item">
             <a href="/admin/usuarios/empleado/" class="nav-link px-2">Empleados</a>
@@ -118,19 +118,19 @@
             <a href="/html/index.html" class="nav-link px-2">Inicio</a>
           </li>
           <li class="nav-item">
-            <a href="/html/productos.html" class="nav-link px-2">Productos</a>
+            <a href="{% url 'productos:productos' %}" class="nav-link px-2">Productos</a>
           </li>
           <li class="nav-item">
             <a href="{% url 'ventas:listadoMayoristas' %}" class="nav-link px-2">Clientes</a>
           </li>
           <li class="nav-item">
-            <a href="/html/gestion_compras.html" class="nav-link px-2">Compras</a>
+            <a href="{% url 'productos:insumos' %}" class="nav-link px-2">Insumos</a>
           </li>
           <li class="nav-item">
             <a href="{% url 'ventas:ventas' %}" class="nav-link px-2">Ventas</a>
           </li>
           <li class="nav-item">
-            <a href="/html/gestion_proveedores.html" class="nav-link px-2">Proveedores</a>
+            <a href="{% url 'pedidos:proveedores' %}" class="nav-link px-2">Proveedores</a>
           </li>
         {% endif %}
       </ul>

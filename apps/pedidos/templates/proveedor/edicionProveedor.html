@@ -5,6 +5,7 @@
 
 <div class="contenedor-formProd d-flex justify-content-center">
     <div class="card-formProd">
+        <h3 class="text-center" style="color: #a63348;">Editar Proveedor</h3>
         <form class="row g-3" id="form-prod" action="{% url 'pedidos:edicionProveedor' %}" method="post" >{% csrf_token %}
             <div class="col-12">
                 <input type="hidden" name="id" value="{{ proveedor.id }}">
