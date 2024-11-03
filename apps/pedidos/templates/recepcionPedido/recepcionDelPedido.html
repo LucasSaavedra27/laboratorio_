@@ -47,7 +47,7 @@
                 <tbody>
                     <tr>
                         <td>{{ pedido.proveedor }}</td>
-                        <td>{{ pedido.fechaPedido }}</td>
+                        <td>{{ pedido.fechaPedido|date:"d/m/Y" }}</td>
                         {% if pedido.estadoPedido == 'cancelado' %}
                         <td style="background-color: #d81111;">{{ pedido.estadoPedido }}</td>{% endif %}
                         {% if pedido.estadoPedido == 'pendiente' %}

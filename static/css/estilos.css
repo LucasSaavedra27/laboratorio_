@@ -496,3 +496,10 @@ form #form-busqueda {
 .full-width-div {
   width: 100%;
 }
+
+.form-fecha{
+  display: flex;
+  width: 300px;
+}
+
+

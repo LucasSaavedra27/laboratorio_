@@ -1,0 +1,83 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block contenido %}
+    <div class="contenedor-agregarProd d-flex justify-content-center align-items-center">
+        <div class="card-agregarProd" >
+            <h3 class="text-center" style="color: #a63348;">Agregar un empleado</h3>
+            <form method="POST" enctype="multipart/form-data">
+                <form method="post">
+                    {% csrf_token %}
+                
+                    <div class="mb-3">
+                        {{ form.nombre.label_tag }} 
+                        {{ form.nombre }}  
+                    </div>
+        
+                    <div class="mb-3">
+                        {{ form.apellido.label_tag }}
+                        {{ form.apellido }}
+                    </div>
+                
+                    <div class="mb-3">
+                        {{ form.dni.label_tag }} 
+                        {{ form.dni }}  
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.direccion.label_tag }} 
+                        {{ form.direccion }} 
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.telefono.label_tag }} 
+                        {{ form.telefono }} 
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.mail.label_tag }} 
+                        {{ form.mail }} 
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.fechaDeNacimiento.label_tag }} 
+                        {{ form.fechaDeNacimiento }} 
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.salario.label_tag }} 
+                        {{ form.salario }} 
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.fechaDeIngreso.label_tag }}  
+                        {{ form.fechaDeIngreso }}  
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.estado.label_tag }}  
+                        {{ form.estado }}  
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.user.label_tag }} 
+                        {{ form.user }}
+                        
+                        <a href="{% url 'usuarios:crear_usuario' %}"><i class="fa-solid fa-plus" title="Crear usuario"></i></a>
+                        
+                    </div>
+                
+                
+                <button type="submit" class="btn btn-addProd w-100 mt-3">Guardar empleado</button>
+                <a href="{% url 'usuarios:empleados' %}" class="btn btn-cancelProd w-100 mt-2">Cancelar</a>
+            </form>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block js %}
+
+{% endblock %}
+

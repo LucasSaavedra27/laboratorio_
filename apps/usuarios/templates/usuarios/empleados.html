@@ -1,0 +1,73 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block contenido %}
+<div class="container" id="container-tabla">
+    <div class="col-12">
+        <h2 class="text-center pb-3">Registro de empleados</h2>
+        <div class="busqueda d-flex">
+            <form class="d-flex align-items-center justify-content-center" role="search" method="POST" action="{% url 'usuarios:buscarEmpleado' %}">
+                {% csrf_token %}
+                <input class="form-control mb-3" type="search" placeholder="Buscar por DNI" aria-label="buscar" name="busqueda" value="{{ busqueda|default:'' }}" />
+                <button class="btn" type="submit">
+                    <i class="fa-solid fa-magnifying-glass" style="font-size: 16px"></i>
+                </button>
+                <a href="{% url 'usuarios:empleados' %}"><i class="fa-solid fa-rotate-left"></i></a>
+            </form>
+   
+        <a href="{% url 'usuarios:agregarEmpleado' %}"><i class="fa-solid fa-square-plus" title="Agregar empleado" style="font-size: 30px"></i></a>
+        <a class="expPdf" href="{% url 'usuarios:generarPDF' %}"><i class="fa-solid fa-file-pdf px-2" style="font-size: 25px"></i>Exportar PDF</a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table">
+                <thead class="bg-table">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Apellido</th>
+                        <th scope="col">DNI</th>
+                        <th scope="col">Dirección</th>
+                        <th scope="col">Teléfono</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Fecha de Nac.</th>
+                        <th scope="col">Salario</th>
+                        <th scope="col">Usuario</th>
+                        <th scope="col">Fecha Ingreso</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col">Opciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for empleado in empleados %}
+                        <tr class="{% if empleado.estado == 'inactivo' %}table-secondary{% endif %}">
+                            <th scope="row">{{ forloop.counter }}</th>
+                            <td>{{ empleado.nombre }}</td>
+                            <td>{{ empleado.apellido }}</td>
+                            <td>{{ empleado.dni }}</td>
+                            <td>{{ empleado.direccion }}</td>
+                            <td>{{ empleado.telefono }}</td>
+                            <td>{{ empleado.mail }}</td>
+                            <td>{{ empleado.fechaDeNacimiento|date:"d/m/Y" }}</td>
+                            <td>${{ empleado.salario }}</td>
+                            <td>{{ empleado.user.username }}</td>
+                            <td>{{ empleado.fechaDeIngreso|date:"d/m/Y" }}</td>
+                            <td>{{ empleado.estado }}</td>
+                            <td>
+                                <a href="{% url 'usuarios:editarEmpleado' empleado.id%}"><i class="fa-solid fa-pen-to-square" title="Editar" data-bs-toggle="modal" data-bs-target="#exampleModal"></i></a>
+                                <a href="{% url 'usuarios:eliminarEmpleado' empleado.id%}"><i class="fa-solid fa-trash-can" title="Eliminar" data-bs-toggle="modal" data-bs-target="#deleteModal"></i></a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="12">No hay productos disponibles.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+

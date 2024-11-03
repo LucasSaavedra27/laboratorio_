@@ -17,13 +17,17 @@ class Persona(models.Model):
         return f"{self.nombre} {self.apellido}"
     
 class Empleado(Persona):
+    ESTADO = [
+        ('activo', 'Activo'),
+        ('inactivo', 'Inactivo'),
+    ]
     user = models.OneToOneField(User, on_delete=models.CASCADE,related_name='user')
     dni  = models.CharField(max_length=8,blank=False,null=False)
     fechaDeNacimiento = models.DateField(blank=False,null=False)
     fechaDeIngreso = models.DateField(blank=False,null=False)
     salario = models.DecimalField(max_digits=10,blank=False,null=False,decimal_places=2)
+    estado = models.CharField(max_length=10,choices=ESTADO,blank=False,null=False,default='activo')
     
     def __str__(self):
         return f"{self.nombre} {self.apellido}, DNI: {self.dni}"
     
-

@@ -72,7 +72,7 @@
                         <th style="background-color:#a63348;" scope="row">{{ forloop.counter }}</th>
                         <td >{{ pedido.id }}</td>
                         <td>{{ pedido.proveedor }}</td>
-                        <td>{{ pedido.fechaPedido }}</td>
+                        <td>{{ pedido.fechaPedido|date:"d/m/Y" }}</td>
                         {% if pedido.estadoPedido == 'cancelado' %}
                         <td style="background-color: #d81111;">{{ pedido.estadoPedido }}
                             <span class=''>

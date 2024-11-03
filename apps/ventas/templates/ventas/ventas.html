@@ -50,7 +50,7 @@
                     {% for venta in ventas %} 
                     <tr>
                         <th scope="row">{{ forloop.counter }}</th>
-                        <td>{{ venta.fechaDeVenta }}</td>
+                        <td>{{ venta.fechaDeVenta|date:"d/m/Y" }}</td>
                         <td>{{ venta.formaDePago }}</td>
                         <td>Factura {{ venta.tipoDeComprobante }}</td>
                         {% if venta.clienteMayorista is None %}

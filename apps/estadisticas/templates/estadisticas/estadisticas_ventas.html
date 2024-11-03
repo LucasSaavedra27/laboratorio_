@@ -1,3 +1,4 @@
+
 {% extends 'base/base.html' %}
 {% load static %}
 
@@ -9,14 +10,17 @@
 
     <!-- Formulario de selección de mes y año -->
     <div class="mb-4">
-        <form method="post" action="{% url 'estadisticas:estadisticas_ventas' %}" class="form-inline m-4">
+        <form method="post" action="{% url 'estadisticas:estadisticas_ventas' %}" class="m-2">
             {% csrf_token %}
-            <div class="form-group mr-2">
-                {{ form.as_p }}
-                <button type="submit" class="btn btn-primary">Filtrar</button>
-            </div>
+            <div class="form-fecha">
+                <div class="p-1">{{ form.mes }}</div>
+                <div class="p-1">{{ form.anio }}</div>
+                <button type="submit" class="btn btn-primary ml-2">Filtrar</button>   
+            </div>    
+
         </form>
     </div>
+    
 </div>
 
     {% if mensaje %}
@@ -26,7 +30,7 @@
         <div class="row">
             <!-- Gráfico de Ventas Totales por Empleado -->
             <div class="col-md-6 col-12 col-xl-4 p-3">
-                <h3 class="text-center pb-4">Totales por Empleado</h3>
+                <h3 class="text-center pb-4">Ventas Totales por Empleado</h3>
                 <div class="chart-container">
                     {{ graph_empleado_html|safe }}
                 </div>
@@ -34,7 +38,7 @@
             
             <!-- Gráfico de Ventas Diarias por Mes -->
             <div class="col-md-6 col-12 col-xl-4 p-3">
-                <h3 class="text-center pb-4">Diarias por Mes</h3>
+                <h3 class="text-center pb-4">Ventas Diarias por Mes</h3>
                 <div class="chart-container">
                     {{ graph_mes_html|safe }}
                 </div>
@@ -42,7 +46,7 @@
 
             <!-- Gráfico de Ventas por Categoría de Productos y Día del Mes -->
             <div class="col-md-6 col-12 col-xl-4 p-3">
-                <h3 class="text-center pb-4">Por Categoría y Día del Mes</h3>
+                <h3 class="text-center pb-4">Ventas Diarias por Mes</h3>
                 <div class="chart-container">
                     {{ graph_categorias_html|safe }}
                 </div>

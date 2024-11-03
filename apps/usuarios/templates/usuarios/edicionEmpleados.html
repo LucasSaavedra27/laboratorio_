@@ -1,0 +1,124 @@
+{%extends 'base/base.html'%}
+{% load static %}
+
+{% block contenido %}
+
+<div class="contenedor-formProd d-flex justify-content-center">
+    <div class="card-formProd">
+        <form class="row g-3" id="form-prod" action="{% url 'usuarios:edicionEmpleado' %}" method="post" >{% csrf_token %}
+            <div class="col-12">
+            <input type="hidden" name="id" value="{{ empleado.id }}">
+            <label for="nombreEmpRegister" class="form-label"
+                >Nombre</label
+            >
+            <div class="input-group">
+                <input type="text" name="nombre" class="form-control" id="nombreEmpRegister" value="{{empleado.nombre}}" placeholder="Ingrese nombre del empleado" required/>
+            </div>
+            </div>
+            <label for="nombreEmpRegister" class="labelTxt" id="nombreEmpLabel"></label>
+
+            <div class="col-12">
+            <label for="apellidoEmpRegister" class="form-label">Apellido</label>
+            <div class="input-group">
+                <input type="text" name="apellido" class="form-control" id="apellidoEmpRegister" value="{{ empleado.apellido }}" required/>
+            </div>
+            </div>
+            <label for="apellidoEmpRegister" class="labelTxt" id="apellidoEmpLabel"></label>
+
+            <div class="col-12">
+                <label for="dniEmpRegister" class="form-label"
+                >DNI</label>
+                <div class="input-group">
+                <input type="text" name="dni" class="form-control" id="dniEmpRegister" value="{{empleado.dni}}" required/>
+                </div>
+            </div>
+            <label for="dniEmpRegister" class="labelTxt" id="dniEmpLabel"></label>
+
+            <div class="col-12">
+                <label for="direccionEmpRegister" class="form-label"
+                >Dirección</label>
+                <div class="input-group">
+                <input type="text" name="direccion" class="form-control" id="direccionEmpRegister" value="{{empleado.direccion}}" required readonly/>
+                </div>
+            </div>
+            <label for="direccionEmpRegister" class="labelTxt" id="direccionEmpLabel"></label>
+
+            <div class="col-12">
+                <label for="telefonoEmpRegister" class="form-label"
+                >Teléfono</label>
+                <div class="input-group">
+                <input type="text" name="telefono" class="form-control" id="telefonoEmpRegister" value="{{empleado.telefono}}" required/>
+                </div>
+            </div>
+            <label for="telefonoEmpRegister" class="labelTxt" id="telefonoEmpLabel"></label>
+
+            <div class="col-12">
+            <label for="emailEmpRegister" class="form-label">Email</label>
+            <input type="email" name="mail" class="form-control" id="emailEmpRegister" value="{{empleado.mail}}" required/>
+            </div>
+            <label for="emailEmpRegister" class="labelTxt" id="emailEmpLabel"></label>
+
+            <div class="col-12">
+                <label for="fechaNacRegister" class="form-label">Fecha de Nacimiento</label>
+                <input type="date" name="fechaDeNacimiento" class="form-control" id="fechaNacRegister" value="{{empleado.fechaDeNacimiento|date:'Y-m-d'}}" required/>
+                </div>
+                <label for="fechaNacRegister" class="labelTxt" id="fechaNacLabel"></label>
+
+            <div class="col-12">
+                <label for="salarioEmpRegister" class="form-label">Salario</label>
+                <div class="input-group">
+                <input type="number" step="0.01" name="salario" class="form-control" id="salarioEmpRegister" value="{{empleado.salario}}" required/>
+                </div>
+            </div>
+            <label for="salarioEmpRegister" class="labelTxt" id="salarioEmpLabel"></label>
+
+            <div class="col-12">
+                <label for="usuarioEmpRegister" class="form-label">usuario</label>
+                <div class="input-group">
+                <input type="text" name="usuario" class="form-control" id="usuarioEmpRegister" value="{{empleado.user.username}}" required readonly/>
+                </div>
+            </div>
+            <label for="usuarioEmpRegister" class="labelTxt" id="usuarioEmpLabel"></label>
+
+            <div class="col-12">
+                <label for="fechaIngresoRegister" class="form-label">Fecha de ingreso</label>
+                <div class="input-group">
+                <input type="date" name="fechaDeIngreso" class="form-control" id="fechaIngresoRegister" value="{{empleado.fechaDeIngreso|date:'Y-m-d'}}" required/>
+                </div>
+            </div>
+            <label for="fechaIngresoRegister" class="labelTxt" id="fechaIngresoLabel"></label>
+
+            <div class="col-12">
+                <label for="estadoRegister" class="form-label">Estado</label>
+                <div class="input-group">
+                <select name="estado" id="estadoRegister" class="form-control">
+                {%if empleado.estado == 'activo'%}
+                    <option value="{{empleado.estado}}">{{empleado.estado}}</option>
+                    <option value="inactivo">Inactivo</option>
+                {%else%}
+                    <option value="{{empleado.estado}}">{{empleado.estado}}</option>
+                    <option value="activo">Activo</option>
+                {% endif %}
+                </select>
+                </div>
+            </div>
+            <label for="estadoRegister" class="labelTxt" id="estadoLabel"></label>
+            
+            <div class="col-12">
+                <button class="btn bg-primario w-100 mt-4" type="submit">Registrar</button>
+                <button class="btn bg-secundario w-100 mt-1" type="reset">Restablecer valores</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+   <script src="{% static 'js/tratamientoFechas.js' %}"></script>
+   <script>
+    document.getElementById('salarioEmpRegister').addEventListener('input', function (event) {
+        this.value = this.value.replace(/[^0-9.]/g, '');
+    });
+    
+</script>
+{% endblock %}    

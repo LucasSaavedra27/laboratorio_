@@ -43,8 +43,8 @@
                         <td>{{ producto.nombre }}</td>
                         <td>${{ producto.precioDeVenta }}</td>
                         <td>${{ producto.precioDeCosto }}</td>
-                        <td>{{ producto.fechaDeElaboracion }}</td>
-                        <td>{{ producto.fechaDeVencimiento }}</td>
+                        <td>{{ producto.fechaDeElaboracion|date:"d/m/Y" }}</td>
+                        <td>{{ producto.fechaDeVencimiento|date:"d/m/Y" }}</td>
                         <td>{{ producto.categoria }}</td>
                         <td>{{ producto.unidadDeMedida }}</td>
                         {% if producto.cantidadDisponible <= producto.cantidadMinRequerida %}
