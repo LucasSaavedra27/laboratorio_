@@ -55,7 +55,7 @@
         <nav>
           {% if user.is_superuser %}
             <a href="{% url 'estadisticas:estadisticas_ventas' %}"><i class="fa-solid fa-chart-simple"></i>Estadísticas</a>
-            <a href="{% url 'productos:insumos' %}"><i class="fa-solid fa-chart-simple"></i>Insumos</a>
+            <a href="{% url 'productos:insumos' %}"><i class="fa-solid fa-egg"></i>Insumos</a>
             <a href="{% url 'productos:productos' %}"><i class="fa-solid fa-bread-slice"></i>Productos</a>
             <a href="{% url 'ventas:listadoMayoristas' %}"><i class="fa-solid fa-person-circle-check"></i>Clientes</a>
             <a href="{% url 'pedidos:pedidos' %}"><i class="fa-solid fa-cart-shopping"></i>Pedidos</a>
@@ -63,7 +63,7 @@
             <a href="{% url 'pedidos:proveedores' %}"><i class="fa-solid fa-people-carry-box"></i>Proveedores</a>
             <a href="{% url 'usuarios:empleados' %}"><i class="fa-solid fa-users"></i>Empleados</a>
           {% else %}
-            <a href="{% url 'productos:insumos' %}"><i class="fa-solid fa-chart-simple"></i>Insumos</a>
+            <a href="{% url 'productos:insumos' %}"><i class="fa-solid fa-egg"></i>Insumos</a>
             <a href="{% url 'productos:productos' %}"><i class="fa-solid fa-bread-slice"></i>Productos</a>
             <a href="{% url 'ventas:listadoMayoristas' %}"><i class="fa-solid fa-person-circle-check"></i>Clientes</a>
             <a href="{% url 'pedidos:pedidos' %}"><i class="fa-solid fa-cart-shopping"></i>Pedidos</a>
