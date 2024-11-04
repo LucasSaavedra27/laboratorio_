@@ -19,3 +19,5 @@ urlpatterns = [
     path('obtener-precio-producto/<producto_id>/', login_required(views.obtener_precio_producto), name='obtener_precio_producto'),
     path('exportarPDF_ProductosMasVendidos',login_required(views.exportarPDF_ProductosMasVendidos),name='exportarPDF_ProductosMasVendidos'),
 ] 
+
+#Ver tema de permisos con los empleados

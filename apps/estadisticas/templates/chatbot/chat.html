@@ -1,0 +1,34 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block contenido %}
+<div style="margin-top: 150px; text-align: center;">
+    <h2>Chatbot</h2>
+    <div class="chat-history " style="margin-top: 10px; text-align: center;">
+        {% for chat in historial_chat %}
+            <div class="message-content">
+                <strong>{{ chat.user.username }}:</strong> {{ chat.message }}
+            </div>
+            <div class="message-content">
+                <strong>IA:</strong> {{ chat.response }}
+            </div>
+            <hr>
+        {% endfor %}
+    </div>
+
+    <div class="d-flex justify-content-center">
+        <form method="post" style="margin: 10px; text-align: center;">
+            {% csrf_token %}
+            <input required="" type="text" autocomplete="off" name="message" class="input-chatbot" placeholder="Escriba su mensaje aquí">
+        </form>
+    </div>
+</div>
+<script>
+    document.getElementById('message-input').addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault(); // Previene el comportamiento por defecto de "Enter"
+            document.getElementById('chat-form').submit(); // Envía el formulario
+        }
+    });
+</script>
+{% endblock %}

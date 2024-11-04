@@ -5,6 +5,7 @@
 {% block titulo %}Estadísticas de Ventas{% endblock %}
 
 {% block contenido %}
+
 <div class="contenedor-cards-stats">
     <h2 class="text-center">Estadísticas de Ventas</h2>
     <div class="row gx-5 pt-4">
@@ -72,7 +73,7 @@
                 <div class="card-body px-4">
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <div class="me-2">
-                            <div class="display-5 text-truncate" style="max-width: 200px;">{{productoMasVendido.producto__nombre}}</div>
+                            <div class="display-5 text-truncate" style="max-width: 200px;">{{producto_mas_vendido.producto__nombre}}</div>
                             <div class="card-text">Productos</div>
                         </div>
                         <div class="icon-circle bg-info text-white"><i class="fa-solid fa-bread-slice"></i></div>
@@ -100,19 +101,12 @@
                 </div>  
                 
             </form>
-            <a href="#" class="mr-2" style="margin-right: 20px;">
+            <a href="{% url 'estadisticas:chatbot' %}" class="mr-2" style="margin-right: 20px;">
                 <i class="fa-solid fa-robot" title="chatbot" style="font-size: 30px"></i>
             </a>
         </div>
     </div>
 </div>
-
-
-<div class="input-group d-flex justify-content-center">
-    <input required="" type="text" name="message" autocomplete="off" class="input">
-    <label class="user-label">Escribe tu mensaje aquí...</label>
-</div>
-
 
     {% if mensaje %}
         <p class="text-center text-danger">{{ mensaje }}</p>

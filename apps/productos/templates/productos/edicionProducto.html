@@ -55,7 +55,7 @@
             <div class="col-12">
             <label for="categoriaRegister" class="form-label">Categoría</label>
             <select name="categoria" id="categoriaRegister" required class="form-control">
-                {%if producto.categoria == 'panaderia'%}
+                {%if producto.categoria == 'panaderia' or producto.categoria == 'panadería'%}
                     <option value="{{producto.categoria}}">{{producto.categoria}}</option>
                     <option value="pasteleria">Pastelería</option>
                 {%else%}
