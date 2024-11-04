@@ -199,8 +199,10 @@ def obtener_precio_producto(request, producto_id):
         return JsonResponse({'error': 'Producto no encontrado'}, status=404)
 
 
+from django.db.models import Sum
+from django.http import HttpResponse
+
 def exportarPDF_ProductosMasVendidos(request):
-    
     pdf = PDF('Productos más vendidos')
     pdf.add_page()
     
@@ -208,17 +210,16 @@ def exportarPDF_ProductosMasVendidos(request):
     tcol_set(pdf, 'white')
     pdf.set_font("Arial", "B", 12)
 
-    
     pdf.cell(50, 10, "Nombre de producto", 1, 0, 'C', fill=True)
     pdf.cell(50, 10, "Cantidad Vendida", 1, 0, 'C', fill=True)
     pdf.cell(40, 10, "Unidad de medida", 1, 0, 'C', fill=True)
     pdf.cell(50, 10, "Total Vendido", 1, 1, 'C', fill=True)
 
-    # Consulta para obtener productos más vendidos
+    # Consulta para obtener productos más vendidos con el total calculado usando el subtotal
     productos_vendidos = (
         DetalleVenta.objects
-        .values('producto__nombre')
-        .annotate(total_vendido=Sum('cantidad'))
+        .values('producto__nombre', 'producto__unidadDeMedida')
+        .annotate(total_vendido=Sum('cantidad'), total_subtotal=Sum('subTotal'))
         .order_by('-total_vendido')
     )
 
@@ -227,7 +228,6 @@ def exportarPDF_ProductosMasVendidos(request):
 
     if productos_vendidos:
         for idx, producto in enumerate(productos_vendidos):
-            
             if idx % 2 == 0:
                 bcol_set(pdf, 'gray2')  
             else:
@@ -235,13 +235,14 @@ def exportarPDF_ProductosMasVendidos(request):
                 
             pdf.cell(50, 10, producto['producto__nombre'], 1, 0, 'C', fill=True)
             pdf.cell(50, 10, f"{producto['total_vendido']:.2f}", 1, 0, 'C', fill=True)
-            pdf.cell(40, 10, f"{ Producto.objects.get(nombre=producto['producto__nombre']).unidadDeMedida}", 1, 0, 'C', fill=True)
-            pdf.cell(50, 10, f"${producto['total_vendido'] * Producto.objects.get(nombre=producto['producto__nombre']).precioDeVenta:.2f}", 1, 1, 'C', fill=True)
+            pdf.cell(40, 10, producto['producto__unidadDeMedida'], 1, 0, 'C', fill=True)
+            pdf.cell(50, 10, f"${producto['total_subtotal']:.2f}", 1, 1, 'C', fill=True)
     else:
         pdf.cell(0, 10, "No hay productos disponibles.", 0, 1, 'C')
 
     response = HttpResponse(pdf.output(dest='S').encode('latin1'), content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="reporteProductosMasVendidos.pdf"'
     return response
+
 
     

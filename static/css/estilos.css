@@ -318,6 +318,10 @@ form #form-busqueda {
   color: #162772;
 }
 
+.icon-link {
+  text-decoration: none;
+}
+
 .fa-pen-to-square:hover {
   color: #1135d3;
 }

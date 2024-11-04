@@ -38,7 +38,7 @@
                 <label for="fechaElabRegister" class="form-label"
                 >Fecha de Elaboración</label>
                 <div class="input-group">
-                <input type="date" name="fechaDeElaboracion" class="form-control" id="fechaElabRegister" value="{{producto.fechaDeElaboracion|date:'Y-m-d'}}" required readonly/>
+                <input type="date" name="fechaDeElaboracion" class="form-control" id="fechaElabRegister" value="{{producto.fechaDeElaboracion|date:'Y-m-d'}}" required/>
                 </div>
             </div>
             <label for="fechaElabRegister" class="labelTxt" id="fechaElabLabel"></label>
@@ -47,7 +47,7 @@
                 <label for="fechaVencRegister" class="form-label"
                 >Fecha de Vencimiento</label>
                 <div class="input-group">
-                <input type="date" name="fechaDeVencimiento" class="form-control" id="fechaVencRegister" value="{{producto.fechaDeVencimiento|date:'Y-m-d'}}" required readonly/>
+                <input type="date" name="fechaDeVencimiento" class="form-control" id="fechaVencRegister" value="{{producto.fechaDeVencimiento|date:'Y-m-d'}}" required/>
                 </div>
             </div>
             <label for="fechaVencRegister" class="labelTxt" id="fechaVencLabel"></label>
@@ -110,13 +110,26 @@
 
 {% block js %}
     <script>
-        document.getElementById('precioVentaRegister').addEventListener('input', function (event) {
+        document.addEventListener("DOMContentLoaded", function () {
+        
+            function deshabilitarFechasPasadas() {
+                const fechaActual = new Date().toISOString().split("T")[0];
+                const campoFechaElaboracion = document.getElementById("fechaElabRegister");
+                if (campoFechaElaboracion) {
+                    campoFechaElaboracion.setAttribute("max", fechaActual);
+                }
+            }
+            window.onload = deshabilitarFechasPasadas;
+
+            document.getElementById('precioVentaRegister').addEventListener('input', function (event) {
             this.value = this.value.replace(/[^0-9.]/g, '');
         });
         
         document.getElementById('precioCostoRegister').addEventListener('input', function (event) {
             this.value = this.value.replace(/[^0-9.]/g, '');
         });
+
+            
+        });
     </script>
-    
-{% endblock %}    
+{% endblock %}

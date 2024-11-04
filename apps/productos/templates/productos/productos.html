@@ -38,32 +38,48 @@
                 </thead>
                 <tbody>
                     {% for producto in productos %}
-                    <tr>
-                        <th scope="row">{{ forloop.counter }}</th>
-                        <td>{{ producto.nombre }}</td>
-                        <td>${{ producto.precioDeVenta }}</td>
-                        <td>${{ producto.precioDeCosto }}</td>
-                        <td>{{ producto.fechaDeElaboracion|date:"d/m/Y" }}</td>
-                        <td>{{ producto.fechaDeVencimiento|date:"d/m/Y" }}</td>
-                        <td>{{ producto.categoria }}</td>
-                        <td>{{ producto.unidadDeMedida }}</td>
-                        {% if producto.cantidadDisponible <= producto.cantidadMinRequerida|add:10 %}
-                            <td style="background-color: #d81111;">{{ producto.cantidadDisponible }}</td>
-                        {% else %}
+                        <tr>
+                            <th scope="row">{{ forloop.counter }}</th>
+                            <td>{{ producto.nombre }}</td>
+                            <td>${{ producto.precioDeVenta }}</td>
+                            <td>${{ producto.precioDeCosto }}</td>
+                            <td>{{ producto.fechaDeElaboracion|date:"d/m/Y" }}</td>
+                            <td>{{ producto.fechaDeVencimiento|date:"d/m/Y" }}</td>
+                            <td>{{ producto.categoria }}</td>
+                            <td>{{ producto.unidadDeMedida }}</td>
+
+                            {% if producto.cantidadDisponible <= producto.cantidadMinRequerida|add:10 %}
+                                <td style="background-color: #d81111;">
+                                    {% if producto.unidadDeMedida == 'kg' or producto.unidadDeMedida == 'l' %}
+                                        {{ producto.cantidadDisponible|floatformat:2 }}
+                                    {% else %}
+                                        {{ producto.cantidadDisponible|floatformat:0 }}
+                                    {% endif %}
+                                </td>
+                            {% else %}
+                                <td>
+                                    {% if producto.unidadDeMedida == 'kg' or producto.unidadDeMedida == 'l' %}
+                                        {{ producto.cantidadDisponible|floatformat:2 }}
+                                    {% else %}
+                                        {{ producto.cantidadDisponible|floatformat:0 }}
+                                    {% endif %}
+                                </td>
+                            {% endif %}
+
+                            <td>{{ producto.cantidadMinRequerida }}</td>
                             <td>
-                                {{ producto.cantidadDisponible }}
+                                <a href="{% url 'productos:editarProducto' producto.id %}" class="icon-link">
+                                    <i class="fa-solid fa-pen-to-square" title="Editar" data-bs-toggle="modal" data-bs-target="#exampleModal"></i>
+                                </a>
+                                <a href="{% url 'productos:eliminarProducto' producto.id %}" class="icon-link">
+                                    <i class="fa-solid fa-trash-can" title="Eliminar" data-bs-toggle="modal" data-bs-target="#deleteModal"></i>
+                                </a>
                             </td>
-                        {% endif %}
-                        <td>{{ producto.cantidadMinRequerida }}</td>
-                        <td>
-                            <a href="{% url 'productos:editarProducto' producto.id %}"><i class="fa-solid fa-pen-to-square" title="Editar" data-bs-toggle="modal" data-bs-target="#exampleModal"></i></a>
-                            <a href="{% url 'productos:eliminarProducto' producto.id %}"><i class="fa-solid fa-trash-can" title="Eliminar" data-bs-toggle="modal" data-bs-target="#deleteModal"></i></a>
-                        </td>
-                    </tr>
+                        </tr>
                     {% empty %}
-                    <tr>
-                        <td colspan="10">No hay productos disponibles.</td>
-                    </tr>
+                        <tr>
+                            <td colspan="12">No hay productos disponibles.</td>
+                        </tr>
                     {% endfor %}
                 </tbody>
             </table>
