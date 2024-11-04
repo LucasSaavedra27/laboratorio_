@@ -8,6 +8,7 @@ from datetime import datetime
 import os
 from django.http import HttpResponse,JsonResponse
 from apps.productos.models import Producto
+from django.db.models import Sum
 
 def ventas(request):
     ventas = Venta.objects.all()
@@ -106,32 +107,41 @@ def tfont(hoja, estilo, fuente='Arial'):
     hoja.set_font(fuente, style=estilo)
 
 class PDF(FPDF):
+    def __init__(self, title):
+        super().__init__()
+        self.title = title
+    
     def header(self):
         logo = os.path.join(settings.BASE_DIR, 'static', 'img', 'logotipo.png')
         
+        # Verificar si el archivo existe
         if os.path.exists(logo):
             self.image(logo, x=10, y=10, w=30, h=30) 
         
         self.set_font('Arial', '', 15)
-        tcol_set(self, 'red')
-        tfont_size(self, 30)
-        tfont(self, 'B')
-        self.cell(w=0, h=20, txt='Reporte de ventas', border=0, ln=1, align='C', fill=0)
 
-        tfont_size(self, 10)
+        tcol_set(self, 'red')
+        tfont_size(self,30)
+        tfont(self,'B')
+        self.cell(w = 0, h = 20, txt = self.title, border = 0, ln=1,
+                align = 'C', fill = 0)
+
+        tfont_size(self,10)
         tcol_set(self, 'black')
-        tfont(self, 'I')
-        self.cell(w=0, h=10, txt=f'Generado el {datetime.now().strftime("%d/%m/%y")}', border=0, ln=2, align='C', fill=0)
+        tfont(self,'I')
+        self.cell(w = 0, h = 10, txt = f'Generado el {datetime.now().strftime("%d/%m/%y")}', border = 0, ln=2,
+                align = 'C', fill = 0)
 
         self.ln(5)
 
     def footer(self):
         self.set_y(-20)
         self.set_font('Arial', 'I', 12)
-        self.cell(w=0, h=10, txt='Pagina ' + str(self.page_no()), border=0, align='C', fill=0)
+        self.cell(w = 0, h = 10, txt =  'Pagina ' + str(self.page_no()),
+                 border = 0,align = 'C', fill = 0)
 
 def exportarPDF(request):
-    pdf = PDF()
+    pdf = PDF('Registro de ventas')
     pdf.add_page()
     
     # Configuración de la tabla
@@ -187,3 +197,51 @@ def obtener_precio_producto(request, producto_id):
         return JsonResponse({'precio': str(producto.precioDeVenta)})
     except Producto.DoesNotExist:
         return JsonResponse({'error': 'Producto no encontrado'}, status=404)
+
+
+def exportarPDF_ProductosMasVendidos(request):
+    
+    pdf = PDF('Productos más vendidos')
+    pdf.add_page()
+    
+    bcol_set(pdf, 'red') 
+    tcol_set(pdf, 'white')
+    pdf.set_font("Arial", "B", 12)
+
+    
+    pdf.cell(50, 10, "Nombre de producto", 1, 0, 'C', fill=True)
+    pdf.cell(50, 10, "Cantidad Vendida", 1, 0, 'C', fill=True)
+    pdf.cell(40, 10, "Unidad de medida", 1, 0, 'C', fill=True)
+    pdf.cell(50, 10, "Total Vendido", 1, 1, 'C', fill=True)
+
+    # Consulta para obtener productos más vendidos
+    productos_vendidos = (
+        DetalleVenta.objects
+        .values('producto__nombre')
+        .annotate(total_vendido=Sum('cantidad'))
+        .order_by('-total_vendido')
+    )
+
+    tcol_set(pdf, 'black')
+    pdf.set_font("Arial", "", 12)
+
+    if productos_vendidos:
+        for idx, producto in enumerate(productos_vendidos):
+            
+            if idx % 2 == 0:
+                bcol_set(pdf, 'gray2')  
+            else:
+                bcol_set(pdf, 'white')  
+                
+            pdf.cell(50, 10, producto['producto__nombre'], 1, 0, 'C', fill=True)
+            pdf.cell(50, 10, f"{producto['total_vendido']:.2f}", 1, 0, 'C', fill=True)
+            pdf.cell(40, 10, f"{ Producto.objects.get(nombre=producto['producto__nombre']).unidadDeMedida}", 1, 0, 'C', fill=True)
+            pdf.cell(50, 10, f"${producto['total_vendido'] * Producto.objects.get(nombre=producto['producto__nombre']).precioDeVenta:.2f}", 1, 1, 'C', fill=True)
+    else:
+        pdf.cell(0, 10, "No hay productos disponibles.", 0, 1, 'C')
+
+    response = HttpResponse(pdf.output(dest='S').encode('latin1'), content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="reporteProductosMasVendidos.pdf"'
+    return response
+
+    

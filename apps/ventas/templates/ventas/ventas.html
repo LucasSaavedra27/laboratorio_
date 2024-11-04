@@ -26,7 +26,7 @@
                 </div>
             </form>
             <a href="{% url 'ventas:agregarVenta' %}"><i class="fa-solid fa-square-plus" title="Agregar venta" style="font-size: 30px"></i></a>
-            <a class="expPdf" href="{% url 'ventas:exportarPDF' %}"><i class="expPdf fa-solid fa-file-pdf px-2" style="font-size: 25px"></i>Exportar PDF</a>
+            <a class="expPdf" href="#" data-bs-toggle="modal" data-bs-target="#pdfModal"><i class="fa-solid fa-file-pdf px-2" style="font-size: 25px"></i>Exportar PDF</a>
         </div>
         
         
@@ -75,6 +75,21 @@
     </div>
 </div>
 
+<div class="modal fade" id="pdfModal" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="pdfModalLabel">Seleccione el tipo de reporte</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Elija el tipo de reporte que desea exportar en PDF:</p>
+                <a href="{% url 'ventas:exportarPDF' %}" class="btn btn-addProd text-center">Todas las ventas</a>
+                <a href="{% url 'ventas:exportarPDF_ProductosMasVendidos' %}" class="btn btn-addProd text-center">Productos más vendidos</a>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block js %}

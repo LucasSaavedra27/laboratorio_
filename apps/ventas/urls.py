@@ -17,4 +17,5 @@ urlpatterns = [
     path('buscarMayorista/',login_required(views_mayoristas.buscarMayorista),name='buscarMayorista'),
     path('exportarPDF_Mayoristas/',login_required(views_mayoristas.exportarPDF_Mayoristas),name='exportarPDF_Mayoristas'),
     path('obtener-precio-producto/<producto_id>/', login_required(views.obtener_precio_producto), name='obtener_precio_producto'),
+    path('exportarPDF_ProductosMasVendidos',login_required(views.exportarPDF_ProductosMasVendidos),name='exportarPDF_ProductosMasVendidos'),
 ] 

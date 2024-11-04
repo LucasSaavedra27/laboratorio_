@@ -47,7 +47,7 @@
                         <td>{{ producto.fechaDeVencimiento|date:"d/m/Y" }}</td>
                         <td>{{ producto.categoria }}</td>
                         <td>{{ producto.unidadDeMedida }}</td>
-                        {% if producto.cantidadDisponible <= producto.cantidadMinRequerida %}
+                        {% if producto.cantidadDisponible <= producto.cantidadMinRequerida|add:10 %}
                             <td style="background-color: #d81111;">{{ producto.cantidadDisponible }}</td>
                         {% else %}
                             <td>
