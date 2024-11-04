@@ -1,6 +1,6 @@
 from datetime import date
 from django.shortcuts import render
-from django.db.models import Sum
+from django.db.models import Sum, Count
 from apps.ventas.models import Venta, DetalleVenta
 from .forms import SeleccionarFechaForm
 import plotly.express as px
@@ -139,11 +139,45 @@ def estadisticas_ventas(request):
 
     # Se convierte a HTML
     graph_mes_html = fig_mes.to_html(full_html=False)
+    
+    # AGREGADO POR LUCAS
+    empleado = (
+        Venta.objects
+        .filter(fechaDeVenta__month=date.today().month, fechaDeVenta__year=date.today().year) 
+        .values('empleado__nombre')  
+        .annotate(total_ventas=Count('id'))  # Contar las ventas
+        .order_by('-total_ventas')  # Ordenar descendentemente
+        .first()  # Obtener el empleado con más ventas
+    )
+    
+    ventas_diarias = (
+        Venta.objects
+        .filter(fechaDeVenta=date.today())
+        .aggregate(total_diario=Sum('total'))
+    )
+    total_diario = ventas_diarias['total_diario'] if ventas_diarias['total_diario'] else 0
+
+    ventas_mensuales = (
+        Venta.objects
+        .filter(fechaDeVenta__year=date.today().year, fechaDeVenta__month=date.today().month)
+        .aggregate(total_mensual=Sum('total'))
+    )
+    total_mensual = ventas_mensuales['total_mensual'] if ventas_mensuales['total_mensual'] else 0
+    
+    productoMasVendido = (
+        DetalleVenta.objects
+        .filter(venta__fechaDeVenta__month=date.today().month, venta__fechaDeVenta__year=date.today().year)  
+        .values('producto__nombre')  
+        .annotate(total_vendido=Sum('cantidad'))  
+        .order_by('-total_vendido')  
+        .first()  # Obtener el primer resultado, que será el producto más vendido
+    )
 
     return render(
         request,
         "estadisticas/estadisticas_ventas.html",
-        {"graph_empleado_html": graph_empleado_html, "graph_mes_html": graph_mes_html, "graph_categorias_html": graph_categorias_html, "form": form},
+        {"graph_empleado_html": graph_empleado_html, "graph_mes_html": graph_mes_html, "graph_categorias_html": graph_categorias_html, 
+         "form": form,'empleado':empleado,'total_diario':total_diario,'total_mensual':total_mensual,'productoMasVendido':productoMasVendido},
     )
 
 
@@ -169,3 +203,4 @@ def obtener_schema():
 
     # Convertir el esquema a JSON
     return json.dumps(schema)
+

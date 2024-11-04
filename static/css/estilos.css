@@ -493,8 +493,10 @@ form #form-busqueda {
   width: 200px;
 }
 
-.contenedor-estadisticas {
+.contenedor-cards-stats{
   padding-top: 160px;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
 .full-width-div {
@@ -506,4 +508,19 @@ form #form-busqueda {
   width: 300px;
 }
 
+#card-raised {
+  border: none;  
+}
 
+.icon-circle {
+  height: 3rem;
+  width: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.fa-dollar-sign{
+font-size: 0.75rem;
+}
