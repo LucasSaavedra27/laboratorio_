@@ -489,10 +489,6 @@ form #form-busqueda {
   width: 200px;
 }
 
-.contenedor-estadisticas {
-  padding-top: 160px;
-}
-
 .full-width-div {
   width: 100%;
 }
@@ -502,42 +498,48 @@ form #form-busqueda {
   width: 300px;
 }
 
-.message-content {
-  white-space: pre-line;
+#card-raised {
+  border: none;  
 }
 
-.input-group {
-  position: relative;
- }
- 
- .input {
-  border: solid 1.5px #000000;
-  border-radius: 1rem;
-  background: none;
-  padding: 1rem;
-  font-size: 1rem;
-  color: #732036;
-  transition: border 150ms cubic-bezier(0.4,0,0.2,1);
- }
- 
- .user-label {
-  position: absolute;
-  left: 15px;
-  color: #000000;
-  pointer-events: none;
-  transform: translateY(1rem);
-  transition: 150ms cubic-bezier(0.4,0,0.2,1);
- }
- 
- .input:focus, input:valid {
+.icon-circle {
+  height: 3rem;
+  width: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.contenedor-cards-stats{
+  padding-top: 160px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.fa-dollar-sign{
+font-size: 0.75rem;
+}
+
+.message-content {
+  white-space: pre-line;
+  margin: 0px 100px;
+}
+
+.input-chatbot {
+  border: none;
   outline: none;
-  border: 1.5px solid #000000;
- }
- 
- .input:focus ~ label, input:valid ~ label {
-  transform: translateY(-50%) scale(0.8);
-  background-color: #f2f2f2;
-  padding: 0 .2em;
-  color: #000000;
- }
+  border-radius: 15px;
+  padding: 1em;
+  background-color: #ccc;
+  box-shadow: inset 2px 5px 10px rgba(0,0,0,0.3);
+  transition: 300ms ease-in-out;
+}
+
+.input-chatbot:focus {
+  background-color: white;
+  transform: scale(1.05);
+  box-shadow: 6px 6px 50px #969696,
+             -6px -6px 50px #ffffff;
+}
 

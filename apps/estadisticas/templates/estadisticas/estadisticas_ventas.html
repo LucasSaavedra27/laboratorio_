@@ -5,24 +5,109 @@
 {% block titulo %}Estadísticas de Ventas{% endblock %}
 
 {% block contenido %}
-<div class="contenedor-estadisticas {% comment %} mx-0 {% endcomment %}"> 
+
+<div class="contenedor-cards-stats">
     <h2 class="text-center">Estadísticas de Ventas</h2>
-
-    <!-- Formulario de selección de mes y año -->
-    <div class="mb-4">
-        <form method="post" action="{% url 'estadisticas:estadisticas_ventas' %}" class="m-2">
-            {% csrf_token %}
-            <div class="form-fecha">
-                <div class="p-1">{{ form.mes }}</div>
-                <div class="p-1">{{ form.anio }}</div>
-                <button type="submit" class="btn btn-primary ml-2">Filtrar</button>   
-            </div>    
-
-        </form>
+    <div class="row gx-5 pt-4">
+        <div class="col-xxl-3 col-md-6 mb-5 ml-2" >
+            <div class="card border-start border-success border-4 shadow" id=card-raised>
+                <div class="card-body px-4">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div class="me-2">
+                            <div class="display-5">${{ total_diario }}</div>
+                            <div class="card-text">Ventas</div>
+                        </div>
+                        <div class="icon-circle bg-success text-white"><i class="fa-solid fa-sack-dollar"></i></div>
+                    </div>
+                    <div class="card-text">
+                        <div class="d-inline-flex align-items-center">
+                            <div class="caption"><i class="fa-solid fa-dollar-sign"></i> Captura diaria de ventas</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xxl-3 col-md-6 mb-5 ml-2" >
+            <div class="card border-start border-danger border-4 shadow" id=card-raised>
+                <div class="card-body px-4">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div class="me-2">
+                            <div class="display-5">${{ total_mensual }}</div>
+                            <div class="card-text">Ventas</div>
+                        </div>
+                        <div class="icon-circle bg-danger text-white"><i class="fa-solid fa-sack-dollar"></i></div>
+                    </div>
+                    <div class="card-text">
+                        <div class="d-inline-flex align-items-center">
+                            <div class="caption"><i class="fa-solid fa-dollar-sign"></i> Captura de ventas mensual</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xxl-3 col-md-6 mb-5 ml-2" >
+            <div class="card border-start border-warning border-4 shadow" id=card-raised>
+                <div class="card-body px-4">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div class="me-2">
+                            {% if empleado %}
+                                <div class="display-5">{{ empleado.empleado__nombre }}</div>
+                                <div class="card-text">Empleados</div>
+                            {% else %}
+                                <div class="display-5"> -- </div>
+                                <div class="card-text">Empleados</div>
+                            {% endif %}
+                        </div>
+                        <div class="icon-circle bg-warning text-white"><i class="fa-solid fa-person"></i></div>
+                    </div>
+                    <div class="card-text">
+                        <div class="d-inline-flex align-items-center">
+                            <div class="caption"><i class="fa-solid fa-dollar-sign"></i> Mayores ventas en el mes</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xxl-3 col-md-6 mb-5 ml-2" >
+            <div class="card border-start border-info border-4 shadow" id=card-raised>
+                <div class="card-body px-4">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div class="me-2">
+                            <div class="display-5 text-truncate" style="max-width: 200px;">{{producto_mas_vendido.producto__nombre}}</div>
+                            <div class="card-text">Productos</div>
+                        </div>
+                        <div class="icon-circle bg-info text-white"><i class="fa-solid fa-bread-slice"></i></div>
+                    </div>
+                    <div class="card-text">
+                        <div class="d-inline-flex align-items-center">
+                            <div class="caption"><i class="fa-solid fa-dollar-sign"></i> Mayor venta en el mes</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    
 </div>
-<a href="{% url 'estadisticas:chatbot' %}"><i class="fa-solid fa-robot" title="chatbot" style="font-size: 30px"></i></a>
+
+<div class="contenedor-estadisticas">
+    <div class="mb-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <form method="post" action="{% url 'estadisticas:estadisticas_ventas' %}" class="m-2 d-flex align-items-center">
+                {% csrf_token %}
+                <div class="form-fecha d-flex">
+                    <div class="p-1">{{ form.mes }}</div>
+                    <div class="p-1">{{ form.anio }}</div>
+                    <button type="submit" class="btn btn-primary ml-2">Filtrar</button>   
+                </div>  
+                
+            </form>
+            <a href="{% url 'estadisticas:chatbot' %}" class="mr-2" style="margin-right: 20px;">
+                <i class="fa-solid fa-robot" title="chatbot" style="font-size: 30px"></i>
+            </a>
+        </div>
+    </div>
+</div>
+
     {% if mensaje %}
         <p class="text-center text-danger">{{ mensaje }}</p>
     {% else %}
