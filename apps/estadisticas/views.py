@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.db.models import Sum, Count
 from django.urls import reverse
@@ -34,7 +35,7 @@ from langchain_core.prompts import (
 )  # Manejo de Errores y Validación de Consultas
 
 # IMPORTS PARA PDF
-from apps.productos import views  # generarPDF()
+from apps.productos.views import crearpdf  # generarPDF()
 
 
 def response_llm(message, query, response):
@@ -165,6 +166,7 @@ def chatbot(request):
         print("\n--------- INICIO DE POST en chatbot_view ---------\n")
         message = request.POST.get("message")
         print(f"\n--------- Mensaje de usuario: {message}  ---------\n")
+        
         try:
             # Detecta si el mensaje es una consulta SQL o una conversación general
             intention = detect_intention(message)
@@ -172,13 +174,24 @@ def chatbot(request):
                 response = generate_sql_response(message)
             else:
                 response = generate_general_response(message)
-                # Revisa si generate_general_response devuelve una indicación de redirección
+                
+                # Revisa si generate_general_response devuelve una indicación de generación de PDF
                 if response == "redirect_producto_pdf":
-                    return redirect(reverse("productos:generarPDF"))
+                    pdf = crearpdf()  # Genera el PDF utilizando la función `crearpdf`
+                    # Prepara la respuesta con el PDF generado
+                    response = HttpResponse(pdf.output(dest='S').encode('latin1'), content_type='application/pdf')
+                    response['Content-Disposition'] = 'attachment; filename="reporteProductos.pdf"'
+                    response['Refresh'] = '0; url=/estadisticas/chatbot/'
+                    return response
                 elif response == "redirect_insumo_pdf":
-                    return redirect(reverse("productos:generarPDFInsumoFaltante"))
+                    pdf = crearpdf()  # Aquí también podrías utilizar otra función si deseas generar un PDF distinto
+                    response = HttpResponse(pdf.output(dest='S').encode('latin1'), content_type='application/pdf')
+                    response['Content-Disposition'] = 'attachment; filename="reporteInsumosFaltantes.pdf"'
+                    response['Refresh'] = '0; url=/estadisticas/chatbot/'
+                    return response
+
         except ValueError as e:
-            response = f"hubo un error: {str(e)}"
+            response = f"Hubo un error: {str(e)}"
 
         # Guarda el mensaje y la respuesta en la base de datos
         Chat.objects.create(user=request.user, message=message, response=response)

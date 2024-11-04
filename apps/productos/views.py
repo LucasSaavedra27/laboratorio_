@@ -133,51 +133,56 @@ class PDF(FPDF):
                  border = 0,
                 align = 'C', fill = 0)
 
-def generarPDF(request):
-    # Crear un objeto FPDF
+def crearpdf():
+    # Crear un objeto PDF con el título "Reporte de productos"
     pdf = PDF("Reporte de productos")
     pdf.add_page()
     
-    # Configuración de la tabla
-    # Cambiar el color del fondo a verde para los títulos de la tabla
-    bcol_set(pdf, 'red')  # Establece el color verde para el fondo de las celdas
-    tcol_set(pdf, 'white')
+    # Configuración de los títulos de la tabla
+    bcol_set(pdf, 'red')  # Color de fondo rojo para los títulos
+    tcol_set(pdf, 'white')  # Color de texto blanco
     pdf.set_font("Arial", "B", 12)
-
-    # Dibujar las celdas de los títulos con fondo verde
+    
+    # Dibujar los títulos de la tabla
     pdf.cell(50, 10, "Nombre", 1, 0, 'C', fill=True)
     pdf.cell(40, 10, "Precio", 1, 0, 'C', fill=True)
     pdf.cell(50, 10, "Cantidad Disponible", 1, 0, 'C', fill=True)
     pdf.cell(50, 10, "Fecha de vencimiento", 1, 1, 'C', fill=True)
-
+    
+    # Cambiar el color de texto a negro para el contenido
     tcol_set(pdf, 'black')
-    # Cambiar el estilo de fuente para el contenido
     pdf.set_font("Arial", "", 12)
 
-    # Obtener todos los productos de la base de datos
+    # Obtener productos de la base de datos
     productos = Producto.objects.all()
 
     # Verificar si hay productos
     if productos.exists():
-        c = 0  # Contador para alternar el color de las filas
+        c = 0  # Contador para alternar colores en filas
         for producto in productos:
             c += 1
-
             # Alternar el color de fondo entre gris y blanco
             if c % 2 == 0:
-                bcol_set(pdf, 'gray2')  # Fila gris
+                bcol_set(pdf, 'gray2')
             else:
-                bcol_set(pdf, 'white')  # Fila blanca
+                bcol_set(pdf, 'white')
             
-            # Dibujar las celdas con el color de fondo establecido
+            # Añadir los datos del producto en la fila correspondiente
             pdf.cell(50, 10, producto.nombre, 1, 0, 'C', fill=True)
             pdf.cell(40, 10, f"${producto.precioDeVenta:.2f}", 1, 0, 'C', fill=True)
             pdf.cell(50, 10, f"{producto.cantidadDisponible}", 1, 0, 'C', fill=True)
-            pdf.cell(50, 10, f"{producto.fechaDeVencimiento}", 1, 1, 'C', fill=True)  # Salto de línea entre filas
+            pdf.cell(50, 10, f"{producto.fechaDeVencimiento}", 1, 1, 'C', fill=True)
     else:
+        # Mostrar mensaje si no hay productos
         pdf.cell(0, 10, "No hay productos disponibles.", 0, 1, 'C')
+    
+    return pdf
 
-    # Preparar la respuesta
+def generarPDF(request):
+    # Llamar a `crearpdf` para generar el contenido del PDF
+    pdf = crearpdf()
+    
+    # Preparar la respuesta HTTP para enviar el PDF al usuario
     response = HttpResponse(pdf.output(dest='S').encode('latin1'), content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="reporteProductos.pdf"'
     return response
