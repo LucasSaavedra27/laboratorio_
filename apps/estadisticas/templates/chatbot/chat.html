@@ -1,0 +1,28 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block contenido %}
+<div style="margin-top: 150px; text-align: center;">
+    <h2>Chatbot</h2>
+    <div class="chat-history" style="margin-top: 10px; text-align: center;">
+        {% for chat in historial_chat %}
+            <div class="message-content">
+                <strong>{{ chat.user.username }}:</strong> {{ chat.message }}
+            </div>
+            <div class="message-content">
+                <strong>IA:</strong> {{ chat.response }}
+            </div>
+            <hr>
+        {% endfor %}
+    </div>
+
+    <form method="post" style="margin: 10px; text-align: center;">
+        {% csrf_token %}
+        <div class="input-group">
+            <input required="" type="text" name="message" autocomplete="off" class="input">
+            <label class="user-label">Escribe tu mensaje aquí...</label>
+        </div>
+
+    </form>
+</div>
+{% endblock %}
