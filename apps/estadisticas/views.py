@@ -17,10 +17,6 @@ import json
 import os
 import openai
 
-from dotenv import load_dotenv
-
-load_dotenv(".env")
-load_dotenv(".messages")
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # IMPROTS LANGCHAIN
@@ -39,51 +35,55 @@ from apps.productos.views import crearpdf  # generarPDF()
 
 
 def response_llm(message, query, response):
-    print("\n--------- response_llm ---------\n")
-    system_message = utils.response_llm_message.format(
-        message=message,
-        query=query,
-        response=response,
-    )
-    response = openai.chat.completions.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "system", "content": system_message},
-            {"role": "user", "content": message},
-        ],
-    )
-    print("\n--------- response_llm response ---------\n")
-    print(response.choices[0].message.content)
-    # Procesa la respuesta del modelo y devuelve la etiqueta
-    return response.choices[0].message.content
+    try:
+        system_message = utils.response_llm_message.format(
+            message=message,
+            query=query,
+            response=response,
+        )
+        response = openai.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": system_message},
+                {"role": "user", "content": message},
+            ],
+        )
+        # Procesa la respuesta del modelo y devuelve la etiqueta
+        return response.choices[0].message.content
+    except openai.AuthenticationError:
+        return "Error: Clave API inválida"
 
+    except Exception as e:
+        return f"Hubo un error: {str(e)}"
 
 def detect_intention(message):
     """
     Usa OpenAI para detectar si el mensaje del usuario es una consulta SQL o una pregunta general.
     """
-    print("\n--------- detect_intention ---------\n")
-    schema = obtener_schema()
-    # Define un prompt que le pide al modelo clasificar la intención
-    system_message = utils.detect_intention_message.format(
-        schema=schema,
-    )
+    try:
+        schema = obtener_schema()
+        # Define un prompt que le pide al modelo clasificar la intención
+        system_message = utils.detect_intention_message.format(
+            schema=schema,
+        )
 
-    response = openai.chat.completions.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "system", "content": system_message},
-            {"role": "user", "content": message},
-        ],
-    )
-    print("\n--------- detect_intention response ---------\n")
-    print(response.choices[0].message.content)
-    # Procesa la respuesta del modelo y devuelve la etiqueta
-    return response.choices[0].message.content
+        response = openai.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": system_message},
+                {"role": "user", "content": message},
+            ],
+        )
+        # Procesa la respuesta del modelo y devuelve la etiqueta
+        return response.choices[0].message.content
+    except openai.AuthenticationError:
+        return "Error: Clave API inválida"
+
+    except Exception as e:
+        return f"Hubo un error: {str(e)}"
 
 
 def generate_general_response(message):
-    print("\n--------- generate_general_response ---------\n")
     # Genera una respuesta conversacional usando OpenAI
     # Obtener la fecha y hora actuales
     fecha_hoy = datetime.now()
@@ -91,82 +91,72 @@ def generate_general_response(message):
     # Formatear en ISO 8601 con hora
     fecha_iso_hora = fecha_hoy.strftime("%Y-%m-%dT%H:%M:%S")
 
-    system_message = utils.generate_general_response_message.format(
-        fecha_iso_hora=fecha_iso_hora,
-    )
+    try:
+        system_message = utils.generate_general_response_message.format(
+            fecha_iso_hora=fecha_iso_hora,
+        )
 
-    response = openai.chat.completions.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "system", "content": system_message},
-            {"role": "user", "content": message},
-        ],
-    )
-    results = response.choices[0].message.content
-    print("\n--------- generate_general_response response ---------\n")
-    print(results)
-    
-    # Analiza el resultado para ver si se menciona PDF de Producto o Insumo
-    if "PDF" in results:
-        if "PRODUCTO" in results:
-            print("\n--------- PRODUCTOOOOOOO response ---------\n")
-            return "redirect_producto_pdf"
-        elif "INSUMO" in results:
-            print("\n--------- INSUMOOOOOO response ---------\n")
-            return "redirect_insumo_pdf"
-    
-    return results
+        response = openai.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": system_message},
+                {"role": "user", "content": message},
+            ],
+        )
+        results = response.choices[0].message.content
+        # Analiza el resultado para ver si se menciona PDF de Producto o Insumo
+        if "PDF" in results:
+            if "PRODUCTO" in results:
+                return "redirect_producto_pdf"
+            elif "INSUMO" in results:
+                return "redirect_insumo_pdf"
+
+        return results
+    except openai.AuthenticationError:
+        return "Error: Clave API inválida"
+
+    except Exception as e:
+        return f"Hubo un error: {str(e)}"
 
 
 def generate_sql_response(message):
-    print("\n--------- generate_sql_response ---------\n")
     # Conecta a la base de datos
-    os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
-    sqlite_db_path = os.path.join(settings.BASE_DIR, "db.sqlite3")
-    db = SQLDatabase.from_uri(f"sqlite:///{sqlite_db_path}")
+    try: 
+        os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
+        sqlite_db_path = os.path.join(settings.BASE_DIR, "db.sqlite3")
+        db = SQLDatabase.from_uri(f"sqlite:///{sqlite_db_path}")
 
-    llm = ChatOpenAI(model="gpt-3.5-turbo")
-    chain = create_sql_query_chain(llm, db)
-    dialect = db.dialect
+        llm = ChatOpenAI(model="gpt-3.5-turbo")
+        chain = create_sql_query_chain(llm, db)
+        dialect = db.dialect
 
-    # Genera la consulta y verifica que no modifique datos
-    query = chain.invoke({"question": message})
-    print("\n--------- generate_sql_response query ---------\n")
-    print(query)
+        # Genera la consulta y verifica que no modifique datos
+        query = chain.invoke({"question": message})
 
-    print("\n--------- generate_sql_response VERIFICACION ---------\n")
-    if "SELECT" not in query:
-        raise ValueError("No se permiten consultas que modifiquen datos.")
+        if "SELECT" not in query:
+            raise ValueError("No se permiten consultas que modifiquen datos.")
 
-    system_message = utils.generate_sql_response_message
+        system_message = utils.generate_sql_response_message
 
-    prompt = ChatPromptTemplate.from_messages(
-        [("system", system_message), ("human", "{query}")]
-    ).partial(dialect=db.dialect, message=message)
+        prompt = ChatPromptTemplate.from_messages(
+            [("system", system_message), ("human", "{query}")]
+        ).partial(dialect=db.dialect, message=message)
 
-    print("\n--------- prompt ---------\n")
-    # print(prompt)
+        # Combinando la generación y validación
+        validation_chain = prompt | llm | StrOutputParser()
+        full_chain = {"query": chain} | validation_chain
 
-    # Combinando la generación y validación
-    validation_chain = prompt | llm | StrOutputParser()
-    full_chain = {"query": chain} | validation_chain
-
-    # Ejecutar la consulta y validar
-    query = full_chain.invoke({"question": f"{message}"})
-    print("\n--------- query verficada ---------\n")
-    print(query)
-
-    results = db.run(query)
-    response = response_llm(message, query, results)
-    return response
-
+        # Ejecutar la consulta y validar
+        query = full_chain.invoke({"question": f"{message}"})
+        results = db.run(query)
+        response = response_llm(message, query, results)
+        return response
+    except Exception as e:
+        return f"Hubo un error al procesar la consulta: {str(e)}"
 
 def chatbot(request):
     if request.method == "POST":
-        print("\n--------- INICIO DE POST en chatbot_view ---------\n")
         message = request.POST.get("message")
-        print(f"\n--------- Mensaje de usuario: {message}  ---------\n")
-        
         try:
             # Detecta si el mensaje es una consulta SQL o una conversación general
             intention = detect_intention(message)
@@ -174,20 +164,32 @@ def chatbot(request):
                 response = generate_sql_response(message)
             else:
                 response = generate_general_response(message)
-                
+
                 # Revisa si generate_general_response devuelve una indicación de generación de PDF
                 if response == "redirect_producto_pdf":
                     pdf = crearpdf()  # Genera el PDF utilizando la función `crearpdf`
                     # Prepara la respuesta con el PDF generado
-                    response = HttpResponse(pdf.output(dest='S').encode('latin1'), content_type='application/pdf')
-                    response['Content-Disposition'] = 'attachment; filename="reporteProductos.pdf"'
-                    response['Refresh'] = '0; url=/estadisticas/chatbot/'
+                    response = HttpResponse(
+                        pdf.output(dest="S").encode("latin1"),
+                        content_type="application/pdf",
+                    )
+                    response["Content-Disposition"] = (
+                        'attachment; filename="reporteProductos.pdf"'
+                    )
+                    response["Refresh"] = "0; url=/estadisticas/chatbot/"
                     return response
                 elif response == "redirect_insumo_pdf":
-                    pdf = crearpdf()  # Aquí también podrías utilizar otra función si deseas generar un PDF distinto
-                    response = HttpResponse(pdf.output(dest='S').encode('latin1'), content_type='application/pdf')
-                    response['Content-Disposition'] = 'attachment; filename="reporteInsumosFaltantes.pdf"'
-                    response['Refresh'] = '0; url=/estadisticas/chatbot/'
+                    pdf = (
+                        crearpdf()
+                    )  # Aquí también podrías utilizar otra función si deseas generar un PDF distinto
+                    response = HttpResponse(
+                        pdf.output(dest="S").encode("latin1"),
+                        content_type="application/pdf",
+                    )
+                    response["Content-Disposition"] = (
+                        'attachment; filename="reporteInsumosFaltantes.pdf"'
+                    )
+                    response["Refresh"] = "0; url=/estadisticas/chatbot/"
                     return response
 
         except ValueError as e:
@@ -326,8 +328,6 @@ def grafico_ventas_totales_por_mes(mes, anio):
         .values("fechaDeVenta__day")
         .annotate(total_ventas=Sum("total"))
     )
-    print("\n--------- datos_ventas_mes ---------\n")
-    print(datos_ventas_mes)
 
     # Convertir a DataFrame
     df_mes = pd.DataFrame(list(datos_ventas_mes))
@@ -354,9 +354,6 @@ def grafico_ventas_totales_por_mes(mes, anio):
     )
     df_mes.rename(columns={"index": "fecha"}, inplace=True)
 
-    print("\n--------- datos_ventas_mes DF ---------\n")
-    print(df_mes)
-    
     # Crear gráfico
     fig = px.line(
         df_mes,
@@ -390,42 +387,45 @@ def estadisticas_ventas(request):
     # AGREGADO POR LUCAS
     # Obtener el empleado con más ventas en el mes y año actual
     empleado = (
-        Venta.objects
-        .annotate(month=ExtractMonth('fechaDeVenta'), year=ExtractYear('fechaDeVenta'))
+        Venta.objects.annotate(
+            month=ExtractMonth("fechaDeVenta"), year=ExtractYear("fechaDeVenta")
+        )
         .filter(month=date.today().month, year=date.today().year)
-        .values('empleado__nombre')  
-        .annotate(total_ventas=Count('id'))  # Contar las ventas
-        .order_by('-total_ventas')  # Ordenar descendentemente
+        .values("empleado__nombre")
+        .annotate(total_ventas=Count("id"))  # Contar las ventas
+        .order_by("-total_ventas")  # Ordenar descendentemente
         .first()  # Obtener el empleado con más ventas
     )
-    
+
     # Ventas del día actual
-    ventas_diarias = (
-        Venta.objects
-        .filter(fechaDeVenta=date.today())
-        .aggregate(total_diario=Sum('total'))
+    ventas_diarias = Venta.objects.filter(fechaDeVenta=date.today()).aggregate(
+        total_diario=Sum("total")
     )
-    total_diario = ventas_diarias['total_diario'] if ventas_diarias['total_diario'] else 0
+    total_diario = (
+        ventas_diarias["total_diario"] if ventas_diarias["total_diario"] else 0
+    )
 
     # Ventas del mes actual
-    ventas_mensuales = (
-        Venta.objects
-        .filter(fechaDeVenta__year=date.today().year, fechaDeVenta__month=date.today().month)
-        .aggregate(total_mensual=Sum('total'))
+    ventas_mensuales = Venta.objects.filter(
+        fechaDeVenta__year=date.today().year, fechaDeVenta__month=date.today().month
+    ).aggregate(total_mensual=Sum("total"))
+    total_mensual = (
+        ventas_mensuales["total_mensual"] if ventas_mensuales["total_mensual"] else 0
     )
-    total_mensual = ventas_mensuales['total_mensual'] if ventas_mensuales['total_mensual'] else 0
-    
+
     # Producto más vendido en el mes y año actual
     producto_mas_vendido = (
-        DetalleVenta.objects
-        .annotate(month=ExtractMonth('venta__fechaDeVenta'), year=ExtractYear('venta__fechaDeVenta'))
-        .filter(month=date.today().month, year=date.today().year)  
-        .values('producto__nombre')  
-        .annotate(total_vendido=Sum('cantidad'))  
-        .order_by('-total_vendido')  
+        DetalleVenta.objects.annotate(
+            month=ExtractMonth("venta__fechaDeVenta"),
+            year=ExtractYear("venta__fechaDeVenta"),
+        )
+        .filter(month=date.today().month, year=date.today().year)
+        .values("producto__nombre")
+        .annotate(total_vendido=Sum("cantidad"))
+        .order_by("-total_vendido")
         .first()  # Obtener el primer resultado, que será el producto más vendido
     )
-    
+
     context = {
         "graph_categorias_html": graph_categorias_html,
         "graph_empleado_html": graph_empleado_html,
@@ -436,5 +436,5 @@ def estadisticas_ventas(request):
         "producto_mas_vendido": producto_mas_vendido,
         "form": form,
     }
-    
+
     return render(request, "estadisticas/estadisticas_ventas.html", context)
