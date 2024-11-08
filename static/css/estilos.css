@@ -493,12 +493,15 @@ form #form-busqueda {
   width: 200px;
 }
 
+<<<<<<< HEAD
 .contenedor-cards-stats{
   padding-top: 160px;
   padding-left: 20px;
   padding-right: 20px;
 }
 
+=======
+>>>>>>> origin/chatbot
 .full-width-div {
   width: 100%;
 }
@@ -511,6 +514,50 @@ form #form-busqueda {
 #card-raised {
   border: none;  
 }
+<<<<<<< HEAD
+=======
+
+.icon-circle {
+  height: 3rem;
+  width: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.contenedor-cards-stats{
+  padding-top: 160px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.fa-dollar-sign{
+font-size: 0.75rem;
+}
+
+.message-content {
+  white-space: pre-line;
+  margin: 0px 100px;
+}
+
+.input-chatbot {
+  border: none;
+  outline: none;
+  border-radius: 15px;
+  padding: 1em;
+  background-color: #ccc;
+  box-shadow: inset 2px 5px 10px rgba(0,0,0,0.3);
+  transition: 300ms ease-in-out;
+}
+
+.input-chatbot:focus {
+  background-color: white;
+  transform: scale(1.05);
+  box-shadow: 6px 6px 50px #969696,
+             -6px -6px 50px #ffffff;
+}
+>>>>>>> origin/chatbot
 
 .icon-circle {
   height: 3rem;
