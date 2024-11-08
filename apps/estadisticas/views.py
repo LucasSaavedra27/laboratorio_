@@ -288,9 +288,6 @@ def grafico_ventas_por_categoria_y_dia(mes, anio):
         values="TotalVentas",
         branchvalues="total",
     )
-    fig.update_layout(
-        title="Ventas Totales por Categoría y Producto",
-    )
 
     # Convertir el gráfico a HTML
     return fig.to_html(full_html=False)

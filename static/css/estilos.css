@@ -275,10 +275,14 @@ th, td {
 
 .bg-primario {
   background-color: #a63348;
+  color: #ffffff;
 }
 
 .bg-secundario {
-  background-color: #c0a2a9;
+  background-color: #d399a7;
+}
+.bg-secundario:hover, .bg-primario:hover{
+  border-color: #732036;
 }
 
 #form-emp .btn {
@@ -432,8 +436,9 @@ form #form-busqueda {
 }
 
 #cerrarSesion:hover{
-  color: #bb5772;
-  text-decoration:underline;
+  text-decoration: none;
+  background-color:#ffe2e2;
+  color:#732036;
 }
 
 .contenedor-formProd{
@@ -470,8 +475,8 @@ form #form-busqueda {
 }
 
 .btn-addProd:hover,.btn-cancelProd:hover,.btn-addVenta:hover,.btn-cancelProd:hover,.btn-addProv:hover,.btncancelProv:hover{
-  background-color: #732036;
-  color: #000000;
+  background-color: #631a2e;
+  color: #ffe2e2;
 }
 
 .fa-square-plus,.fa-eye, .fa-list-check{
@@ -493,15 +498,6 @@ form #form-busqueda {
   width: 200px;
 }
 
-<<<<<<< HEAD
-.contenedor-cards-stats{
-  padding-top: 160px;
-  padding-left: 20px;
-  padding-right: 20px;
-}
-
-=======
->>>>>>> origin/chatbot
 .full-width-div {
   width: 100%;
 }
@@ -514,8 +510,6 @@ form #form-busqueda {
 #card-raised {
   border: none;  
 }
-<<<<<<< HEAD
-=======
 
 .icon-circle {
   height: 3rem;
@@ -557,7 +551,6 @@ font-size: 0.75rem;
   box-shadow: 6px 6px 50px #969696,
              -6px -6px 50px #ffffff;
 }
->>>>>>> origin/chatbot
 
 .icon-circle {
   height: 3rem;
@@ -592,4 +585,8 @@ font-size: 0.75rem;
   transform: scale(1.05);
   box-shadow: 6px 6px 50px #969696,
              -6px -6px 50px #ffffff;
+}
+
+.table th {
+  color: #f2f2f2;
 }
